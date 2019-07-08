@@ -17,6 +17,7 @@ class Employee(models.Model):
 
 
 class Vacation(models.Model):
+	tr = models.ForeignKey('TravelRequest', on_delete=models.CASCADE)
 	start = models.DateField()
 	end = models.DateField()
 
