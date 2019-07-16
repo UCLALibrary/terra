@@ -1,2 +1,2 @@
-# taxidi
-Travel requests and reports web application
+# TeRRA
+Travel Requests & Reports Application
