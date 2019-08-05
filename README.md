@@ -14,11 +14,11 @@ Travel & Entertainment Requests & Reports Application
 3. Pull this repo
 	1. with SSH:
 		
-		$ git clone git@github.com:UCLALibrary/terra.git
+			$ git clone git@github.com:UCLALibrary/terra.git
 
 	2. with HTTPS:
 			
-		$ git clone https://github.com/UCLALibrary/terra.git
+			$ git clone https://github.com/UCLALibrary/terra.git
 
 4. Switch to the repo root
 		
