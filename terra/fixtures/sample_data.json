@@ -1,0 +1,277 @@
+[
+  {
+    "model": "terra.unit",
+    "pk": 1,
+    "fields": {
+      "name": "Library",
+      "manager": 4,
+      "parent_unit": null
+    }
+  },
+  {
+    "model": "terra.unit",
+    "pk": 2,
+    "fields": {
+      "name": "DIIT",
+      "manager": 1,
+      "parent_unit": null
+    }
+  },
+  {
+    "model": "terra.unit",
+    "pk": 3,
+    "fields": {
+      "name": "Software Development & Library Software",
+      "manager": 3,
+      "parent_unit": 2
+    }
+  },
+  {
+    "model": "terra.fund",
+    "pk": 1,
+    "fields": {
+      "account": "605000",
+      "cost_center": "LD",
+      "fund": "19900",
+      "manager": 3
+    }
+  },
+  {
+    "model": "terra.fund",
+    "pk": 2,
+    "fields": {
+      "account": "605000",
+      "cost_center": "LD",
+      "fund": "18084",
+      "manager": 3
+    }
+  },
+  {
+    "model": "terra.travelrequest",
+    "pk": 1,
+    "fields": {
+      "traveler": 2,
+      "activity": 1,
+      "departure_date": "2020-02-09",
+      "return_date": "2020-02-23",
+      "days_ooo": 5,
+      "closed": false,
+      "administrative": false,
+      "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
+      "funding": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "terra.vacation",
+    "pk": 1,
+    "fields": {
+      "treq": 1,
+      "start": "2020-02-17",
+      "end": "2020-02-22"
+    }
+  },
+  {
+    "model": "terra.activity",
+    "pk": 1,
+    "fields": {
+      "name": "Code4lib 2020",
+      "url": "http://2020.code4lib.org",
+      "description": "A conference for library technologists",
+      "start": "2020-02-10",
+      "end": "2020-02-14",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "country": "USA"
+    }
+  },
+  {
+    "model": "terra.approval",
+    "pk": 1,
+    "fields": {
+      "timestamp": "2019-08-14T02:36:29.984Z",
+      "approver": 3,
+      "treq": 1,
+      "type": "S"
+    }
+  },
+  {
+    "model": "terra.approval",
+    "pk": 2,
+    "fields": {
+      "timestamp": "2019-08-14T02:36:47.408Z",
+      "approver": 1,
+      "treq": 1,
+      "type": "F"
+    }
+  },
+  {
+    "model": "terra.estimatedexpense",
+    "pk": 1,
+    "fields": {
+      "treq": 1,
+      "type": "CON",
+      "rate": null,
+      "quantity": null,
+      "total": "250.00000"
+    }
+  },
+  {
+    "model": "terra.estimatedexpense",
+    "pk": 2,
+    "fields": {
+      "treq": 1,
+      "type": "AIR",
+      "rate": null,
+      "quantity": null,
+      "total": "500.00000"
+    }
+  },
+  {
+    "model": "terra.estimatedexpense",
+    "pk": 3,
+    "fields": {
+      "treq": 1,
+      "type": "LDG",
+      "rate": "200.00000",
+      "quantity": 5,
+      "total": "1000.00000"
+    }
+  },
+  {
+    "model": "terra.estimatedexpense",
+    "pk": 4,
+    "fields": {
+      "treq": 1,
+      "type": "EAT",
+      "rate": null,
+      "quantity": null,
+      "total": "250.00000"
+    }
+  },
+    {
+    "model": "terra.actualexpense",
+    "pk": 1,
+    "fields": {
+      "treq": 1,
+      "type": "CON",
+      "rate": null,
+      "quantity": null,
+      "total": "250.00000",
+      "fund": 1
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
+      "last_login": "2019-08-13T22:59:29Z",
+      "is_superuser": true,
+      "username": "joshuagomez",
+      "first_name": "Joshua",
+      "last_name": "Gomez",
+      "email": "joshuago78@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-08-13T22:59:03Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$lze2IRK5REOf$vD3EobiBBGOorhQR+HUW0yzT/7SOynR6n4xxRk1LNk0=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "tgrappone",
+      "first_name": "Todd",
+      "last_name": "Grappone",
+      "email": "tgrappone@library.ucla.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-08-14T02:21:24Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$uZEL9naPqn67$hlgkqVV0DjM5nY/5Jy2qXGu4+yj277vK6PY72PcFIVY=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "aprigge",
+      "first_name": "Ashton",
+      "last_name": "Prigge",
+      "email": "aprigge@library.ucla.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-08-14T02:23:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$facETWBUJjYJ$URkIbGwPgJTz6prw4JVf0SSILwTM9I3wkosaDtQPunk=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "vsteel",
+      "first_name": "Virginia",
+      "last_name": "Steel",
+      "email": "vsteel@library.library.ucla.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2019-08-14T02:26:46Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "terra.employee",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "phone": "",
+      "unit": 2,
+      "active": true
+    }
+  },
+  {
+    "model": "terra.employee",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "phone": "",
+      "unit": 3,
+      "active": true
+    }
+  },
+  {
+    "model": "terra.employee",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "phone": "",
+      "unit": 3,
+      "active": true
+    }
+  },
+  {
+    "model": "terra.employee",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone": "",
+      "unit": 1,
+      "active": true
+    }
+  }
+]
