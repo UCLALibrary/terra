@@ -89,3 +89,7 @@ When you change the Django models, you need to update the tables in the database
 4. Run the terra test suite
 
 		$ python manage.py test terra
+
+5. Use the sample data
+
+		$ python manage.py loaddata sample_data
