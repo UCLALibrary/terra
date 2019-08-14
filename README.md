@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/UCLALibrary/terra.svg?branch=master)](https://travis-ci.com/UCLALibrary/terra) [![Coverage Status](https://coveralls.io/repos/github/UCLALibrary/terra/badge.svg?branch=master)](https://coveralls.io/github/UCLALibrary/terra?branch=master)
+
 # TERRA
 Travel & Entertainment Requests & Reports Application
 

@@ -1,0 +1,11 @@
+language: python
+dist: xenial
+python:
+  - "3.6"
+install:
+  - pip install -r requirements.txt
+  - pip install -q coveralls
+script:
+  - coverage run --source=terra manage.py test terra
+after_success:
+  coveralls
