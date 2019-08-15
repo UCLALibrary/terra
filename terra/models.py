@@ -42,6 +42,7 @@ class Employee(models.Model):
 	phone = models.CharField(max_length=32, blank=True)
 	unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
 	active = models.BooleanField(default=True)
+	uid = models.CharField(max_length=9, unique=True)
 
 	def __str__(self):
 		return self.user.get_full_name()
