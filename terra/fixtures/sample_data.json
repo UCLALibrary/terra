@@ -241,7 +241,8 @@
       "user": 2,
       "phone": "",
       "unit": 2,
-      "active": true
+      "active": true,
+      "uid": "FAKE001"
     }
   },
   {
@@ -251,7 +252,8 @@
       "user": 3,
       "phone": "",
       "unit": 3,
-      "active": true
+      "active": true,
+      "uid": "FAKE002"
     }
   },
   {
@@ -261,7 +263,8 @@
       "user": 1,
       "phone": "",
       "unit": 3,
-      "active": true
+      "active": true,
+      "uid": "FAKE003"
     }
   },
   {
@@ -271,7 +274,8 @@
       "user": 4,
       "phone": "",
       "unit": 1,
-      "active": true
+      "active": true,
+      "uid": "FAKE004"
     }
   }
 ]
