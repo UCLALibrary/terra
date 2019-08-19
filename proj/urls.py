@@ -15,7 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
+from django.contrib.auth import views as auth_views
+from terra.views import EmployeeDetailView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', auth_views.LoginView.as_view(template_name='terra/registration/login.html')),
+    path('logout/', auth_views.LogoutView.as_view(template_name='terra/registration/logout.html')),
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='terra/registration/password_change.html')),
+    path('password_change_done/', auth_views.PasswordChangeDoneView.as_view(template_name='terra/registration/password_change_done.html')),
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='terra/registration/password_reset.html')),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='terra/registration/password_reset_done.html')),
+    path('password_reset_confirm/', auth_views.PasswordResetConfirmView.as_view(template_name='terra/registration/password_reset_confirm.html')),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='terra/registration/password_reset_complete.html')),
+    
 ]
