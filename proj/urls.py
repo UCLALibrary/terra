@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
-from terra.views import EmployeeDetailView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
