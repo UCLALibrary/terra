@@ -1,4 +1,6 @@
 {% extends "terra/base.html" %}
+
+{% load crispy_forms_tags %}
     
 {% block title %}Login{% endblock %}
 
@@ -16,15 +18,11 @@
     <div class="row">
       <form method="POST" class="form">
         {% csrf_token %}
-        {{ form.as_p}}
+        {{ form|crispy}}
         <p><a href="/accounts/password_reset">Lost password?</a></p>
-        {% if form.errors %}
-        <p class=" label label-danger">Your username and password didn't match. Please try again.</p>
-        {% endif %}
         <button type="submit" class="btn btn-primary">Submit</button>
         <input type="hidden" name="next" value='/admin/'>
       </form>
-    
     </div> <!--Div row-->
   </div><!--Div container-->
 </main>

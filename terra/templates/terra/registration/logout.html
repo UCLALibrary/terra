@@ -13,15 +13,17 @@
 {% block body %}
 <main role="main">
     <div class="container">
-      <div class="row">
+      <div class="alert alert-success" role="alert">
         <form method="POST" class="form">
           {% csrf_token %}
           {{ form.as_p }}
-          <p>Click to log out</p>
-          <button type="submit" class="btn btn-primary">Logout</button>
+          <h4>You have logged out</h4>
+           </div> <!--Div alert-->
+          <p> You can log back in by clicking here</p>
+          <button type="submit" class="btn btn-primary">Login</button>
           <input type="hidden" name="next" value='/accounts/login'>
         </form>
-      </div> <!--Div row -->
+     
     </div><!--Div container-->
   </main> 
 {% endblock %}
