@@ -1,0 +1,27 @@
+{% extends "terra/base.html" %}
+    
+{% block title %}Logout{% endblock %}
+
+{% block supplemental_css %}
+<style>
+  body {
+    padding-top: 6.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<main role="main">
+    <div class="container">
+      <div class="row">
+        <form method="POST" class="form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <p>Click to log out</p>
+          <button type="submit" class="btn btn-primary">Logout</button>
+          <input type="hidden" name="next" value='/accounts/login'>
+        </form>
+      </div> <!--Div row -->
+    </div><!--Div container-->
+  </main> 
+{% endblock %}
