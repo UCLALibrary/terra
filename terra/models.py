@@ -43,6 +43,8 @@ class Employee(models.Model):
 	unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
 	active = models.BooleanField(default=True)
 	uid = models.CharField(max_length=9, unique=True)
+	supervisor = models.ForeignKey('self', on_delete=models.PROTECT,
+		null=True, blank=True)
 
 	def __str__(self):
 		return self.user.get_full_name()
