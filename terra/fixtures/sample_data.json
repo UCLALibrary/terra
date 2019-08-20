@@ -242,7 +242,8 @@
       "phone": "",
       "unit": 2,
       "active": true,
-      "uid": "FAKE001"
+      "uid": "FAKE001",
+      "supervisor": 2
     }
   },
   {
@@ -253,7 +254,8 @@
       "phone": "",
       "unit": 3,
       "active": true,
-      "uid": "FAKE002"
+      "uid": "FAKE002",
+      "supervisor": 4
     }
   },
   {
@@ -264,7 +266,8 @@
       "phone": "",
       "unit": 3,
       "active": true,
-      "uid": "FAKE003"
+      "uid": "FAKE003",
+      "supervisor": 1
     }
   },
   {
