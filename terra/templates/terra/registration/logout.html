@@ -18,10 +18,10 @@
           {% csrf_token %}
           {{ form.as_p }}
           <h4>You have logged out</h4>
+          <hr>
+          <p> You can log back in by clicking<a href='/accounts/login'> here.</p>
            </div> <!--Div alert-->
-          <p> You can log back in by clicking here</p>
-          <button type="submit" class="btn btn-primary">Login</button>
-          <input type="hidden" name="next" value='/accounts/login'>
+          
         </form>
      
     </div><!--Div container-->
