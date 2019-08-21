@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 
 from .models import Unit, Employee, Fund, TravelRequest, Vacation, Activity, \
 	Approval, EstimatedExpense, ActualExpense
@@ -15,6 +16,7 @@ class ModelsTestCase(TestCase):
 	def test_employee(self):
 		employee = Employee.objects.get(pk=3)
 		self.assertEqual(str(employee), 'Joshua Gomez')
+		self.assertEqual(employee.name(), 'Joshua Gomez')
 		self.assertEqual(repr(employee), '<Employee 3: Joshua Gomez>')
 
 	def test_fund(self):
@@ -51,3 +53,40 @@ class ModelsTestCase(TestCase):
 		actexp = ActualExpense.objects.get(pk=1)
 		self.assertEqual(repr(actexp), '<ActualExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>')
 		self.assertEqual(str(actexp), '<ActualExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>')
+
+	def test_unit_employee_count(self):
+		sdls = Unit.objects.get(pk=3)
+		self.assertEqual(sdls.employee_count(), 2)
+		for x in range(5):
+			u = User.objects.create_user(username=str(x))
+			u.save()
+			e = Employee(user=u, uid='xxxxxxxx'+str(x), unit=sdls)
+			e.save()
+		self.assertEqual(sdls.employee_count(), 7)
+
+	def test_treq_international(self):
+		treq = TravelRequest.objects.get(pk=1)
+		self.assertEqual(treq.international(), False)
+		treq.activity.country = 'Germany'
+		treq.activity.save()
+		self.assertEqual(treq.international(), True)
+
+	def test_treq_approved(self):
+		treq = TravelRequest.objects.get(pk=1)
+		self.assertEqual(treq.approved(), True)
+		treq.activity.country = 'Germany'
+		treq.activity.save()
+		self.assertEqual(treq.approved(), False)
+
+	def test_treq_funded(self):
+		treq = TravelRequest.objects.get(pk=1)
+		self.assertEqual(treq.funded(), True)
+		a = Approval.objects.get(pk=2)
+		a.delete()
+		self.assertEqual(treq.funded(), False)
+
+	def test_expense_total_dollars(self):
+		estexp = EstimatedExpense.objects.get(pk=1)
+		self.assertEqual(estexp.total_dollars(), '$250.00')
+		actexp = ActualExpense.objects.get(pk=1)
+		self.assertEqual(actexp.total_dollars(), '$250.00')
