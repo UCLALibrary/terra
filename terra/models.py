@@ -36,6 +36,9 @@ class Unit(models.Model):
 	def __repr__(self):
 		return '<Unit {}: {}>'.format(self.id, self.name)
 
+	def employee_count(self):
+		return self.employee_set.count()
+
 
 class Employee(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,6 +54,9 @@ class Employee(models.Model):
 
 	def __repr__(self):
 		return '<Employee {}: {}>'.format(self.id, self)
+
+	def name(self):
+		return str(self)
 
 
 class Fund(models.Model):
@@ -83,6 +89,21 @@ class TravelRequest(models.Model):
 	def __repr__(self):
 		return '<TReq {}: {} {} {}>'.format(self.id, self.traveler, 
 			self.activity.name, self.departure_date.strftime('%Y'))
+
+	def international(self):
+		return self.activity.country != 'USA'
+
+	def approved(self):
+		if self.international():
+			return len(self.approval_set.filter(type='I')) == 1
+		return len(self.approval_set.filter(type='S')) == 1
+
+	def funded(self):
+		return len(self.approval_set.filter(type='F')) == 1
+
+	approved.boolean = True
+	funded.boolean = True
+
 
 
 class Vacation(models.Model):
@@ -148,6 +169,9 @@ class EstimatedExpense(models.Model):
 			self.get_type_display(), self.treq.activity.name,
 			self.treq.traveler)
 
+	def total_dollars(self):
+		return '$%.2f' % self.total
+
 
 class ActualExpense(models.Model):
 	treq = models.ForeignKey('TravelRequest', on_delete=models.CASCADE)
@@ -165,3 +189,6 @@ class ActualExpense(models.Model):
 		return '<ActualExpense {}: {} {} {}>'.format(self.id,
 			self.get_type_display(), self.treq.activity.name,
 			self.treq.traveler)
+
+	def total_dollars(self):
+		return '$%.2f' % self.total
