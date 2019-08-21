@@ -6,14 +6,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('terra', '0002_employee_uid'),
-    ]
+    dependencies = [("terra", "0002_employee_uid")]
 
     operations = [
         migrations.AddField(
-            model_name='employee',
-            name='supervisor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='terra.Employee'),
-        ),
+            model_name="employee",
+            name="supervisor",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="terra.Employee",
+            ),
+        )
     ]

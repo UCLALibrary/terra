@@ -9,120 +9,314 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Activity',
+            name="Activity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128)),
-                ('url', models.URLField(blank=True)),
-                ('description', models.TextField(blank=True)),
-                ('start', models.DateField()),
-                ('end', models.DateField()),
-                ('city', models.CharField(max_length=32)),
-                ('state', models.CharField(max_length=32)),
-                ('country', models.CharField(default='USA', max_length=32)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                ("url", models.URLField(blank=True)),
+                ("description", models.TextField(blank=True)),
+                ("start", models.DateField()),
+                ("end", models.DateField()),
+                ("city", models.CharField(max_length=32)),
+                ("state", models.CharField(max_length=32)),
+                ("country", models.CharField(default="USA", max_length=32)),
             ],
-            options={
-                'verbose_name_plural': 'Activities',
-            },
+            options={"verbose_name_plural": "Activities"},
         ),
         migrations.CreateModel(
-            name='Employee',
+            name="Employee",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('phone', models.CharField(blank=True, max_length=32)),
-                ('active', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Fund',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('account', models.CharField(max_length=6)),
-                ('cost_center', models.CharField(max_length=2)),
-                ('fund', models.CharField(max_length=5)),
-                ('manager', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Employee')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='TravelRequest',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('departure_date', models.DateField()),
-                ('return_date', models.DateField()),
-                ('days_ooo', models.IntegerField(verbose_name='Days Out of Office')),
-                ('closed', models.BooleanField(default=False)),
-                ('administrative', models.BooleanField(default=False)),
-                ('justification', models.TextField(blank=True)),
-                ('activity', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Activity')),
-                ('funding', models.ManyToManyField(to='terra.Fund')),
-                ('traveler', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Employee')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("phone", models.CharField(blank=True, max_length=32)),
+                ("active", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Vacation',
+            name="Fund",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start', models.DateField()),
-                ('end', models.DateField()),
-                ('treq', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='terra.TravelRequest')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("account", models.CharField(max_length=6)),
+                ("cost_center", models.CharField(max_length=2)),
+                ("fund", models.CharField(max_length=5)),
+                (
+                    "manager",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="terra.Employee"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Unit',
+            name="TravelRequest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128)),
-                ('manager', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='managed_units', to='terra.Employee')),
-                ('parent_unit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='terra.Unit')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("departure_date", models.DateField()),
+                ("return_date", models.DateField()),
+                ("days_ooo", models.IntegerField(verbose_name="Days Out of Office")),
+                ("closed", models.BooleanField(default=False)),
+                ("administrative", models.BooleanField(default=False)),
+                ("justification", models.TextField(blank=True)),
+                (
+                    "activity",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="terra.Activity"
+                    ),
+                ),
+                ("funding", models.ManyToManyField(to="terra.Fund")),
+                (
+                    "traveler",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="terra.Employee"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='EstimatedExpense',
+            name="Vacation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('LDG', 'Lodging'), ('AIR', 'Airfare'), ('TRN', 'Transit'), ('RNT', 'Car Rental'), ('DRV', 'Driving'), ('CON', 'Conference Registration'), ('PRE', 'Preconference Fees'), ('MEM', 'Membership Fees'), ('PRK', 'Parking'), ('EAT', 'Meals'), ('OTH', 'Other')], max_length=3)),
-                ('rate', models.DecimalField(blank=True, decimal_places=5, max_digits=10, null=True)),
-                ('quantity', models.IntegerField(blank=True, null=True)),
-                ('total', models.DecimalField(decimal_places=5, max_digits=10)),
-                ('treq', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='terra.TravelRequest')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start", models.DateField()),
+                ("end", models.DateField()),
+                (
+                    "treq",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="terra.TravelRequest",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="Unit",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128)),
+                (
+                    "manager",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="managed_units",
+                        to="terra.Employee",
+                    ),
+                ),
+                (
+                    "parent_unit",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="terra.Unit",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="EstimatedExpense",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("LDG", "Lodging"),
+                            ("AIR", "Airfare"),
+                            ("TRN", "Transit"),
+                            ("RNT", "Car Rental"),
+                            ("DRV", "Driving"),
+                            ("CON", "Conference Registration"),
+                            ("PRE", "Preconference Fees"),
+                            ("MEM", "Membership Fees"),
+                            ("PRK", "Parking"),
+                            ("EAT", "Meals"),
+                            ("OTH", "Other"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "rate",
+                    models.DecimalField(
+                        blank=True, decimal_places=5, max_digits=10, null=True
+                    ),
+                ),
+                ("quantity", models.IntegerField(blank=True, null=True)),
+                ("total", models.DecimalField(decimal_places=5, max_digits=10)),
+                (
+                    "treq",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="terra.TravelRequest",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='employee',
-            name='unit',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Unit'),
+            model_name="employee",
+            name="unit",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, to="terra.Unit"
+            ),
         ),
         migrations.AddField(
-            model_name='employee',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="employee",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.CreateModel(
-            name='Approval',
+            name="Approval",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('type', models.CharField(choices=[('S', 'Supervisor'), ('F', 'Funding'), ('I', 'International')], max_length=1)),
-                ('approver', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Employee')),
-                ('treq', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='terra.TravelRequest')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("S", "Supervisor"),
+                            ("F", "Funding"),
+                            ("I", "International"),
+                        ],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "approver",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="terra.Employee"
+                    ),
+                ),
+                (
+                    "treq",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="terra.TravelRequest",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ActualExpense',
+            name="ActualExpense",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('LDG', 'Lodging'), ('AIR', 'Airfare'), ('TRN', 'Transit'), ('RNT', 'Car Rental'), ('DRV', 'Driving'), ('CON', 'Conference Registration'), ('PRE', 'Preconference Fees'), ('MEM', 'Membership Fees'), ('PRK', 'Parking'), ('EAT', 'Meals'), ('OTH', 'Other')], max_length=3)),
-                ('rate', models.DecimalField(blank=True, decimal_places=5, max_digits=10, null=True)),
-                ('quantity', models.IntegerField(blank=True, null=True)),
-                ('total', models.DecimalField(decimal_places=5, max_digits=10)),
-                ('fund', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='terra.Fund')),
-                ('treq', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='terra.TravelRequest')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("LDG", "Lodging"),
+                            ("AIR", "Airfare"),
+                            ("TRN", "Transit"),
+                            ("RNT", "Car Rental"),
+                            ("DRV", "Driving"),
+                            ("CON", "Conference Registration"),
+                            ("PRE", "Preconference Fees"),
+                            ("MEM", "Membership Fees"),
+                            ("PRK", "Parking"),
+                            ("EAT", "Meals"),
+                            ("OTH", "Other"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "rate",
+                    models.DecimalField(
+                        blank=True, decimal_places=5, max_digits=10, null=True
+                    ),
+                ),
+                ("quantity", models.IntegerField(blank=True, null=True)),
+                ("total", models.DecimalField(decimal_places=5, max_digits=10)),
+                (
+                    "fund",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="terra.Fund"
+                    ),
+                ),
+                (
+                    "treq",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="terra.TravelRequest",
+                    ),
+                ),
             ],
         ),
     ]

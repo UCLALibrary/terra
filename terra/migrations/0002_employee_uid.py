@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('terra', '0001_initial'),
-    ]
+    dependencies = [("terra", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='employee',
-            name='uid',
-            field=models.CharField(default='INVALID', max_length=9, unique=True),
+            model_name="employee",
+            name="uid",
+            field=models.CharField(default="INVALID", max_length=9, unique=True),
             preserve_default=False,
-        ),
+        )
     ]
