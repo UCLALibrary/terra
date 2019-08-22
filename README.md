@@ -38,7 +38,7 @@ Travel & Entertainment Requests & Reports Application
 
 7. Install the pre-commit hook
 
-                $ pre-commit install
+		$ pre-commit install
 
 8. Create the database tables
 		
