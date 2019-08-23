@@ -1,13 +1,21 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
-from terra.models import Activity, Employee, Fund, TravelRequest, Unit
+from terra.models import (
+    Activity,
+    ActualExpense,
+    Approval,
+    Employee,
+    Fund,
+    TravelRequest,
+    Unit,
+)
 
 import csv
 
 
 def load_data(self, travel_file):
     """
-ac    Loads historical data: Activities, Funds, TravelRequests.
+    Loads historical data: Activities, Funds, TravelRequests.
     """
     self.stdout.write(f"Parsing {travel_file}")
     # Windows-derived CSV has leading BOM, so specify utf-8-sig, not utf-8
@@ -27,6 +35,7 @@ ac    Loads historical data: Activities, Funds, TravelRequests.
             cost_center = row["cc"]
             fund_part = row["fund"]
             fau_approver = row["fau_approver"]
+            amount = row["amount"]
 
             # TODO: Get real employee/approver from employee_name; using placeholder for now.
 
@@ -57,6 +66,24 @@ ac    Loads historical data: Activities, Funds, TravelRequests.
                 closed=True,
             )
             treq.funding.add(fund)
+
+            # Approval
+            approval = Approval.objects.create(
+                timestamp=start_date,  # We don't have accurate data
+                approver=fake_employee,  # Use fau_approver when data is fixed
+                treq=treq,
+                type="S",  # Can we be more accurate?
+            )
+
+            # ActualExpense
+            expense = ActualExpense.objects.create(
+                treq=treq,
+                type="OTH",  # We only have aggregate data
+                rate=1,  # Or blank?
+                quantity=1,  # Or blank?
+                total=amount,
+                fund=fund,
+            )
 
 
 def _create_placeholder_employee(self):
