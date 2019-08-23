@@ -36,7 +36,11 @@ Travel & Entertainment Requests & Reports Application
 		$ pip install --upgrade pip
 		$ pip install -r requirements.txt
 
-7. Create the database tables
+7. Install the pre-commit hook
+
+		$ pre-commit install
+
+8. Create the database tables
 		
 		$ python manage.py migrate
 
