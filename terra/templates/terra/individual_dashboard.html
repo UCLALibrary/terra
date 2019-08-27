@@ -1,0 +1,41 @@
+{% extends "terra/base.html" %}
+
+{% block title %}Individual Dashboard{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+    {% for Employee in filter1 %}
+        <li>{{Employee.user.username}}</li>
+    {% endfor %}
+
+    {% for Employee in filter1 %}
+        <tr>
+            <td>{{Employee.user}}</td>
+            <td>{{Employee.name}}</td>
+            <td>{{Employee.unit}}</td>
+            <td>{{Employee.uid}}</td>
+            <td>{{Employee.active}}</td>
+            <td>{{Employee.supervisior}}</td>
+        </tr>
+    {% endfor %}
+    {% for TravelRequest in filter2 %}
+        <tr>    
+            <td>{{TravelRequest.activity}}</td>
+            <td>{{TravelRequest.departure_date}}</td>
+            <td>{{TravelRequest.return_date}}</td>
+            <td>{{TravelRequest.days_ooo}}</td>
+            <td>{{TravelRequest.justification}}</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
+
