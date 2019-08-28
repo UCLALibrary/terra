@@ -27,6 +27,7 @@ def load_data(self, travel_file):
         for row in reader:
             # Get relevant data from CSV, with placeholders for now as needed
             employee_name = row["employee_name"]
+            ucla_id = row["ucla_id"]
             purpose = row["purpose"]
             start_date = row["begin_travel_date"]
             end_date = row["end_travel_date"]
@@ -37,12 +38,11 @@ def load_data(self, travel_file):
             fau_approver = row["fau_approver"]
             amount = row["amount"]
 
-            # TODO: Get real employee/approver from employee_name; using placeholder for now.
-
             self.stdout.write(f"\tProcessing row {reader.line_num}...")
 
             # Activity
-            activity = Activity.objects.create(
+            # Activities are not unique, so check for existence
+            activity, created = Activity.objects.get_or_create(
                 name=purpose, start=start_date, end=end_date
             )
 
@@ -57,15 +57,19 @@ def load_data(self, travel_file):
             )
 
             # TravelRequest
-            treq = TravelRequest.objects.create(
-                traveler=fake_employee,
-                activity=activity,
-                departure_date=start_date,
-                return_date=end_date,
-                days_ooo=workdays,
-                closed=True,
-            )
-            treq.funding.add(fund)
+            try:
+                traveler = Employee.objects.get(uid__exact=ucla_id)
+                treq = TravelRequest.objects.create(
+                    traveler=traveler,
+                    activity=activity,
+                    departure_date=start_date,
+                    return_date=end_date,
+                    days_ooo=workdays,
+                    closed=True,
+                )
+                treq.funding.add(fund)
+            except Employee.DoesNotExist:
+                raise CommandError(f"Employee {employee_name} does not exist")
 
             # Approval
             approval = Approval.objects.create(
