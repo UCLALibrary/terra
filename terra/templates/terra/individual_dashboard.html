@@ -18,29 +18,29 @@
     {% endfor %}
 
     {% for TravelRequest in filter_travel %}
-    <hr>
-        <tr>    
+        <hr>
+            <tr>    
             
-            <td>{{TravelRequest.traveler.name}}</td>
-            <td>{{TravelRequest.traveler.uid}}</td>
-            <td>{{TravelRequest.traveler.unit}}</td>
-            <td>{{TravelRequest.traveler.active}}</td>
-            <td>{{TravelRequest.traveler.supervisior.name}}</td>
-            <td>{{TravelRequest.activity.name}}</td>
-            <td>{{TravelRequest.activity.city}}</td>
-            <td>{{TravelRequest.activity.state}}</td>
-            <td>{{TravelRequest.activity.country}}</td>
-            <td>{{TravelRequest.departure_date}}</td>
-            <td>{{TravelRequest.return_date}}</td>
-            <td>{{TravelRequest.days_ooo}}</td>
-            <td>{{TravelRequest.vacation.start}}</td>
-            <td>{{TravelRequest.justification}}</td>
-            <td>{{TravelRequest.administrative}}</td>
-            <td>{{TravelRequest.closed}}</td>
-            <td>{{TravelRequest.funding}}</td>
+                <td>{{TravelRequest.traveler.name}}</td>
+                <td>{{TravelRequest.traveler.uid}}</td>
+                <td>{{TravelRequest.traveler.unit}}</td>
+                <td>{{TravelRequest.traveler.active}}</td>
+                <td>{{TravelRequest.traveler.supervisior.name}}</td>
+                <td>{{TravelRequest.activity.name}}</td>
+                <td>{{TravelRequest.activity.city}}</td>
+                <td>{{TravelRequest.activity.state}}</td>
+                <td>{{TravelRequest.activity.country}}</td>
+                <td>{{TravelRequest.departure_date}}</td>
+                <td>{{TravelRequest.return_date}}</td>
+                <td>{{TravelRequest.days_ooo}}</td>
+                <td>{{TravelRequest.vacation.start}}</td>
+                <td>{{TravelRequest.justification}}</td>
+                <td>{{TravelRequest.administrative}}</td>
+                <td>{{TravelRequest.closed}}</td>
+                <td>{{TravelRequest.funding}}</td>
 
-        </tr>
-    </hr>    
+            </tr>
+        </hr>    
     {% endfor %}
 
 

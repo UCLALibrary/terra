@@ -16,11 +16,8 @@ from .models import (
 
 def individual_dashboard(request):
 
-    employee_filter = Employee.objects.filter(user=request.user)
     traveler_filter = TravelRequest.objects.filter(traveler__user=request.user)
 
     return render(
-        request,
-        "terra/individual_dashboard.html",
-        {"filter_employee": employee_filter, "filter_travel": traveler_filter},
+        request, "terra/individual_dashboard.html", {"filter_travel": traveler_filter}
     )
