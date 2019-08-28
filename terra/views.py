@@ -18,8 +18,9 @@ def individual_dashboard(request):
 
     employee_filter = Employee.objects.filter(user=request.user)
     traveler_filter = TravelRequest.objects.filter(traveler__user=request.user)
+
     return render(
         request,
         "terra/individual_dashboard.html",
-        {"filter1": employee_filter, "filter2": traveler_filter},
+        {"filter_employee": employee_filter, "filter_travel": traveler_filter},
     )
