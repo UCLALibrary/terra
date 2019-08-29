@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 
-from terra.views import individual_dashboard
+from terra.views import UserDashboard
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -72,5 +72,9 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
-    path("dashboard/", individual_dashboard),
+    path(
+        "dashboard/",
+        UserDashboard.as_view(template_name="terra/dashboard.html"),
+        name="user_dashboard",
+    ),
 ]

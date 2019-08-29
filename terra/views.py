@@ -1,23 +1,16 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import (
-    Unit,
-    Employee,
-    TravelRequest,
-    Fund,
-    Vacation,
-    Activity,
-    Approval,
-    EstimatedExpense,
-    ActualExpense,
-)
+from .models import TravelRequest
 
 
-def individual_dashboard(request):
+class UserDashboard(LoginRequiredMixin, ListView):
 
-    traveler_filter = TravelRequest.objects.filter(traveler__user=request.user)
+    model = TravelRequest
+    context_object_name = "treqs"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
 
-    return render(
-        request, "terra/individual_dashboard.html", {"filter_travel": traveler_filter}
-    )
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(traveler__user=self.request.user)

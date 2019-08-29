@@ -12,6 +12,7 @@ from .models import (
     EstimatedExpense,
     ActualExpense,
 )
+from .templatetags.terra_extras import check_or_cross
 
 
 class ModelsTestCase(TestCase):
@@ -115,3 +116,33 @@ class ModelsTestCase(TestCase):
         self.assertEqual(estexp.total_dollars(), "$250.00")
         actexp = ActualExpense.objects.get(pk=1)
         self.assertEqual(actexp.total_dollars(), "$250.00")
+
+
+class TemplateTagsTestCase(TestCase):
+    def test_check_or_cross(self):
+        self.assertEqual(
+            check_or_cross(True),
+            '<span class="badge badge-pill badge-success">&#10004;</span>',
+        )
+        self.assertEqual(
+            check_or_cross(False),
+            '<span class="badge badge-pill badge-danger">&times;</span>',
+        )
+
+
+class TestDashboardView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_dashboard_denies_anonymous(self):
+        response = self.client.get("/dashboard", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/dashboard/", status_code=301
+        )
+
+    def test_call_view_loads(self):
+        self.client.login(username="aprigge", password="Staples50141")
+        response = self.client.get("/dashboard/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/dashboard.html")
+        self.assertEqual(len(response.context["treqs"]), 1)
