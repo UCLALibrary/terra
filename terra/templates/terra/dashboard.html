@@ -1,0 +1,44 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Individual Dashboard{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <h1>My Travel Requests</h1>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Dates</th>
+                <th scope="col">Approved</th>
+                <th scope="col">Funded</th>
+                <th scope="col">Closed</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for treq in treqs %}
+            <tr>
+                <td>{{treq.activity.name}}</td>
+                <td>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</td>
+                <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                <td>{{treq.approved|check_or_cross|safe}}</td>
+                <td>{{treq.funded|check_or_cross|safe}}</td>
+                <td>{{treq.closed|check_or_cross|safe}}</td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
