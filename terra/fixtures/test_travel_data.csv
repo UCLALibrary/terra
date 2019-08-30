@@ -1,0 +1,4 @@
+"employee_name","ucla_id","purpose","begin_travel_date","end_travel_date","workdays","account","cc","fund","fau_approver","amount"
+"Sally Supervisor","12345","Sample event for managers","2019-01-07","2019-01-08","2","600001","SS","19900","",99.88
+"Edward Employee","54321","Sample event for everybody","2019-04-01","2019-04-05","5","600001","PD","19900","Sally Supervisor",654.32
+"Sally Supervisor","12345","Sample event for everybody","2019-04-01","2019-04-05","5","600001","PD","19900","Sally Supervisor",654.32
