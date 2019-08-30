@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.management import call_command
 
 from .models import (
     Unit,
@@ -146,3 +147,34 @@ class TestDashboardView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/dashboard.html")
         self.assertEqual(len(response.context["treqs"]), 1)
+
+        
+class DataLoadTestCase(TestCase):
+    def test_load_units(self):
+        call_command("load_units", "terra/fixtures/test_units.csv")
+        unit_count = Unit.objects.all().count()
+        self.assertEqual(unit_count, 2)
+        arts = Unit.objects.get(name__exact="Arts Library")
+        self.assertEqual(str(arts), "Arts Library")
+
+    def test_load_employees(self):
+        # Employees require Units
+        call_command("load_units", "terra/fixtures/test_units.csv")
+        call_command("load_employees", "terra/fixtures/test_employees.csv")
+        emp_count = Employee.objects.all().count()
+        self.assertEqual(emp_count, 2)
+        # Edward Employee works for Sally Supervisor
+        emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
+        sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
+        self.assertEqual(emp.supervisor, sup)
+
+    def test_load_travel_data(self):
+        # Travel data requires Employees, which require Units
+        call_command("load_units", "terra/fixtures/test_units.csv")
+        call_command("load_employees", "terra/fixtures/test_employees.csv")
+        call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
+        treq_count = TravelRequest.objects.all().count()
+        self.assertEqual(treq_count, 3)
+        activity_count = Activity.objects.all().count()
+        # 2 people have the same activity, so count is less than treq_count
+        self.assertEqual(activity_count, 2)
