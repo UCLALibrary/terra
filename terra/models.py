@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from terra import utils
+
 
 APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
 
@@ -61,6 +63,21 @@ class Employee(models.Model):
     def name(self):
         return str(self)
 
+    def direct_reports(self):
+        return Employee.objects.filter(supervisor=self)
+
+    def full_team(self):
+        staff = [self]
+        managers = []
+        direct_reports = self.direct_reports()
+        if len(direct_reports) > 0:
+            managers.append(self)
+            for e in direct_reports:
+                substaff, submgrs = e.full_team()
+                staff.extend(substaff)
+                managers.extend(submgrs)
+        return staff, managers
+
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
@@ -105,11 +122,29 @@ class TravelRequest(models.Model):
             return len(self.approval_set.filter(type="I")) == 1
         return len(self.approval_set.filter(type="S")) == 1
 
+    approved.boolean = True
+
     def funded(self):
         return len(self.approval_set.filter(type="F")) == 1
 
-    approved.boolean = True
     funded.boolean = True
+
+    def estimated_expenses(self):
+        total = 0
+        for ee in self.estimatedexpense_set.all():
+            total += ee.total
+        return total
+
+    def actual_expenses(self):
+        total = 0
+        for ae in self.actualexpense_set.all():
+            total += ae.total
+        return total
+
+    def in_fiscal_year(self, fiscal_year=None):
+        return utils.in_fiscal_year(self.return_date, fiscal_year)
+
+    in_fiscal_year.boolean = True
 
 
 class Vacation(models.Model):

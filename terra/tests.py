@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.management import call_command
@@ -13,7 +15,8 @@ from .models import (
     EstimatedExpense,
     ActualExpense,
 )
-from .templatetags.terra_extras import check_or_cross
+from .templatetags.terra_extras import check_or_cross, currency
+from .utils import current_fiscal_year, in_fiscal_year, allocations_and_expenditures
 
 
 class ModelsTestCase(TestCase):
@@ -29,6 +32,24 @@ class ModelsTestCase(TestCase):
         self.assertEqual(str(employee), "Joshua Gomez")
         self.assertEqual(employee.name(), "Joshua Gomez")
         self.assertEqual(repr(employee), "<Employee 3: Joshua Gomez>")
+
+    def test_employee_direct_reports(self):
+        mgr1 = Employee.objects.get(pk=3)
+        dr1 = mgr1.direct_reports()
+        self.assertEqual(len(dr1), 2)
+        mgr2 = Employee.objects.get(pk=1)
+        dr2 = mgr2.direct_reports()
+        self.assertEqual(len(dr2), 1)
+
+    def test_employee_full_team(self):
+        head = Employee.objects.get(pk=4)
+        staff, mgrs = head.full_team()
+        self.assertEqual(len(staff), 5)
+        self.assertEqual(len(mgrs), 3)
+        sub = Employee.objects.get(pk=3)
+        staff, mgrs = sub.full_team()
+        self.assertEqual(len(staff), 3)
+        self.assertEqual(len(mgrs), 1)
 
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
@@ -70,7 +91,7 @@ class ModelsTestCase(TestCase):
             "<EstimatedExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>",
         )
 
-    def actual_expense(self):
+    def test_actual_expense(self):
         actexp = ActualExpense.objects.get(pk=1)
         self.assertEqual(
             repr(actexp),
@@ -112,6 +133,19 @@ class ModelsTestCase(TestCase):
         a.delete()
         self.assertEqual(treq.funded(), False)
 
+    def test_treq_in_fiscal_year(self):
+        treq = TravelRequest.objects.get(pk=1)
+        self.assertEqual(treq.in_fiscal_year(2020), True)
+        self.assertEqual(treq.in_fiscal_year(2019), False)
+
+    def test_treq_estimated_expenses(self):
+        treq = TravelRequest.objects.get(pk=1)
+        self.assertEqual(treq.estimated_expenses(), 2000)
+
+    def test_treq_actual_expenses(self):
+        treq = TravelRequest.objects.get(pk=5)
+        self.assertEqual(treq.actual_expenses(), 325)
+
     def test_expense_total_dollars(self):
         estexp = EstimatedExpense.objects.get(pk=1)
         self.assertEqual(estexp.total_dollars(), "$250.00")
@@ -130,6 +164,12 @@ class TemplateTagsTestCase(TestCase):
             '<span class="badge badge-pill badge-danger">&times;</span>',
         )
 
+    def test_currency(self):
+        self.assertEqual(currency(0), "$0.00")
+        self.assertEqual(currency(3), "$3.00")
+        self.assertEqual(currency(-100.0000), "-$100.00")
+        self.assertEqual(currency(300000.0000), "$300,000.00")
+
 
 class TestDashboardView(TestCase):
 
@@ -141,14 +181,35 @@ class TestDashboardView(TestCase):
             response, "/accounts/login/?next=/dashboard/", status_code=301
         )
 
-    def test_call_view_loads(self):
+    def test_dashboard_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/dashboard.html")
-        self.assertEqual(len(response.context["treqs"]), 1)
+        self.assertEqual(len(response.context["treqs"]), 3)
 
-        
+
+class TestManagerReportsView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_reports_denies_anonymous(self):
+        response = self.client.get("/reports/allocations", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/reports/allocations/", status_code=301
+        )
+
+    def test_allocations_loads(self):
+        self.client.login(username="tgrappone", password="Staples50141")
+        response = self.client.get("/reports/allocations/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/allocations.html")
+        self.assertEqual(len(response.context["funded"]), 3)
+        self.assertEqual(len(response.context["unfunded"]), 3)
+        self.assertEqual(len(response.context["allocations_treqs"]), 1)
+        self.assertEqual(len(response.context["expenditures_treqs"]), 2)
+
+
 class DataLoadTestCase(TestCase):
     def test_load_units(self):
         call_command("load_units", "terra/fixtures/test_units.csv")
@@ -178,3 +239,28 @@ class DataLoadTestCase(TestCase):
         activity_count = Activity.objects.all().count()
         # 2 people have the same activity, so count is less than treq_count
         self.assertEqual(activity_count, 2)
+
+
+class UtilsTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_current_fiscal_year(self):
+        self.assertEqual(current_fiscal_year(date(2018, 7, 1)), 2019)
+        self.assertEqual(current_fiscal_year(date(2018, 6, 30)), 2018)
+
+    def test_in_fiscal_year(self):
+        self.assertTrue(in_fiscal_year(date(2018, 7, 1), 2019))
+        self.assertFalse(in_fiscal_year(date(2018, 7, 1), 2018))
+        self.assertTrue(in_fiscal_year(date(2018, 6, 30), 2018))
+        self.assertFalse(in_fiscal_year(date(2018, 6, 30), 2019))
+
+    def test_allocations_and_expenditures(self):
+        treqs = TravelRequest.objects.all()
+        data = allocations_and_expenditures(treqs)
+        self.assertEqual(len(data["allocations_treqs"]), 4)
+        self.assertEqual(data["allocations_total"], 2650)
+        self.assertEqual(currency(data["allocations_mean"]), "$441.67")
+        self.assertEqual(len(data["expenditures_treqs"]), 2)
+        self.assertEqual(data["expenditures_total"], 650)
+        self.assertEqual(currency(data["expenditures_mean"]), "$325.00")
