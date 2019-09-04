@@ -1,0 +1,128 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Manager Reports{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <h1>Allocations</h1>
+    
+    <ul class="nav nav-tabs" id="allocations-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true">Funding Approved</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="unapproved-tab" data-toggle="tab" href="#unapproved" role="tab" aria-controls="unapproved" aria-selected="false">Not Yet Approved</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+        <br/>
+        <b>
+            Total: {{allocations_total|currency}} &nbsp;&nbsp;&nbsp; 
+            Average: {{allocations_mean|currency}}
+        </b>
+        <br/><br/>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Activity</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Dates</th>
+                    <th scope="col">Approved</th>
+                    <th scope="col">Funded</th>
+                    <th scope="col">FAU</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Closed</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for treq in funded %}
+                <tr>
+                    <td>{{treq.traveler}}</td>
+                    <td>{{treq.activity.name}}</td>
+                    <td>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</td>
+                    <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                    <td>{{treq.approved|check_or_cross|safe}}</td>
+                    <td>{{treq.funded|check_or_cross|safe}}</td>
+                    <td>
+                        {% for fund in treq.funding.all %}
+                            {{fund}}
+                            {% if not for.last %}<br/>{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if treq.closed %}
+                            {{treq.actual_expenses|currency}}
+                        {% else %}
+                            {{treq.estimated_expenses|currency}} (est.)
+                        {% endif %}
+                    </td>
+                    <td>{{treq.closed|check_or_cross|safe}}</td>
+                </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+      </div>
+
+      <div class="tab-pane" id="unapproved" role="tabpanel" aria-labelledby="unapproved-tab">
+          <br/>
+          <br/>
+          <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Activity</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Dates</th>
+                    <th scope="col">Approved</th>
+                    <th scope="col">Funded</th>
+                    <th scope="col">FAU</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Closed</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for treq in unfunded %}
+                <tr>
+                    <td>{{treq.traveler}}</td>
+                    <td>{{treq.activity.name}}</td>
+                    <td>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</td>
+                    <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                    <td>{{treq.approved|check_or_cross|safe}}</td>
+                    <td>{{treq.funded|check_or_cross|safe}}</td>
+                    <td>
+                        {% for fund in treq.funding.all %}
+                            {{fund}}
+                            {% if not for.last %}<br/>{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if treq.closed %}
+                            {{treq.actual_expenses|currency}}
+                        {% else %}
+                            {{treq.estimated_expenses|currency}} (est.)
+                        {% endif %}
+                    </td>
+                    <td>{{treq.closed|check_or_cross|safe}}</td>
+                </tr>
+        {% endfor %}
+            </tbody>
+        </table>  
+      </div>
+    </div>
+    
+
+{% endblock %}
+
