@@ -1,5 +1,7 @@
 FROM python:3.7-slim-buster
 
+RUN apt-get update && apt-get install build-essential python3-dev default-libmysqlclient-dev -y
+
 RUN adduser --system django
 USER django
 
@@ -10,7 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt --user --no-warn-script-locat
 COPY . .
 EXPOSE 8000
 
-RUN [ "python", "./manage.py", "migrate" ]
-RUN [ "python", "./manage.py", "loaddata", "sample_data" ]
-ENTRYPOINT [ "python", "./manage.py", "runserver", "0.0.0.0:8000" ]
-
+CMD [ "sh", "docker/entrypoint.sh" ]

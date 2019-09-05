@@ -4,3 +4,14 @@ services:
     build: .
     ports:
      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: this-is-a-fake-password
+      MYSQL_DATABASE: terra
+      MYSQL_USER: terrauser
+      MYSQL_PASSWORD: terra-fake-password
+    ports:
+      - "3306:3306"

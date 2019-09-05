@@ -2,3 +2,4 @@ Django>=2.2,<2.3
 Django-crispy-forms
 black
 pre-commit
+mysqlclient
