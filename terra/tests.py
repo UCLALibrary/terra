@@ -194,20 +194,16 @@ class TestManagerReportsView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_reports_denies_anonymous(self):
-        response = self.client.get("/reports/allocations", follow=True)
+        response = self.client.get("/unit/1", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/reports/allocations/", status_code=301
+            response, "/accounts/login/?next=/unit/1/", status_code=301
         )
 
     def test_allocations_loads(self):
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/reports/allocations/")
+        response = self.client.get("/unit/1/")
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "terra/allocations.html")
-        self.assertEqual(len(response.context["funded"]), 3)
-        self.assertEqual(len(response.context["unfunded"]), 3)
-        self.assertEqual(len(response.context["allocations_treqs"]), 1)
-        self.assertEqual(len(response.context["expenditures_treqs"]), 2)
+        self.assertTemplateUsed(response, "terra/unit.html")
 
 
 class DataLoadTestCase(TestCase):
