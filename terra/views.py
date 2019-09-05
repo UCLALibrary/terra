@@ -28,7 +28,4 @@ class UnitDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["report"] = self.object.report()
-        from pprint import pprint
-
-        pprint(context)
         return context

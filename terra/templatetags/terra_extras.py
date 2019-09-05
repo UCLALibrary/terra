@@ -13,4 +13,6 @@ def check_or_cross(bool):
 
 @register.filter
 def currency(value):
+    if value is None:
+        value = 0
     return format_currency(value, grouping=True)

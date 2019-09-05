@@ -61,64 +61,80 @@ class Unit(models.Model):
         if start_date is None and end_date is None:
             start_date, end_date = utils.fiscal_year_bookends()
         elif start_date is None or end_date is None:
-            raise Exception(
-                "You must include a start date and end date or leave both empty"
-            )
+            raise Exception("You must include a start and end date or leave both empty")
         elif end_date < start_date:
             raise Exception("Start date must come before end date")
-        treqs = TravelRequest.objects.filter(
-            traveler__in=self.full_team(),
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
+        staff = (
+            TravelRequest.objects.filter(
+                traveler__in=self.full_team(),
+                departure_date__gte=start_date,
+                return_date__lte=end_date,
+                approval__type="F",
+            )
+            .values("traveler__uid")
+            .annotate(
+                admin_alloc=models.Sum(
+                    "estimatedexpense__total", filter=models.Q(administrative=True)
+                )
+            )
+            .annotate(
+                profdev_alloc=models.Sum(
+                    "estimatedexpense__total", filter=models.Q(administrative=False)
+                )
+            )
+            .annotate(total_alloc=models.Sum("estimatedexpense__total"))
+            .annotate(
+                admin_expend=models.Sum(
+                    "actualexpense__total", filter=models.Q(administrative=True)
+                )
+            )
+            .annotate(
+                profdev_expend=models.Sum(
+                    "actualexpense__total", filter=models.Q(administrative=False)
+                )
+            )
+            .annotate(total_expend=models.Sum("actualexpense__total"))
+            .annotate(
+                alloc_days_out=models.Sum("days_ooo", filter=models.Q(closed=False))
+            )
+            .annotate(
+                expend_days_out=models.Sum("days_ooo", filter=models.Q(closed=True))
+            )
+            .annotate(uid=models.F("traveler__uid"))
+            .annotate(unit=models.F("traveler__unit__name"))
+            .annotate(
+                name=models.functions.Concat(
+                    "traveler__user__first_name",
+                    models.Value(" "),
+                    "traveler__user__last_name",
+                )
+            )
         )
         data = {
-            "staff": {},
+            "staff": staff,
             "totals": {
-                "allocations": {"count": 0, "profdev": 0, "admin": 0, "total": 0},
-                "expenditures": {"count": 0, "profdev": 0, "admin": 0, "total": 0},
+                "profdev_alloc": sum(
+                    s["profdev_alloc"] for s in staff if s["profdev_alloc"] is not None
+                ),
+                "admin_alloc": sum(
+                    s["admin_alloc"] for s in staff if s["admin_alloc"] is not None
+                ),
+                "total_alloc": sum(
+                    s["total_alloc"] for s in staff if s["total_alloc"] is not None
+                ),
+                "profdev_expend": sum(
+                    s["profdev_expend"]
+                    for s in staff
+                    if s["profdev_expend"] is not None
+                ),
+                "admin_expend": sum(
+                    s["admin_expend"] for s in staff if s["admin_expend"] is not None
+                ),
+                "total_expend": sum(
+                    s["total_expend"] for s in staff if s["total_expend"] is not None
+                ),
             },
         }
-        for treq in treqs:
-            if not treq.funded():
-                continue
-            uid = treq.traveler.uid
-            if uid not in data["staff"].keys():
-                data["staff"][uid] = {
-                    "name": treq.traveler.name(),
-                    "unit": treq.traveler.unit.name,
-                    "allocations": {
-                        "count": 0,
-                        "days_ooo": 0,
-                        "profdev": 0,
-                        "admin": 0,
-                        "total": 0,
-                    },
-                    "expenditures": {
-                        "count": 0,
-                        "days_ooo": 0,
-                        "profdev": 0,
-                        "admin": 0,
-                        "total": 0,
-                    },
-                }
-            est_total = treq.estimated_expenses()
-            subkey = "admin" if treq.administrative else "profdev"
-            data["staff"][uid]["allocations"][subkey] += est_total
-            data["staff"][uid]["allocations"]["total"] += est_total
-            data["staff"][uid]["allocations"]["count"] += 1
-            data["staff"][uid]["allocations"]["days_ooo"] += treq.days_ooo
-            data["totals"]["allocations"][subkey] += est_total
-            data["totals"]["allocations"]["total"] += est_total
-            data["totals"]["allocations"]["count"] += 1
-            if treq.closed:
-                act_total = treq.actual_expenses()
-                data["staff"][uid]["expenditures"][subkey] += act_total
-                data["staff"][uid]["expenditures"]["total"] += act_total
-                data["staff"][uid]["expenditures"]["count"] += 1
-                data["staff"][uid]["expenditures"]["days_ooo"] += treq.days_ooo
-                data["totals"]["expenditures"][subkey] += act_total
-                data["totals"]["expenditures"]["total"] += act_total
-                data["totals"]["expenditures"]["count"] += 1
         return data
 
 
