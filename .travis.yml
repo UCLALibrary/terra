@@ -4,14 +4,12 @@ python:
   - "3.7"
 services:
   - docker
+before_install:
+  - docker-compose up --build -d
 install:
   - pip install -r requirements.txt
   - pip install -q coveralls
-before_script:
-  - docker-compose up --build -d
 script:
   - coverage run --source=terra manage.py test terra
-after_script:
-  - docker-compose down
 after_success:
   coveralls
