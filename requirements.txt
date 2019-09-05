@@ -3,3 +3,4 @@ Django-crispy-forms
 black
 pre-commit
 fiscalyear
+mysqlclient
