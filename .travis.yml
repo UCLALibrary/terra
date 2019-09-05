@@ -1,11 +1,12 @@
 language: python
 dist: xenial
 python:
-  - "3.6"
-install:
-  - pip install -r requirements.txt
-  - pip install -q coveralls
+  - "3.7"
+services:
+  - docker
+before_script:
+  - .travis/build_and_test.sh
 script:
-  - coverage run --source=terra manage.py test terra
+  - docker-compose exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
 after_success:
   coveralls
