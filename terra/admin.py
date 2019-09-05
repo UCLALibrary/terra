@@ -33,6 +33,8 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "approved",
         "funded",
         "closed",
+        "allocations_total",
+        "expenditures_total",
     )
 
 

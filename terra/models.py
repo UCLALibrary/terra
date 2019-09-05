@@ -57,7 +57,15 @@ class Unit(models.Model):
             team.extend(subteam.full_team())
         return team
 
-    def report(self, start_date, end_date):
+    def report(self, start_date=None, end_date=None):
+        if start_date is None and end_date is None:
+            start_date, end_date = utils.fiscal_year_bookends()
+        elif start_date is None or end_date is None:
+            raise Exception(
+                "You must include a start date and end date or leave both empty"
+            )
+        elif end_date < start_date:
+            raise Exception("Start date must come before end date")
         treqs = TravelRequest.objects.filter(
             traveler__in=self.full_team(),
             departure_date__gte=start_date,
@@ -71,7 +79,7 @@ class Unit(models.Model):
             },
         }
         for treq in treqs:
-            if not treq.funded:
+            if not treq.funded():
                 continue
             uid = treq.traveler.uid
             if uid not in data["staff"].keys():
@@ -205,11 +213,17 @@ class TravelRequest(models.Model):
             total += ee.total
         return total
 
+    def allocations_total(self):
+        return utils.format_currency(self.estimated_expenses())
+
     def actual_expenses(self):
         total = 0
         for ae in self.actualexpense_set.all():
             total += ae.total
         return total
+
+    def expenditures_total(self):
+        return utils.format_currency(self.actual_expenses())
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)

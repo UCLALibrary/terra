@@ -3,7 +3,7 @@ from django.urls import path
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 
-from terra.views import UserDashboard, ManagerReports
+from terra.views import UserDashboard, UnitDetailView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -63,13 +63,8 @@ urlpatterns = [
         name="user_dashboard",
     ),
     path(
-        "reports/allocations/",
-        ManagerReports.as_view(template_name="terra/allocations.html"),
-        name="allocations",
-    ),
-    path(
-        "reports/expenditures/",
-        ManagerReports.as_view(template_name="terra/expenditures.html"),
-        name="expenditures",
+        "unit/<int:pk>/",
+        UnitDetailView.as_view(template_name="terra/unit.html"),
+        name="unit_detail",
     ),
 ]

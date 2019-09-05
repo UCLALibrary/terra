@@ -1,7 +1,6 @@
-import locale
 from django import template
+from terra.utils import format_currency
 
-locale.setlocale(locale.LC_ALL, "")
 register = template.Library()
 
 
@@ -14,4 +13,4 @@ def check_or_cross(bool):
 
 @register.filter
 def currency(value):
-    return locale.currency(value, grouping=True)
+    return format_currency(value, grouping=True)

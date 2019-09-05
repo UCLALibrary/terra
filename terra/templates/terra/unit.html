@@ -1,0 +1,73 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Unit Report{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <h1>Current Fiscal Year</h1>
+    
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="2" scope="colgroup"></th>
+                <th colspan="4" scope="colgroup" class="text-center">Allocation</th>
+                <th colspan="4" scope="colgroup" class="text-center">Expenditures</th>
+            </tr>
+            <tr>
+                <th scope="col">Unit</th>
+                <th scope="col">Employee</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-center">Days Out</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-center">Days Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for uid, employee in report.staff.items %}
+            <tr>
+                <td>{{employee.unit}}</td>
+                <td>{{employee.name}}</td>
+                <td class="text-right">{{employee.allocations.profdev|currency}}</td>
+                <td class="text-right">{{employee.allocations.admin|currency}}</td>
+                <td class="text-right">{{employee.allocations.total|currency}}</td>
+                <td class="text-center">{{employee.allocations.days_ooo}}</td>
+                <td class="text-right">{{employee.expenditures.profdev|currency}}</td>
+                <td class="text-right">{{employee.expenditures.admin|currency}}</td>
+                <td class="text-right">{{employee.expenditures.total|currency}}</td>
+                <td class="text-center">{{employee.expenditures.days_ooo}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th></th>
+                <th class="text-right">{{report.totals.allocations.profdev|currency}}</th>
+                <th class="text-right">{{report.totals.allocations.admin|currency}}</th>
+                <th class="text-right">{{report.totals.allocations.total|currency}}</th>
+                <th></th>
+                <th class="text-right">{{report.totals.expenditures.profdev|currency}}</th>
+                <th class="text-right">{{report.totals.expenditures.admin|currency}}</th>
+                <th class="text-right">{{report.totals.expenditures.total|currency}}</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}
+
