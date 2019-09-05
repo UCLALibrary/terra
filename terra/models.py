@@ -4,6 +4,13 @@ from django.contrib.auth.models import User
 from terra import utils
 
 
+UNIT_TYPES = (
+    ("1", "Library"),
+    ("2", "Executive Division"),
+    ("3", "Managerial Unit"),
+    ("4", "Team"),
+)
+
 APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
 
 EXPENSE_TYPES = (
@@ -23,6 +30,7 @@ EXPENSE_TYPES = (
 
 class Unit(models.Model):
     name = models.CharField(max_length=128)
+    type = models.CharField(max_length=1, choices=UNIT_TYPES)
     manager = models.ForeignKey(
         "Employee",
         on_delete=models.PROTECT,
@@ -31,7 +39,7 @@ class Unit(models.Model):
         blank=True,
     )
     parent_unit = models.ForeignKey(
-        "self", on_delete=models.PROTECT, null=True, blank=True
+        "self", on_delete=models.PROTECT, related_name="subteams", null=True, blank=True
     )
 
     def __str__(self):
@@ -42,6 +50,68 @@ class Unit(models.Model):
 
     def employee_count(self):
         return self.employee_set.count()
+
+    def full_team(self):
+        team = list(self.employee_set.all())
+        for subteam in self.subteams.all():
+            team.extend(subteam.full_team())
+        return team
+
+    def report(self, start_date, end_date):
+        treqs = TravelRequest.objects.filter(
+            traveler__in=self.full_team(),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        data = {
+            "staff": {},
+            "totals": {
+                "allocations": {"count": 0, "profdev": 0, "admin": 0, "total": 0},
+                "expenditures": {"count": 0, "profdev": 0, "admin": 0, "total": 0},
+            },
+        }
+        for treq in treqs:
+            if not treq.funded:
+                continue
+            uid = treq.traveler.uid
+            if uid not in data["staff"].keys():
+                data["staff"][uid] = {
+                    "name": treq.traveler.name(),
+                    "unit": treq.traveler.unit.name,
+                    "allocations": {
+                        "count": 0,
+                        "days_ooo": 0,
+                        "profdev": 0,
+                        "admin": 0,
+                        "total": 0,
+                    },
+                    "expenditures": {
+                        "count": 0,
+                        "days_ooo": 0,
+                        "profdev": 0,
+                        "admin": 0,
+                        "total": 0,
+                    },
+                }
+            est_total = treq.estimated_expenses()
+            subkey = "admin" if treq.administrative else "profdev"
+            data["staff"][uid]["allocations"][subkey] += est_total
+            data["staff"][uid]["allocations"]["total"] += est_total
+            data["staff"][uid]["allocations"]["count"] += 1
+            data["staff"][uid]["allocations"]["days_ooo"] += treq.days_ooo
+            data["totals"]["allocations"][subkey] += est_total
+            data["totals"]["allocations"]["total"] += est_total
+            data["totals"]["allocations"]["count"] += 1
+            if treq.closed:
+                act_total = treq.actual_expenses()
+                data["staff"][uid]["expenditures"][subkey] += act_total
+                data["staff"][uid]["expenditures"]["total"] += act_total
+                data["staff"][uid]["expenditures"]["count"] += 1
+                data["staff"][uid]["expenditures"]["days_ooo"] += treq.days_ooo
+                data["totals"]["expenditures"][subkey] += act_total
+                data["totals"]["expenditures"]["total"] += act_total
+                data["totals"]["expenditures"]["count"] += 1
+        return data
 
 
 class Employee(models.Model):

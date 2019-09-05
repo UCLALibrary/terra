@@ -5,6 +5,7 @@
   "fields": {
     "name": "Library",
     "manager": 4,
+    "type": 1,
     "parent_unit": null
   }
 },
@@ -14,7 +15,8 @@
   "fields": {
     "name": "DIIT",
     "manager": 1,
-    "parent_unit": null
+    "type": 2,
+    "parent_unit": 1
   }
 },
 {
@@ -23,6 +25,7 @@
   "fields": {
     "name": "Software Development & Library Software",
     "manager": 3,
+    "type": 3,
     "parent_unit": 2
   }
 },
