@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster
 
-RUN apt-get update && apt-get install build-essential python3-dev default-libmysqlclient-dev -y
+RUN apt-get update -qq && apt-get install build-essential python3-dev default-libmysqlclient-dev -y -qq
 
 RUN adduser --system django
 USER django
