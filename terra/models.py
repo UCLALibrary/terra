@@ -39,7 +39,7 @@ class Unit(models.Model):
         blank=True,
     )
     parent_unit = models.ForeignKey(
-        "self", on_delete=models.PROTECT, related_name="subteams", null=True, blank=True
+        "self", on_delete=models.PROTECT, related_name="subunits", null=True, blank=True
     )
 
     def __str__(self):
@@ -53,89 +53,15 @@ class Unit(models.Model):
 
     def full_team(self):
         team = list(self.employee_set.all())
-        for subteam in self.subteams.all():
-            team.extend(subteam.full_team())
+        for subunit in self.subunits.all():
+            team.extend(subunit.full_team())
         return team
 
-    def report(self, start_date=None, end_date=None):
-        if start_date is None and end_date is None:
-            start_date, end_date = utils.fiscal_year_bookends()
-        elif start_date is None or end_date is None:
-            raise Exception("You must include a start and end date or leave both empty")
-        elif end_date < start_date:
-            raise Exception("Start date must come before end date")
-        staff = (
-            TravelRequest.objects.filter(
-                traveler__in=self.full_team(),
-                departure_date__gte=start_date,
-                return_date__lte=end_date,
-                approval__type="F",
-            )
-            .values("traveler__uid")
-            .annotate(
-                admin_alloc=models.Sum(
-                    "estimatedexpense__total", filter=models.Q(administrative=True)
-                )
-            )
-            .annotate(
-                profdev_alloc=models.Sum(
-                    "estimatedexpense__total", filter=models.Q(administrative=False)
-                )
-            )
-            .annotate(total_alloc=models.Sum("estimatedexpense__total"))
-            .annotate(
-                admin_expend=models.Sum(
-                    "actualexpense__total", filter=models.Q(administrative=True)
-                )
-            )
-            .annotate(
-                profdev_expend=models.Sum(
-                    "actualexpense__total", filter=models.Q(administrative=False)
-                )
-            )
-            .annotate(total_expend=models.Sum("actualexpense__total"))
-            .annotate(
-                alloc_days_out=models.Sum("days_ooo", filter=models.Q(closed=False))
-            )
-            .annotate(
-                expend_days_out=models.Sum("days_ooo", filter=models.Q(closed=True))
-            )
-            .annotate(uid=models.F("traveler__uid"))
-            .annotate(unit=models.F("traveler__unit__name"))
-            .annotate(
-                name=models.functions.Concat(
-                    "traveler__user__first_name",
-                    models.Value(" "),
-                    "traveler__user__last_name",
-                )
-            )
-        )
-        data = {
-            "staff": staff,
-            "totals": {
-                "profdev_alloc": sum(
-                    s["profdev_alloc"] for s in staff if s["profdev_alloc"] is not None
-                ),
-                "admin_alloc": sum(
-                    s["admin_alloc"] for s in staff if s["admin_alloc"] is not None
-                ),
-                "total_alloc": sum(
-                    s["total_alloc"] for s in staff if s["total_alloc"] is not None
-                ),
-                "profdev_expend": sum(
-                    s["profdev_expend"]
-                    for s in staff
-                    if s["profdev_expend"] is not None
-                ),
-                "admin_expend": sum(
-                    s["admin_expend"] for s in staff if s["admin_expend"] is not None
-                ),
-                "total_expend": sum(
-                    s["total_expend"] for s in staff if s["total_expend"] is not None
-                ),
-            },
-        }
-        return data
+    def sub_teams(self):
+        output = {self.name: self.employee_set.all()}
+        for subunit in self.subunits.all():
+            output[subunit.name] = subunit.full_team()
+        return output
 
 
 class Employee(models.Model):

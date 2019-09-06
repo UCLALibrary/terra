@@ -4,8 +4,8 @@
   "pk": 1,
   "fields": {
     "name": "Library",
+    "type": "1",
     "manager": 4,
-    "type": 1,
     "parent_unit": null
   }
 },
@@ -14,8 +14,8 @@
   "pk": 2,
   "fields": {
     "name": "DIIT",
+    "type": "2",
     "manager": 1,
-    "type": 2,
     "parent_unit": 1
   }
 },
@@ -23,9 +23,9 @@
   "model": "terra.unit",
   "pk": 3,
   "fields": {
-    "name": "Software Development & Library Software",
+    "name": "Software Development & Library Systems",
+    "type": "3",
     "manager": 3,
-    "type": 3,
     "parent_unit": 2
   }
 },
@@ -153,6 +153,40 @@
   }
 },
 {
+  "model": "terra.travelrequest",
+  "pk": 7,
+  "fields": {
+    "traveler": 1,
+    "activity": 3,
+    "departure_date": "2019-12-08",
+    "return_date": "2019-12-11",
+    "days_ooo": 3,
+    "closed": false,
+    "administrative": true,
+    "justification": "",
+    "funding": [
+      1
+    ]
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 8,
+  "fields": {
+    "traveler": 3,
+    "activity": 2,
+    "departure_date": "2019-10-06",
+    "return_date": "2019-10-12",
+    "days_ooo": 5,
+    "closed": false,
+    "administrative": false,
+    "justification": "",
+    "funding": [
+      1
+    ]
+  }
+},
+{
   "model": "terra.vacation",
   "pk": 1,
   "fields": {
@@ -229,16 +263,6 @@
 },
 {
   "model": "terra.approval",
-  "pk": 2,
-  "fields": {
-    "timestamp": "2019-08-14T02:36:47.408Z",
-    "approver": 1,
-    "treq": 1,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
   "pk": 3,
   "fields": {
     "timestamp": "2019-09-02T15:26:10.109Z",
@@ -274,6 +298,76 @@
     "timestamp": "2019-09-02T15:28:06.791Z",
     "approver": 1,
     "treq": 6,
+    "type": "F"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 7,
+  "fields": {
+    "timestamp": "2019-09-05T13:39:20.590Z",
+    "approver": 1,
+    "treq": 3,
+    "type": "S"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 8,
+  "fields": {
+    "timestamp": "2019-09-05T13:39:27.588Z",
+    "approver": 1,
+    "treq": 3,
+    "type": "F"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 9,
+  "fields": {
+    "timestamp": "2019-09-05T13:40:56.287Z",
+    "approver": 3,
+    "treq": 4,
+    "type": "S"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 10,
+  "fields": {
+    "timestamp": "2019-09-05T13:41:05.670Z",
+    "approver": 1,
+    "treq": 4,
+    "type": "F"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 11,
+  "fields": {
+    "timestamp": "2019-09-05T19:37:01.540Z",
+    "approver": 1,
+    "treq": 7,
+    "type": "F"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 12,
+  "fields": {
+    "timestamp": "2019-09-05T21:28:53.612Z",
+    "approver": 1,
+    "treq": 8,
+    "type": "S"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 13,
+  "fields": {
+    "timestamp": "2019-09-05T21:28:59.675Z",
+    "approver": 1,
+    "treq": 8,
     "type": "F"
   }
 },
@@ -344,15 +438,256 @@
   }
 },
 {
-  "model": "terra.actualexpense",
-  "pk": 1,
+  "model": "terra.estimatedexpense",
+  "pk": 7,
   "fields": {
-    "treq": 1,
+    "treq": 2,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 8,
+  "fields": {
+    "treq": 2,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 9,
+  "fields": {
+    "treq": 2,
     "type": "CON",
     "rate": null,
     "quantity": null,
-    "total": "250.00000",
-    "fund": 1
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 10,
+  "fields": {
+    "treq": 2,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 11,
+  "fields": {
+    "treq": 3,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 12,
+  "fields": {
+    "treq": 3,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 2,
+    "total": "400.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 13,
+  "fields": {
+    "treq": 3,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "150.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 14,
+  "fields": {
+    "treq": 4,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 15,
+  "fields": {
+    "treq": 4,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 16,
+  "fields": {
+    "treq": 4,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 17,
+  "fields": {
+    "treq": 4,
+    "type": "CON",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 18,
+  "fields": {
+    "treq": 5,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 19,
+  "fields": {
+    "treq": 6,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 20,
+  "fields": {
+    "treq": 5,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 21,
+  "fields": {
+    "treq": 6,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 22,
+  "fields": {
+    "treq": 5,
+    "type": "LDG",
+    "rate": null,
+    "quantity": null,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 23,
+  "fields": {
+    "treq": 6,
+    "type": "LDG",
+    "rate": null,
+    "quantity": null,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 24,
+  "fields": {
+    "treq": 7,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 3,
+    "total": "600.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 25,
+  "fields": {
+    "treq": 7,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 26,
+  "fields": {
+    "treq": 7,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "200.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 27,
+  "fields": {
+    "treq": 8,
+    "type": "CON",
+    "rate": null,
+    "quantity": null,
+    "total": "250.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 28,
+  "fields": {
+    "treq": 8,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 29,
+  "fields": {
+    "treq": 8,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
   }
 },
 {
@@ -380,11 +715,83 @@
   }
 },
 {
+  "model": "terra.actualexpense",
+  "pk": 4,
+  "fields": {
+    "treq": 5,
+    "type": "LDG",
+    "rate": "183.00000",
+    "quantity": 5,
+    "total": "915.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 5,
+  "fields": {
+    "treq": 5,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "435.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 6,
+  "fields": {
+    "treq": 5,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "180.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 7,
+  "fields": {
+    "treq": 6,
+    "type": "LDG",
+    "rate": null,
+    "quantity": null,
+    "total": "915.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 8,
+  "fields": {
+    "treq": 6,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "375.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 9,
+  "fields": {
+    "treq": 6,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "225.00000",
+    "fund": 1
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
-    "last_login": "2019-09-02T04:23:26.380Z",
+    "last_login": "2019-09-06T20:55:57.899Z",
     "is_superuser": true,
     "username": "joshuagomez",
     "first_name": "Joshua",
@@ -523,7 +930,7 @@
   "fields": {
     "user": 5,
     "phone": "",
-    "unit": 2,
+    "unit": 3,
     "active": true,
     "uid": "FAKE005",
     "supervisor": 3

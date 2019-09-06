@@ -1,8 +1,11 @@
 from datetime import date
+from decimal import Decimal
+import json
 
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.management import call_command
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import (
     Unit,
@@ -16,10 +19,12 @@ from .models import (
     ActualExpense,
 )
 from .templatetags.terra_extras import check_or_cross, currency
-from .utils import current_fiscal_year, in_fiscal_year, allocations_and_expenditures
+from .utils import current_fiscal_year, in_fiscal_year
+from .reports import subunit_lookup, unit_totals, unit_report
 
 
 class ModelsTestCase(TestCase):
+
     fixtures = ["sample_data.json"]
 
     def test_unit(self):
@@ -92,25 +97,25 @@ class ModelsTestCase(TestCase):
         )
 
     def test_actual_expense(self):
-        actexp = ActualExpense.objects.get(pk=1)
+        actexp = ActualExpense.objects.get(pk=2)
         self.assertEqual(
             repr(actexp),
-            "<ActualExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>",
+            "<ActualExpense 2: Conference Registration Summer Con Ashton Prigge>",
         )
         self.assertEqual(
             str(actexp),
-            "<ActualExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>",
+            "<ActualExpense 2: Conference Registration Summer Con Ashton Prigge>",
         )
 
     def test_unit_employee_count(self):
         sdls = Unit.objects.get(pk=3)
-        self.assertEqual(sdls.employee_count(), 2)
+        self.assertEqual(sdls.employee_count(), 3)
         for x in range(5):
             u = User.objects.create_user(username=str(x))
             u.save()
             e = Employee(user=u, uid="xxxxxxxx" + str(x), unit=sdls)
             e.save()
-        self.assertEqual(sdls.employee_count(), 7)
+        self.assertEqual(sdls.employee_count(), 8)
 
     def test_treq_international(self):
         treq = TravelRequest.objects.get(pk=1)
@@ -127,9 +132,9 @@ class ModelsTestCase(TestCase):
         self.assertEqual(treq.approved(), False)
 
     def test_treq_funded(self):
-        treq = TravelRequest.objects.get(pk=1)
+        treq = TravelRequest.objects.get(pk=5)
         self.assertEqual(treq.funded(), True)
-        a = Approval.objects.get(pk=2)
+        a = Approval.objects.get(pk=4)
         a.delete()
         self.assertEqual(treq.funded(), False)
 
@@ -144,13 +149,21 @@ class ModelsTestCase(TestCase):
 
     def test_treq_actual_expenses(self):
         treq = TravelRequest.objects.get(pk=5)
-        self.assertEqual(treq.actual_expenses(), 325)
+        self.assertEqual(treq.actual_expenses(), 1855)
 
     def test_expense_total_dollars(self):
         estexp = EstimatedExpense.objects.get(pk=1)
         self.assertEqual(estexp.total_dollars(), "$250.00")
-        actexp = ActualExpense.objects.get(pk=1)
-        self.assertEqual(actexp.total_dollars(), "$250.00")
+        actexp = ActualExpense.objects.get(pk=2)
+        self.assertEqual(actexp.total_dollars(), "$325.00")
+
+    def test_treq_allocations_total(self):
+        treq = TravelRequest.objects.get(pk=1)
+        self.assertEqual(treq.allocations_total(), "$2,000.00")
+
+    def test_treq_expenditures_total(self):
+        treq = TravelRequest.objects.get(pk=5)
+        self.assertEqual(treq.expenditures_total(), "$1,855.00")
 
 
 class TemplateTagsTestCase(TestCase):
@@ -251,12 +264,160 @@ class UtilsTestCase(TestCase):
         self.assertTrue(in_fiscal_year(date(2018, 6, 30), 2018))
         self.assertFalse(in_fiscal_year(date(2018, 6, 30), 2019))
 
-    def test_allocations_and_expenditures(self):
-        treqs = TravelRequest.objects.all()
-        data = allocations_and_expenditures(treqs)
-        self.assertEqual(len(data["allocations_treqs"]), 4)
-        self.assertEqual(data["allocations_total"], 2650)
-        self.assertEqual(currency(data["allocations_mean"]), "$441.67")
-        self.assertEqual(len(data["expenditures_treqs"]), 2)
-        self.assertEqual(data["expenditures_total"], 650)
-        self.assertEqual(currency(data["expenditures_mean"]), "$325.00")
+
+class ReportsTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_subunit_lookup(self):
+        e = Employee.objects.get(pk=2)
+        u1 = Unit.objects.get(pk=1)
+        subunits = u1.sub_teams()
+        self.assertEqual(subunit_lookup(e.uid, subunits), "DIIT")
+        u3 = Unit.objects.get(pk=3)
+        subunits = u3.sub_teams()
+        self.assertEqual(
+            subunit_lookup(e.uid, subunits), "Software Development & Library Systems"
+        )
+
+    def test_unit_totals(self):
+        data = [
+            {
+                "admin_alloc": None,
+                "admin_expend": None,
+                "name": "Ashton Prigge",
+                "profdev_alloc": 10300,
+                "profdev_expend": 7420,
+                "total_alloc": 10300,
+                "total_expend": 7420,
+                "traveler__uid": "FAKE002",
+                "uid": "FAKE002",
+            },
+            {
+                "admin_alloc": 1050,
+                "admin_expend": None,
+                "name": "Joshua Gomez",
+                "profdev_alloc": 1750,
+                "profdev_expend": None,
+                "total_alloc": 2800,
+                "total_expend": None,
+                "traveler__uid": "FAKE003",
+                "uid": "FAKE003",
+            },
+            {
+                "admin_alloc": None,
+                "admin_expend": None,
+                "name": "Tinu Awopetu",
+                "profdev_alloc": 8300,
+                "profdev_expend": 7360,
+                "total_alloc": 8300,
+                "total_expend": 7360,
+                "traveler__uid": "FAKE005",
+                "uid": "FAKE005",
+            },
+        ]
+        expected = {
+            "admin_alloc": 1050,
+            "admin_expend": 0,
+            "profdev_alloc": 20350,
+            "profdev_expend": 14780,
+            "total_alloc": 21400,
+            "total_expend": 14780,
+        }
+        actual = unit_totals(data)
+        for key, expected_value in expected.items():
+            self.assertEqual(actual[key], expected_value)
+
+    def test_unit_report(self):
+        expected = {
+            "subunits": {
+                "DIIT": {
+                    "staff": [
+                        {
+                            "traveler__uid": "FAKE001",
+                            "admin_alloc": Decimal("1300"),
+                            "profdev_alloc": None,
+                            "total_alloc": Decimal("1300"),
+                            "admin_expend": None,
+                            "profdev_expend": None,
+                            "total_expend": None,
+                            "uid": "FAKE001",
+                            "name": "Todd Grappone",
+                        }
+                    ],
+                    "totals": {
+                        "profdev_alloc": 0,
+                        "admin_alloc": Decimal("1300"),
+                        "total_alloc": Decimal("1300"),
+                        "profdev_expend": 0,
+                        "admin_expend": 0,
+                        "total_expend": 0,
+                    },
+                },
+                "Software Development & Library Systems": {
+                    "staff": [
+                        {
+                            "traveler__uid": "FAKE002",
+                            "admin_alloc": None,
+                            "profdev_alloc": Decimal("10300"),
+                            "total_alloc": Decimal("10300"),
+                            "admin_expend": None,
+                            "profdev_expend": Decimal("7420"),
+                            "total_expend": Decimal("7420"),
+                            "uid": "FAKE002",
+                            "name": "Ashton Prigge",
+                        },
+                        {
+                            "traveler__uid": "FAKE003",
+                            "admin_alloc": Decimal("1050"),
+                            "profdev_alloc": Decimal("1750"),
+                            "total_alloc": Decimal("2800"),
+                            "admin_expend": None,
+                            "profdev_expend": None,
+                            "total_expend": None,
+                            "uid": "FAKE003",
+                            "name": "Joshua Gomez",
+                        },
+                        {
+                            "traveler__uid": "FAKE005",
+                            "admin_alloc": None,
+                            "profdev_alloc": Decimal("8300"),
+                            "total_alloc": Decimal("8300"),
+                            "admin_expend": None,
+                            "profdev_expend": Decimal("7360"),
+                            "total_expend": Decimal("7360"),
+                            "uid": "FAKE005",
+                            "name": "Tinu Awopetu",
+                        },
+                    ],
+                    "totals": {
+                        "profdev_alloc": Decimal("20350"),
+                        "admin_alloc": Decimal("1050"),
+                        "total_alloc": Decimal("21400"),
+                        "profdev_expend": Decimal("14780"),
+                        "admin_expend": 0,
+                        "total_expend": Decimal("14780"),
+                    },
+                },
+            },
+            "totals": {
+                "profdev_alloc": Decimal("20350"),
+                "admin_alloc": Decimal("2350"),
+                "total_alloc": Decimal("22700"),
+                "profdev_expend": Decimal("14780"),
+                "admin_expend": 0,
+                "total_expend": Decimal("14780"),
+            },
+        }
+        actual = unit_report(Unit.objects.get(pk=2))
+        self.assertEqual(
+            json.dumps(actual, sort_keys=True, cls=DjangoJSONEncoder),
+            json.dumps(expected, sort_keys=True, cls=DjangoJSONEncoder),
+        )
+
+    def test_unit_report_disallows_backward_dates(self):
+        self.assertRaises(Exception, unit_report, None, "2020-01-01", "2019-01-01")
+
+    def test_unit_report_disallows_awkward_dates(self):
+        self.assertRaises(Exception, unit_report, None, None, "2019-01-01")
+        self.assertRaises(Exception, unit_report, None, "2019-01-01", None)

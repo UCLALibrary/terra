@@ -3,7 +3,7 @@ from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import TravelRequest, Unit
-from .utils import allocations_and_expenditures
+from .reports import unit_report
 
 
 class UserDashboard(LoginRequiredMixin, ListView):
@@ -27,5 +27,5 @@ class UnitDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["report"] = self.object.report()
+        context["report"] = unit_report(self.object)
         return context

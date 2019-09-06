@@ -30,6 +30,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "traveler",
         "activity",
         "departure_date",
+        "days_ooo",
         "administrative",
         "approved",
         "funded",

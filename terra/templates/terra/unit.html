@@ -16,60 +16,55 @@
 {% block body %}
 
     <h1>{{unit.name}}</h1>
-    <p>{{unit.manager}}</p>
+    <p>Manager: {{unit.manager}}</p>
     <h2>Current Fiscal Year</h2>
+    <hr/>
     
+    {% for subunit_name, subunit_data in report.subunits.items %}
+    <h3>{{subunit_name}}</h3>
     <table class="table">
         <thead class="thead-light">
             <tr>
-                <th colspan="2" scope="colgroup"></th>
-                <th colspan="4" scope="colgroup" class="text-center">Allocation</th>
-                <th colspan="4" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="1" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Allocation</th>
+                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
             </tr>
             <tr>
-                <th scope="col">Unit</th>
                 <th scope="col">Employee</th>
                 <th scope="col" class="text-right">Prof. Dev.</th>
                 <th scope="col" class="text-right">Admin.</th>
                 <th scope="col" class="text-right">Total</th>
-                <th scope="col" class="text-center">Days Out</th>
                 <th scope="col" class="text-right">Prof. Dev.</th>
                 <th scope="col" class="text-right">Admin.</th>
                 <th scope="col" class="text-right">Total</th>
-                <th scope="col" class="text-center">Days Out</th>
             </tr>
         </thead>
         <tbody>
-            {% for employee in report.staff %}
+            {% for employee in subunit_data.staff %}
             <tr>
-                <td>{{employee.unit}}</td>
                 <td>{{employee.name}}</td>
                 <td class="text-right">{{employee.profdev_alloc|currency}}</td>
                 <td class="text-right">{{employee.admin_alloc|currency}}</td>
                 <td class="text-right">{{employee.total_alloc|currency}}</td>
-                <td class="text-center">{{employee.alloc_days_out}}</td>
                 <td class="text-right">{{employee.profdev_expend|currency}}</td>
                 <td class="text-right">{{employee.admin_expend|currency}}</td>
                 <td class="text-right">{{employee.total_expend|currency}}</td>
-                <td class="text-center">{{employee.expend_days_out}}</td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
                 <th>Totals</th>
-                <th></th>
-                <th class="text-right">{{report.totals.profdev_alloc|currency}}</th>
-                <th class="text-right">{{report.totals.admin_alloc|currency}}</th>
-                <th class="text-right">{{report.totals.total_alloc|currency}}</th>
-                <th></th>
-                <th class="text-right">{{report.totals.profdev_expend|currency}}</th>
-                <th class="text-right">{{report.totals.admin_expend|currency}}</th>
-                <th class="text-right">{{report.totals.total_expend|currency}}</th>
-                <th></th>
+                <th class="text-right">{{subunit_data.totals.profdev_alloc|currency}}</th>
+                <th class="text-right">{{subunit_data.totals.admin_alloc|currency}}</th>
+                <th class="text-right">{{subunit_data.totals.total_alloc|currency}}</th>
+                <th class="text-right">{{subunit_data.totals.profdev_expend|currency}}</th>
+                <th class="text-right">{{subunit_data.totals.admin_expend|currency}}</th>
+                <th class="text-right">{{subunit_data.totals.total_expend|currency}}</th>
             </tr>
         </tfoot>
     </table>
+    {% endfor %}
 
 {% endblock %}
 
