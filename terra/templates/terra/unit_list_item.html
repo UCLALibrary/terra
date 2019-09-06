@@ -1,0 +1,10 @@
+<li><a href="/unit/{{subunit.pk}}">{{subunit.name}}</a></li>
+{% if subunit.subunits.all %}
+	<ul>
+	{% for subsubunit in subunit.subunits.all %}
+		{% with subunit=subsubunit template_name="terra/unit_list_item.html" %}
+			{% include template_name %}
+		{% endwith %}
+	{% endfor %}
+	</ul>
+{% endif %}

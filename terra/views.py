@@ -29,3 +29,14 @@ class UnitDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(*args, **kwargs)
         context["report"] = unit_report(self.object)
         return context
+
+
+class UnitListView(LoginRequiredMixin, ListView):
+
+    model = Unit
+    context_object_name = "units"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(type="2")
