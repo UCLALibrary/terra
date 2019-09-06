@@ -4,12 +4,11 @@ python:
   - "3.7"
 services:
   - docker
-before_install:
+before_script:
   - docker-compose up --build -d
-install:
-  - pip install -r requirements.txt
-  - pip install -q coveralls
+  - docker-compose exec django pip install -q coveralls --user --no-warn-script-location
+  - docker-compose exec db mysql -u root -pthis-is-a-fake-password -e "grant all privileges on test_terra.* to 'terrauser'@'%';"
 script:
-  - coverage run --source=terra manage.py test terra
+  - docker-compose exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
 after_success:
   coveralls
