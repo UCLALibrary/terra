@@ -85,6 +85,9 @@ DATABASES = {
         'PASSWORD': 'terra-fake-password',
         'HOST': 'db',
         'PORT': '3306',
+	'TEST': {
+	    'NAME': 'test_terra',
+	},
     }
 }
 
