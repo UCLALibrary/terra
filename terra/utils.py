@@ -3,7 +3,6 @@ import fiscalyear as FY
 import locale
 
 
-locale.setlocale(locale.LC_ALL, "")
 FY.START_MONTH = 7
 
 
