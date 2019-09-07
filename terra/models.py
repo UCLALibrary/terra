@@ -63,6 +63,12 @@ class Unit(models.Model):
             output[subunit.name] = subunit.full_team()
         return output
 
+    def super_managers(self):
+        mgrs = [self.manager]
+        if self.parent_unit is not None:
+            mgrs.extend(self.parent_unit.super_managers())
+        return mgrs
+
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

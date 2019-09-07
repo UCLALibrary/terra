@@ -32,6 +32,10 @@ class ModelsTestCase(TestCase):
         self.assertEqual(str(unit), "DIIT")
         self.assertEqual(repr(unit), "<Unit 2: DIIT>")
 
+    def test_unit_super_managers(self):
+        u3 = Unit.objects.get(pk=3)
+        self.assertEqual(len(u3.super_managers()), 3)
+
     def test_employee(self):
         employee = Employee.objects.get(pk=3)
         self.assertEqual(str(employee), "Joshua Gomez")
@@ -202,21 +206,48 @@ class TestDashboardView(TestCase):
         self.assertEqual(len(response.context["treqs"]), 3)
 
 
-class TestManagerReportsView(TestCase):
+class TestUnitDetailView(TestCase):
 
     fixtures = ["sample_data.json"]
 
-    def test_reports_denies_anonymous(self):
+    def test_unit_detail_denies_anonymous(self):
         response = self.client.get("/unit/1", follow=True)
         self.assertRedirects(
             response, "/accounts/login/?next=/unit/1/", status_code=301
         )
 
-    def test_allocations_loads(self):
+    def test_unit_detail_requires_manager(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/unit/1/")
+        self.assertEqual(response.status_code, 200)
         self.client.login(username="tgrappone", password="Staples50141")
+        response = self.client.get("/unit/1/")
+        self.assertEqual(response.status_code, 403)
+        response = self.client.get("/unit/2/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/unit/3/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_unit_detail_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
         response = self.client.get("/unit/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/unit.html")
+
+
+class TestUnitListView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_unit_list_denies_anonymous(self):
+        response = self.client.get("/unit/", follow=True)
+        self.assertRedirects(response, "/accounts/login/?next=/unit/", status_code=302)
+
+    def test_unit_list_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/unit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/unit_list.html")
 
 
 class DataLoadTestCase(TestCase):
