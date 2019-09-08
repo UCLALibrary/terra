@@ -30,6 +30,16 @@
   }
 },
 {
+  "model": "terra.unit",
+  "pk": 4,
+  "fields": {
+    "name": "Library Business Services",
+    "type": "3",
+    "manager": 6,
+    "parent_unit": 1
+  }
+},
+{
   "model": "terra.fund",
   "pk": 1,
   "fields": {
@@ -877,6 +887,24 @@
   }
 },
 {
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$1KegWw2vRLcR$LOOI86ivTpeWXwWOV2omAm4BSAOEaJZFjupK2ChGuhw=",
+    "last_login": "2019-09-06T20:55:57.899Z",
+    "is_superuser": true,
+    "username": "doriswang",
+    "first_name": "Doris",
+    "last_name": "Wang",
+    "email": "doris@library.ucla.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-13T22:59:03Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
   "model": "terra.employee",
   "pk": 1,
   "fields": {
@@ -934,6 +962,18 @@
     "active": true,
     "uid": "FAKE005",
     "supervisor": 3
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "phone": "",
+    "unit": 4,
+    "active": true,
+    "uid": "FAKE006",
+    "supervisor": 4
   }
 }
 ]

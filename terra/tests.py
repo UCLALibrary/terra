@@ -53,7 +53,7 @@ class ModelsTestCase(TestCase):
     def test_employee_full_team(self):
         head = Employee.objects.get(pk=4)
         staff, mgrs = head.full_team()
-        self.assertEqual(len(staff), 5)
+        self.assertEqual(len(staff), 6)
         self.assertEqual(len(mgrs), 3)
         sub = Employee.objects.get(pk=3)
         staff, mgrs = sub.full_team()
@@ -228,6 +228,12 @@ class TestUnitDetailView(TestCase):
         response = self.client.get("/unit/3/")
         self.assertEqual(response.status_code, 200)
 
+    def test_unit_detail_allows_superuser(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/unit/1/")
+        self.assertTemplateUsed(response, "terra/unit.html")
+        self.assertEqual(response.status_code, 200)
+
     def test_unit_detail_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
         response = self.client.get("/unit/1/")
@@ -242,6 +248,12 @@ class TestUnitListView(TestCase):
     def test_unit_list_denies_anonymous(self):
         response = self.client.get("/unit/", follow=True)
         self.assertRedirects(response, "/accounts/login/?next=/unit/", status_code=302)
+
+    def test_unit_detail_allows_superuser(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/unit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/unit_list.html")
 
     def test_unit_list_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
