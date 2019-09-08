@@ -2,7 +2,7 @@
 
 {% load terra_extras %}
 
-{% block title %}Unit Report - {{unit.name}}{% endblock %}
+{% block title %}Unit List{% endblock %}
 
 {% block supplemental_css %}
 <style>
@@ -16,18 +16,17 @@
 {% block body %}
 <h1>Unit Reports</h1>
 <hr/>
-<h2><a href="/unit/1">Library</a></h2>
-<ul id="units">
-	{% for unit in units %}
-	<h3><li><a href="/unit/{{unit.pk}}">{{unit.name}}</a></li></h3>
+<ul type="square">
+{% for unit in units %}
+	<h{{unit.type}}><li><a href="/unit/{{unit.pk}}">{{unit.name}}</a></li></h{{unit.type}}>
 		{% if unit.subunits.all %}
-		<ul>
-			{% for subunit in unit.subunits.all %}
-				{% include "terra/unit_list_item.html" %}
-			{% endfor %}
+		<ul type="square">
+		{% for subunit in unit.subunits.all %}
+			{% include "terra/unit_list_item.html"%}
+		{% endfor %}
 		</ul>
 		{% endif %}
-	{% endfor %}
+{% endfor %}
 </ul>
 
 {% endblock %}

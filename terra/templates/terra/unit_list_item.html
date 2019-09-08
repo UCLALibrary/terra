@@ -1,6 +1,6 @@
-<li><a href="/unit/{{subunit.pk}}">{{subunit.name}}</a></li>
+<h{{subunit.type}}><li><a href="/unit/{{subunit.pk}}">{{subunit.name}}</a></li></h{{subunit.type}}>
 {% if subunit.subunits.all %}
-	<ul>
+	<ul type="square">
 	{% for subsubunit in subunit.subunits.all %}
 		{% with subunit=subsubunit template_name="terra/unit_list_item.html" %}
 			{% include template_name %}

@@ -26,6 +26,8 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     redirect_field_name = "next"
 
     def test_func(self):
+        if self.request.user.is_superuser:
+            return True
         unit = self.get_object()
         return self.request.user.employee in unit.super_managers()
 
@@ -35,12 +37,20 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-class UnitListView(LoginRequiredMixin, ListView):
+class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     model = Unit
     context_object_name = "units"
     login_url = "/accounts/login/"
     redirect_field_name = "next"
 
+    def test_func(self):
+        return (
+            self.request.user.is_superuser
+            or len(self.request.user.employee.managed_units.all()) > 0
+        )
+
     def get_queryset(self):
-        return super().get_queryset().filter(type="2")
+        if self.request.user.is_superuser:
+            return Unit.objects.filter(type="1")
+        return Unit.objects.filter(manager=self.request.user.employee)

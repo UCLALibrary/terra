@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
 
 from terra.views import UserDashboard, UnitDetailView, UnitListView
 
@@ -72,4 +73,5 @@ urlpatterns = [
         UnitListView.as_view(template_name="terra/unit_list.html"),
         name="unit_list",
     ),
+    path("", RedirectView.as_view(url="/dashboard"), name="home"),
 ]
