@@ -51,22 +51,24 @@ class Unit(models.Model):
     def employee_count(self):
         return self.employee_set.count()
 
-    def full_team(self):
-        team = list(self.employee_set.all())
-        for subunit in self.subunits.all():
-            team.extend(subunit.full_team())
-        return team
-
-    def sub_teams(self):
-        output = {self.name: self.employee_set.all()}
-        for subunit in self.subunits.all():
-            output[subunit.name] = subunit.full_team()
-        return output
-
     def super_managers(self):
-        mgrs = [self.manager]
-        if self.parent_unit is not None:
-            mgrs.extend(self.parent_unit.super_managers())
+        mgrs = Employee.objects.raw(
+            """
+            WITH RECURSIVE mgrs(manager_id, id, parent_unit_id) AS (
+                  SELECT manager_id, id, parent_unit_id
+                  FROM terra_unit
+                  WHERE id = %s
+                UNION ALL
+                  SELECT u.manager_id, u.id, u.parent_unit_id
+                  FROM terra_unit AS u, mgrs AS m
+                  WHERE u.id = m.parent_unit_id
+                )
+            SELECT * FROM terra_employee 
+            WHERE id IN (
+                SELECT manager_id FROM mgrs
+                )""",
+            params=[self.id],
+        )
         return mgrs
 
 

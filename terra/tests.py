@@ -20,7 +20,7 @@ from .models import (
 )
 from .templatetags.terra_extras import check_or_cross, currency
 from .utils import current_fiscal_year, in_fiscal_year
-from .reports import subunit_lookup, unit_totals, unit_report
+from .reports import unit_totals, unit_report, get_individual_data
 
 
 class ModelsTestCase(TestCase):
@@ -186,6 +186,7 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(currency(3), "$3.00")
         self.assertEqual(currency(-100.0000), "-$100.00")
         self.assertEqual(currency(300000.0000), "$300,000.00")
+        self.assertEqual(currency(None), "$0.00")
 
 
 class TestDashboardView(TestCase):
@@ -312,52 +313,51 @@ class ReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
 
-    def test_subunit_lookup(self):
-        e = Employee.objects.get(pk=2)
-        u1 = Unit.objects.get(pk=1)
-        subunits = u1.sub_teams()
-        self.assertEqual(subunit_lookup(e.uid, subunits), "DIIT")
-        u3 = Unit.objects.get(pk=3)
-        subunits = u3.sub_teams()
-        self.assertEqual(
-            subunit_lookup(e.uid, subunits), "Software Development & Library Systems"
-        )
-
     def test_unit_totals(self):
+        class FakeUser:
+            def __init__(self, data):
+                self.data = data
+
         data = [
-            {
-                "admin_alloc": None,
-                "admin_expend": None,
-                "name": "Ashton Prigge",
-                "profdev_alloc": 10300,
-                "profdev_expend": 7420,
-                "total_alloc": 10300,
-                "total_expend": 7420,
-                "traveler__uid": "FAKE002",
-                "uid": "FAKE002",
-            },
-            {
-                "admin_alloc": 1050,
-                "admin_expend": None,
-                "name": "Joshua Gomez",
-                "profdev_alloc": 1750,
-                "profdev_expend": None,
-                "total_alloc": 2800,
-                "total_expend": None,
-                "traveler__uid": "FAKE003",
-                "uid": "FAKE003",
-            },
-            {
-                "admin_alloc": None,
-                "admin_expend": None,
-                "name": "Tinu Awopetu",
-                "profdev_alloc": 8300,
-                "profdev_expend": 7360,
-                "total_alloc": 8300,
-                "total_expend": 7360,
-                "traveler__uid": "FAKE005",
-                "uid": "FAKE005",
-            },
+            FakeUser(
+                {
+                    "admin_alloc": 0,
+                    "admin_expend": 0,
+                    "name": "Ashton Prigge",
+                    "profdev_alloc": 10300,
+                    "profdev_expend": 7420,
+                    "total_alloc": 10300,
+                    "total_expend": 7420,
+                    "traveler__uid": "FAKE002",
+                    "uid": "FAKE002",
+                }
+            ),
+            FakeUser(
+                {
+                    "admin_alloc": 1050,
+                    "admin_expend": 0,
+                    "name": "Joshua Gomez",
+                    "profdev_alloc": 1750,
+                    "profdev_expend": 0,
+                    "total_alloc": 2800,
+                    "total_expend": 0,
+                    "traveler__uid": "FAKE003",
+                    "uid": "FAKE003",
+                }
+            ),
+            FakeUser(
+                {
+                    "admin_alloc": 0,
+                    "admin_expend": 0,
+                    "name": "Tinu Awopetu",
+                    "profdev_alloc": 8300,
+                    "profdev_expend": 7360,
+                    "total_alloc": 8300,
+                    "total_expend": 7360,
+                    "traveler__uid": "FAKE005",
+                    "uid": "FAKE005",
+                }
+            ),
         ]
         expected = {
             "admin_alloc": 1050,
@@ -374,89 +374,52 @@ class ReportsTestCase(TestCase):
     def test_unit_report(self):
         expected = {
             "subunits": {
-                "DIIT": {
-                    "staff": [
-                        {
-                            "traveler__uid": "FAKE001",
-                            "admin_alloc": Decimal("1300"),
-                            "profdev_alloc": None,
-                            "total_alloc": Decimal("1300"),
-                            "admin_expend": None,
-                            "profdev_expend": None,
-                            "total_expend": None,
-                            "uid": "FAKE001",
-                            "name": "Todd Grappone",
-                        }
-                    ],
-                    "totals": {
+                2: {
+                    "subunit_totals": {
+                        "profdev_alloc": Decimal("20350"),
+                        "admin_alloc": Decimal("2350"),
+                        "total_alloc": Decimal("22700"),
+                        "profdev_expend": Decimal("14780"),
+                        "admin_expend": Decimal("0"),
+                        "total_expend": Decimal("14780"),
+                    }
+                },
+                1: {
+                    "subunit_totals": {
                         "profdev_alloc": 0,
-                        "admin_alloc": Decimal("1300"),
-                        "total_alloc": Decimal("1300"),
+                        "admin_alloc": 0,
+                        "total_alloc": 0,
                         "profdev_expend": 0,
                         "admin_expend": 0,
                         "total_expend": 0,
-                    },
+                    }
                 },
-                "Software Development & Library Systems": {
-                    "staff": [
-                        {
-                            "traveler__uid": "FAKE002",
-                            "admin_alloc": None,
-                            "profdev_alloc": Decimal("10300"),
-                            "total_alloc": Decimal("10300"),
-                            "admin_expend": None,
-                            "profdev_expend": Decimal("7420"),
-                            "total_expend": Decimal("7420"),
-                            "uid": "FAKE002",
-                            "name": "Ashton Prigge",
-                        },
-                        {
-                            "traveler__uid": "FAKE003",
-                            "admin_alloc": Decimal("1050"),
-                            "profdev_alloc": Decimal("1750"),
-                            "total_alloc": Decimal("2800"),
-                            "admin_expend": None,
-                            "profdev_expend": None,
-                            "total_expend": None,
-                            "uid": "FAKE003",
-                            "name": "Joshua Gomez",
-                        },
-                        {
-                            "traveler__uid": "FAKE005",
-                            "admin_alloc": None,
-                            "profdev_alloc": Decimal("8300"),
-                            "total_alloc": Decimal("8300"),
-                            "admin_expend": None,
-                            "profdev_expend": Decimal("7360"),
-                            "total_expend": Decimal("7360"),
-                            "uid": "FAKE005",
-                            "name": "Tinu Awopetu",
-                        },
-                    ],
-                    "totals": {
-                        "profdev_alloc": Decimal("20350"),
-                        "admin_alloc": Decimal("1050"),
-                        "total_alloc": Decimal("21400"),
-                        "profdev_expend": Decimal("14780"),
+                4: {
+                    "subunit_totals": {
+                        "profdev_alloc": 0,
+                        "admin_alloc": 0,
+                        "total_alloc": 0,
+                        "profdev_expend": 0,
                         "admin_expend": 0,
-                        "total_expend": Decimal("14780"),
-                    },
+                        "total_expend": 0,
+                    }
                 },
             },
-            "totals": {
-                "profdev_alloc": Decimal("20350"),
+            "unit_totals": {
                 "admin_alloc": Decimal("2350"),
-                "total_alloc": Decimal("22700"),
+                "admin_expend": Decimal("0"),
+                "profdev_alloc": Decimal("20350"),
                 "profdev_expend": Decimal("14780"),
-                "admin_expend": 0,
+                "total_alloc": Decimal("22700"),
                 "total_expend": Decimal("14780"),
             },
         }
-        actual = unit_report(Unit.objects.get(pk=2))
-        self.assertEqual(
-            json.dumps(actual, sort_keys=True, cls=DjangoJSONEncoder),
-            json.dumps(expected, sort_keys=True, cls=DjangoJSONEncoder),
-        )
+        actual = unit_report(Unit.objects.get(pk=1))
+        for sid, subunit in expected["subunits"].items():
+            for key, value in subunit["subunit_totals"].items():
+                self.assertEqual(actual["subunits"][sid]["subunit_totals"][key], value)
+        for key, value in expected["unit_totals"].items():
+            self.assertEqual(actual["unit_totals"][key], value)
 
     def test_unit_report_disallows_backward_dates(self):
         self.assertRaises(Exception, unit_report, None, "2020-01-01", "2019-01-01")
@@ -464,3 +427,12 @@ class ReportsTestCase(TestCase):
     def test_unit_report_disallows_awkward_dates(self):
         self.assertRaises(Exception, unit_report, None, None, "2019-01-01")
         self.assertRaises(Exception, unit_report, None, "2019-01-01", None)
+
+    def test_get_individual_data_disallows_backward_dates(self):
+        self.assertRaises(
+            Exception, get_individual_data, None, "2020-01-01", "2019-01-01"
+        )
+
+    def test_get_individual_data_disallows_awkward_dates(self):
+        self.assertRaises(Exception, get_individual_data, None, None, "2019-01-01")
+        self.assertRaises(Exception, get_individual_data, None, "2019-01-01", None)
