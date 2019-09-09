@@ -37,9 +37,13 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "traveler",
         "activity",
         "departure_date",
+        "days_ooo",
+        "administrative",
         "approved",
         "funded",
         "closed",
+        "allocations_total",
+        "expenditures_total",
     )
     list_filter = ("traveler","activity",("departure_date", custom_titled_filter('departure date')),("return_date", custom_titled_filter('return date')),("days_ooo", custom_titled_filter('days out-of-office')),"closed","funding",)
 

@@ -1,0 +1,105 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Unit Report - {{unit.name}}{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <h1>{{unit.name}}</h1>
+    <p>Manager: {{unit.manager}}</p>
+    <h2>Current Fiscal Year</h2>
+    <hr/>
+    
+    {% for subunit_id, subunit in report.subunits.items %}
+    <h3>{{subunit.name}}</h3>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="1" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Allocation</th>
+                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+            </tr>
+            <tr>
+                <th scope="col">Employee</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eid, employee in subunit.staff.items %}
+            <tr>
+                <td>{{employee.last_name}}, {{employee.first_name}}</td>
+                <td class="text-right">{{employee.data.profdev_alloc|currency}}</td>
+                <td class="text-right">{{employee.data.admin_alloc|currency}}</td>
+                <td class="text-right">{{employee.data.total_alloc|currency}}</td>
+                <td class="text-right">{{employee.data.profdev_expend|currency}}</td>
+                <td class="text-right">{{employee.data.admin_expend|currency}}</td>
+                <td class="text-right">{{employee.data.total_expend|currency}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th class="text-right">{{subunit.subunit_totals.profdev_alloc|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.admin_alloc|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_alloc|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.profdev_expend|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.admin_expend|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_expend|currency}}</th>
+            </tr>
+        </tfoot>
+    </table>
+    {% endfor %}
+
+    {% if unit.subunits.all %}
+    <hr/>
+    <h3>Unit Totals</h3>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="1" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Allocation</th>
+                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+            </tr>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th class="text-right">{{report.unit_totals.profdev_alloc|currency}}</th>
+                <th class="text-right">{{report.unit_totals.admin_alloc|currency}}</th>
+                <th class="text-right">{{report.unit_totals.total_alloc|currency}}</th>
+                <th class="text-right">{{report.unit_totals.profdev_expend|currency}}</th>
+                <th class="text-right">{{report.unit_totals.admin_expend|currency}}</th>
+                <th class="text-right">{{report.unit_totals.total_expend|currency}}</th>
+            </tr>
+        </tfoot>
+    </table>
+    {% endif %}
+
+
+{% endblock %}
+
