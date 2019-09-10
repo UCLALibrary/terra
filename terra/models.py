@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from terra import utils
+
+
+UNIT_TYPES = (
+    ("1", "Library"),
+    ("2", "Executive Division"),
+    ("3", "Managerial Unit"),
+    ("4", "Team"),
+)
 
 APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
 
@@ -21,6 +30,7 @@ EXPENSE_TYPES = (
 
 class Unit(models.Model):
     name = models.CharField(max_length=128)
+    type = models.CharField(max_length=1, choices=UNIT_TYPES)
     manager = models.ForeignKey(
         "Employee",
         on_delete=models.PROTECT,
@@ -29,7 +39,7 @@ class Unit(models.Model):
         blank=True,
     )
     parent_unit = models.ForeignKey(
-        "self", on_delete=models.PROTECT, null=True, blank=True
+        "self", on_delete=models.PROTECT, related_name="subunits", null=True, blank=True
     )
 
     def __str__(self):
@@ -40,6 +50,26 @@ class Unit(models.Model):
 
     def employee_count(self):
         return self.employee_set.count()
+
+    def super_managers(self):
+        mgrs = Employee.objects.raw(
+            """
+            WITH RECURSIVE mgrs(manager_id, id, parent_unit_id) AS (
+                  SELECT manager_id, id, parent_unit_id
+                  FROM terra_unit
+                  WHERE id = %s
+                UNION ALL
+                  SELECT u.manager_id, u.id, u.parent_unit_id
+                  FROM terra_unit AS u, mgrs AS m
+                  WHERE u.id = m.parent_unit_id
+                )
+            SELECT * FROM terra_employee 
+            WHERE id IN (
+                SELECT manager_id FROM mgrs
+                )""",
+            params=[self.id],
+        )
+        return mgrs
 
 
 class Employee(models.Model):
@@ -60,6 +90,21 @@ class Employee(models.Model):
 
     def name(self):
         return str(self)
+
+    def direct_reports(self):
+        return Employee.objects.filter(supervisor=self)
+
+    def full_team(self):
+        staff = [self]
+        managers = []
+        direct_reports = self.direct_reports()
+        if len(direct_reports) > 0:
+            managers.append(self)
+            for e in direct_reports:
+                substaff, submgrs = e.full_team()
+                staff.extend(substaff)
+                managers.extend(submgrs)
+        return staff, managers
 
 
 class Fund(models.Model):
@@ -105,11 +150,35 @@ class TravelRequest(models.Model):
             return len(self.approval_set.filter(type="I")) == 1
         return len(self.approval_set.filter(type="S")) == 1
 
+    approved.boolean = True
+
     def funded(self):
         return len(self.approval_set.filter(type="F")) == 1
 
-    approved.boolean = True
     funded.boolean = True
+
+    def estimated_expenses(self):
+        total = 0
+        for ee in self.estimatedexpense_set.all():
+            total += ee.total
+        return total
+
+    def allocations_total(self):
+        return utils.format_currency(self.estimated_expenses())
+
+    def actual_expenses(self):
+        total = 0
+        for ae in self.actualexpense_set.all():
+            total += ae.total
+        return total
+
+    def expenditures_total(self):
+        return utils.format_currency(self.actual_expenses())
+
+    def in_fiscal_year(self, fiscal_year=None):
+        return utils.in_fiscal_year(self.return_date, fiscal_year)
+
+    in_fiscal_year.boolean = True
 
 
 class Vacation(models.Model):
