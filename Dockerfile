@@ -5,6 +5,9 @@ RUN apt-get update -qq && apt-get install build-essential python3-dev default-li
 RUN adduser --system django
 USER django
 
+ENV PATH /home/django/.local/bin:${PATH}
+ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000
+
 WORKDIR /home/django
 
 COPY requirements.txt .

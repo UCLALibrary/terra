@@ -6,6 +6,9 @@ until python -c 'import MySQLdb ; db=MySQLdb.connect(host="db",user="terrauser",
   sleep 5
 done
 
+# Run database migrations
 python ./manage.py migrate
 python ./manage.py loaddata sample_data
-python ./manage.py runserver 0.0.0.0:8000
+
+# Start the Gunicorn web server
+gunicorn proj.wsgi:application
