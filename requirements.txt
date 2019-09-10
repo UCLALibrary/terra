@@ -4,3 +4,5 @@ black
 pre-commit
 fiscalyear
 mysqlclient
+whitenoise
+gunicorn

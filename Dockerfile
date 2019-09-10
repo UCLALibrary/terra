@@ -6,6 +6,9 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && dpkg-reconfigure --frontend=no
 RUN adduser --system django
 USER django
 
+ENV PATH /home/django/.local/bin:${PATH}
+ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000
+
 WORKDIR /home/django
 
 COPY requirements.txt .
