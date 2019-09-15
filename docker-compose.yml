@@ -2,6 +2,8 @@ version: '3'
 services:
   django:
     build: .
+    env_file:
+      - docker/.docker-compose_django.env
     ports:
      - "8000:8000"
     depends_on:
@@ -9,10 +11,7 @@ services:
   db:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: this-is-a-fake-password
-      MYSQL_DATABASE: terra
-      MYSQL_USER: terrauser
-      MYSQL_PASSWORD: terra-fake-password
+    env_file:
+      - docker/.docker-compose_db.env
     ports:
       - "3306:3306"

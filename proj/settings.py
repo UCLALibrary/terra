@@ -12,10 +12,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "-2^j5b_8!l&$m!!k)^xfwe0gre0c^lifay3%_lp9(ul0tl$m%#"
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -72,18 +72,17 @@ WSGI_APPLICATION = "proj.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'terra',
-        'USER': 'terrauser',
-        'PASSWORD': 'terra-fake-password',
-        'HOST': 'db',
-        'PORT': '3306',
+        'ENGINE': os.getenv('DJANGO_DB_ENGINE'),
+        'NAME': os.getenv('DJANGO_DB_NAME'),
+        'USER': os.getenv('DJANGO_DB_USER'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWD'),
+        'HOST': os.getenv('DJANGO_DB_HOST'),
+        'PORT': os.getenv('DJANGO_DB_PORT'),
 	'TEST': {
-	    'NAME': 'test_terra',
+	    'NAME': os.getenv('DJANGO_TEST_DB_NAME'),
 	},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
