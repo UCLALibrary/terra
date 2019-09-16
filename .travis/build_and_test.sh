@@ -11,10 +11,18 @@ until docker-compose exec db mysql -u root -pthis-is-a-fake-password -e "grant a
   sleep 3 
 done
 
-# For testing, to see what's running in the containers at this point
-docker-compose top
+# When building in Travis, the host directory is owned by Travis.  The volume mount in the django Docker
+# container apparently reflects that, leading to permissions problems inside the container when running tests.
+# Reset permissions in the container before running tests.
+# django user doesn't have rights to change these permissions in the container (and sudo currently not installed in container).
+#docker-compose exec django chown -R django:django /home/django
 
-# No longer necessary, since this succeeded in the loop above
-#####docker-compose exec db mysql -u root -pthis-is-a-fake-password -e "grant all privileges on test_terra.* to 'terrauser'@'%';"
+# Change permissions in host: keep travis ownership but relax permissions.
+# Do this only if running in Travis, to avoid problems locally.
+if [ "$TRAVIS" = "true" ]; then
+  chmod -R 777 .
+fi
 
+# Run the tests
+docker-compose exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
 

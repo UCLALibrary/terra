@@ -10,8 +10,8 @@ done
 python ./manage.py migrate
 python ./manage.py loaddata sample_data
 
-# Build static files directory
-python ./manage.py collectstatic
+# Build static files directory, starting fresh each time
+python ./manage.py collectstatic --clear --no-input
 
 # Start the Gunicorn web server
 gunicorn proj.wsgi:application
