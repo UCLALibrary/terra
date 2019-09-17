@@ -4,9 +4,7 @@ python:
   - "3.7"
 services:
   - docker
-before_script:
-  - .travis/build_and_test.sh
 script:
-  - docker-compose exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
+  - .travis/build_and_test.sh
 after_success:
   coveralls
