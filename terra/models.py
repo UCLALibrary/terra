@@ -4,12 +4,7 @@ from django.contrib.auth.models import User
 from terra import utils
 
 
-UNIT_TYPES = (
-    ("1", "Library"),
-    ("2", "Executive Division"),
-    ("3", "Managerial Unit"),
-    ("4", "Team"),
-)
+UNIT_TYPES = (("1", "Library"), ("2", "Executive Division"), ("3", "Managerial Unit"))
 
 APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
 
@@ -51,25 +46,11 @@ class Unit(models.Model):
     def employee_count(self):
         return self.employee_set.count()
 
-    def super_managers(self):
-        mgrs = Employee.objects.raw(
-            """
-            WITH RECURSIVE mgrs(manager_id, id, parent_unit_id) AS (
-                  SELECT manager_id, id, parent_unit_id
-                  FROM terra_unit
-                  WHERE id = %s
-                UNION ALL
-                  SELECT u.manager_id, u.id, u.parent_unit_id
-                  FROM terra_unit AS u, mgrs AS m
-                  WHERE u.id = m.parent_unit_id
-                )
-            SELECT * FROM terra_employee 
-            WHERE id IN (
-                SELECT manager_id FROM mgrs
-                )""",
-            params=[self.id],
-        )
-        return mgrs
+    def super_managers(self, mgrs=[]):
+        mgrs.append(self.manager)
+        if self.parent_unit is None:
+            return mgrs
+        return self.parent_unit.super_managers(mgrs)
 
 
 class Employee(models.Model):
