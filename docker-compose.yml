@@ -1,7 +1,7 @@
 version: '3'
 services:
   django:
-    build: .
+    image: uclalibrary/terra:latest
     volumes:
       - .:/home/django/terra
     env_file:
