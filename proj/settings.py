@@ -119,6 +119,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# There is a timing issue with Whitenoise that is described here:
+# https://github.com/evansd/whitenoise/issues/215
+# The work around suggested is to check for the existence of the 
+# static root directory, and if doesn't exist yet then create it
 if not os.path.isdir(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, mode=0o755)
 
