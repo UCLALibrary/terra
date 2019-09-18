@@ -15,7 +15,7 @@ ENV PATH /home/django/.local/bin:${PATH}
 # --access-logfile where to send HTTP access logs (- is stdout)
 ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000 --access-logfile -
 
-WORKDIR /home/django
+WORKDIR /home/django/terra
 
 COPY --chown=django:django requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt --user --no-warn-script-location
