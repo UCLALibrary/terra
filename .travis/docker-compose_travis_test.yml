@@ -3,6 +3,8 @@ services:
   django:
     build: ..
     image: uclalibrary/terra:test
+    volumes:
+      - ..:/home/django/terra
     env_file:
       - ../.docker-compose_django.env
     ports:
