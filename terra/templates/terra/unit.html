@@ -21,7 +21,7 @@
     <hr/>
     
     {% for subunit_id, subunit in report.subunits.items %}
-    <h3>{{subunit.name}}</h3>
+    <h3>{{subunit.subunit.name}}</h3>
     <table class="table">
         <thead class="thead-light">
             <tr>
@@ -40,9 +40,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for eid, employee in subunit.staff.items %}
+            {% for eid, employee in subunit.employees.items %}
             <tr>
-                <td>{{employee.last_name}}, {{employee.first_name}}</td>
+                <td>{{employee.user.last_name}}, {{employee.user.first_name}}</td>
                 <td class="text-right">{{employee.data.profdev_alloc|currency}}</td>
                 <td class="text-right">{{employee.data.admin_alloc|currency}}</td>
                 <td class="text-right">{{employee.data.total_alloc|currency}}</td>

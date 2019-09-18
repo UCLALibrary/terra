@@ -46,11 +46,19 @@ class Unit(models.Model):
     def employee_count(self):
         return self.employee_set.count()
 
-    def super_managers(self, mgrs=[]):
+    def super_managers(self, mgrs=None):
+        if mgrs is None:
+            mgrs = []
         mgrs.append(self.manager)
         if self.parent_unit is None:
             return mgrs
         return self.parent_unit.super_managers(mgrs)
+
+    def all_employees(self):
+        team = list(self.employee_set.all())
+        for subunit in self.subunits.all():
+            team.extend(subunit.all_employees())
+        return team
 
 
 class Employee(models.Model):
