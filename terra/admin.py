@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 from .models import (
     Unit,
     Employee,
@@ -19,6 +20,60 @@ def custom_titled_filter(title):
             return instance
     return Wrapper
 
+class InputFilter(admin.SimpleListFilter):
+    template = 'terra/admin_filter.html'
+
+    def lookups(self, request, model_admin):
+        # Dummy, required to show the filter.
+        return ((),)
+
+    def choices(self, changelist):
+        # Grab only the "all" option.
+        all_choice = next(super().choices(changelist))
+        all_choice['query_parts'] = (
+            (k, v)
+            for k, v in changelist.get_filters_params().items()
+            if k != self.parameter_name
+        )
+        yield all_choice
+
+class UIDFilter(InputFilter):
+    parameter_name = 'uid'
+    title = _('University ID')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            uid = self.value()
+
+            return queryset.filter(
+                uid=uid
+            )
+
+
+class UserFilter(InputFilter):
+    parameter_name = 'user__username'
+    title = _('Library Employee')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            user = self.value()
+
+            return queryset.filter(
+                user__username=user 
+            )
+
+class UnitFilter(InputFilter):
+    parameter_name = 'unit__name'
+    title = _('Library Unit')
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            unit = self.value()
+
+            return queryset.filter(
+                unit__name=unit 
+            )
+            
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
@@ -28,7 +83,7 @@ class UnitAdmin(admin.ModelAdmin):
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ("uid", "name", "unit", "supervisor", "active")
     list_display_links = ("uid", "name")
-    list_filter = ("user","unit","active","uid","supervisor",)
+    list_filter = (UserFilter,UnitFilter,"active",UIDFilter,"supervisor",) #"uid" "unit" ("user",custom_titled_filter('employee')) 
 
 @admin.register(TravelRequest)
 class TravelRequestAdmin(admin.ModelAdmin):
