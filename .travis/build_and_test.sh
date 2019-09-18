@@ -17,11 +17,5 @@ until ${DOCKER_COMPOSE_TRAVIS} exec db mysql -u root -pthis-is-a-fake-password -
   sleep 3
 done
 
-# For testing, to see what's running in the containers at this point
-${DOCKER_COMPOSE_TRAVIS} top
-
-# Another testing/debug command
-${DOCKER_COMPOSE_TRAVIS} exec django ls -al
-
 # Run the tests
 ${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
