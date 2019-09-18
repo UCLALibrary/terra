@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, Q, Sum, Value
 from django.db.models.functions import Coalesce
 
@@ -5,38 +6,21 @@ from .models import TravelRequest, Employee
 from .utils import fiscal_year_bookends
 
 
-def get_flat_subunit(subunit):
-    team = Employee.objects.raw(
-        """
-        WITH RECURSIVE team(id, parent_unit_id) AS (
-                SELECT id, parent_unit_id
-                FROM terra_unit
-                WHERE id = %s
-            UNION ALL
-                SELECT u.id, u.parent_unit_id
-                FROM team AS t, terra_unit AS u
-                WHERE t.id = u.parent_unit_id
-            )
-        SELECT e.*, first_name, last_name, %s AS subunit_id, %s AS subunit_name  
-        FROM terra_employee AS e, terra_unit AS u, auth_user AS user, team
-        WHERE e.unit_id = team.id
-        AND e.unit_id = u.id
-        AND e.user_id = user.id""",
-        params=[subunit.id, subunit.id, subunit.name],
-    )
-    return team
-
-
-def get_employees(unit):
-    employees = {e.id: e for e in unit.employee_set.all()}
-    for id, employee in employees.items():
-        employee.subunit_id = unit.id
-        employee.subunit_name = unit.name
-        employee.last_name = employee.user.last_name
-        employee.first_name = employee.user.first_name
+def get_subunits_and_employees(unit):
+    data = {
+        "subunits": {
+            unit.id: {
+                "subunit": unit,
+                "employees": {e.id: e for e in unit.employee_set.all()},
+            }
+        }
+    }
     for subunit in unit.subunits.all():
-        employees.update({e.id: e for e in get_flat_subunit(subunit)})
-    return employees
+        data["subunits"][subunit.id] = {
+            "subunit": subunit,
+            "employees": {e.id: e for e in subunit.all_employees()},
+        }
+    return data
 
 
 def get_individual_data(employees, start_date=None, end_date=None):
@@ -80,47 +64,20 @@ def get_individual_data(employees, start_date=None, end_date=None):
     return rows
 
 
-def build_output_data_structure(rows, employees):
-    data = {
-        "subunits": {},
-        "unit_totals": {
-            "admin_alloc": 0,
-            "admin_expend": 0,
-            "profdev_alloc": 0,
-            "profdev_expend": 0,
-            "total_alloc": 0,
-            "total_expend": 0,
-        },
-    }
-    # merge query data with employee data
-    for row in rows:
-        employee = employees[row["employee_id"]]
-        employee.data = row
-        if employee.subunit_id not in data["subunits"].keys():
-            data["subunits"][employee.subunit_id] = {
-                "name": employee.subunit_name,
-                "staff": {},
-                "subunit_totals": {},
-            }
-        data["subunits"][employee.subunit_id]["staff"][employee.id] = employee
-        del employees[employee.id]
-    # now deal with remaining (nontraveling) staff
-    for employee in employees.values():
-        employee.data = {
-            "admin_alloc": 0,
-            "admin_expend": 0,
-            "profdev_alloc": 0,
-            "profdev_expend": 0,
-            "total_alloc": 0,
-            "total_expend": 0,
-        }
-        if employee.subunit_id not in data["subunits"].keys():
-            data["subunits"][employee.subunit_id] = {
-                "name": employee.subunit_name,
-                "staff": {},
-                "subunit_totals": {},
-            }
-        data["subunits"][employee.subunit_id]["staff"][employee.id] = employee
+def merge_data(rows, data):
+    for subunit in data["subunits"].values():
+        for employee in subunit["employees"].values():
+            try:
+                employee.data = rows.get(employee_id=employee.id)
+            except ObjectDoesNotExist:
+                employee.data = {
+                    "admin_alloc": 0,
+                    "admin_expend": 0,
+                    "profdev_alloc": 0,
+                    "profdev_expend": 0,
+                    "total_alloc": 0,
+                    "total_expend": 0,
+                }
     return data
 
 
@@ -136,15 +93,23 @@ def unit_totals(employees):
 
 
 def calculate_totals(data):
+    data["unit_totals"] = {
+        "admin_alloc": 0,
+        "admin_expend": 0,
+        "profdev_alloc": 0,
+        "profdev_expend": 0,
+        "total_alloc": 0,
+        "total_expend": 0,
+    }
     for subunit in data["subunits"].values():
-        subunit["subunit_totals"] = unit_totals(subunit["staff"].values())
-        for key, value in data["unit_totals"].items():
+        subunit["subunit_totals"] = unit_totals(subunit["employees"].values())
+        for key in data["unit_totals"].keys():
             data["unit_totals"][key] += subunit["subunit_totals"][key]
     return data
 
 
 def unit_report(unit, start_date=None, end_date=None):
-    employees = get_employees(unit)
-    rows = get_individual_data(employees)
-    data = build_output_data_structure(rows, employees)
+    data = get_subunits_and_employees(unit)
+    rows = get_individual_data(unit.all_employees())
+    data = merge_data(rows, data)
     return calculate_totals(data)
