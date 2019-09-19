@@ -913,7 +913,8 @@
     "unit": 2,
     "active": true,
     "uid": "FAKE001",
-    "supervisor": 4
+    "supervisor": 4,
+    "type": "HEAD"
   }
 },
 {
@@ -925,7 +926,8 @@
     "unit": 3,
     "active": true,
     "uid": "FAKE002",
-    "supervisor": 3
+    "supervisor": 3,
+    "type": "LIBR"
   }
 },
 {
@@ -937,7 +939,8 @@
     "unit": 3,
     "active": true,
     "uid": "FAKE003",
-    "supervisor": 1
+    "supervisor": 1,
+    "type": "HEAD"
   }
 },
 {
@@ -949,7 +952,8 @@
     "unit": 1,
     "active": true,
     "uid": "FAKE004",
-    "supervisor": null
+    "supervisor": null,
+    "type": "EXEC"
   }
 },
 {
@@ -961,7 +965,8 @@
     "unit": 3,
     "active": true,
     "uid": "FAKE005",
-    "supervisor": 3
+    "supervisor": 3,
+    "type": "SENR"
   }
 },
 {
@@ -973,7 +978,8 @@
     "unit": 4,
     "active": true,
     "uid": "FAKE006",
-    "supervisor": 4
+    "supervisor": 4,
+    "type": "HEAD"
   }
 }
 ]

@@ -22,6 +22,13 @@ EXPENSE_TYPES = (
     ("OTH", "Other"),
 )
 
+EMPLOYEE_TYPES = (
+    ("EXEC", "Executive"),
+    ("HEAD", "Unit Head"),
+    ("LIBR", "Librarian"),
+    ("SENR", "Sr. Exempt Staff"),
+    ("OTHR", "Other"),
+)
 
 class Unit(models.Model):
     name = models.CharField(max_length=128)
@@ -70,6 +77,7 @@ class Employee(models.Model):
     supervisor = models.ForeignKey(
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
+    type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
 
     def __str__(self):
         return self.user.get_full_name()
