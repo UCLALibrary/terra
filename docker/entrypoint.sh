@@ -10,7 +10,7 @@ done
 python ./manage.py migrate
 
 # Load sample data when running in dev environment
-if [ "$DJANGO_RUN_ENV" == "dev" ]; then
+if [ "$DJANGO_RUN_ENV" = "dev" ]; then
   echo "Loading sample data set..."
   python ./manage.py loaddata sample_data
 fi
