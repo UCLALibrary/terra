@@ -8,7 +8,12 @@ done
 
 # Run database migrations
 python ./manage.py migrate
-python ./manage.py loaddata sample_data
+
+# Load sample data when running in dev environment
+if [ "$DJANGO_RUN_ENV" == "dev" ]; then
+  echo "Loading sample data set..."
+  python ./manage.py loaddata sample_data
+fi
 
 # Build static files directory, starting fresh each time
 python ./manage.py collectstatic --clear --no-input
