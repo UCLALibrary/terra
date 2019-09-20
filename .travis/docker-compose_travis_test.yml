@@ -1,11 +1,12 @@
 version: '3'
 services:
   django:
-    image: uclalibrary/terra:latest
+    build: ..
+    image: uclalibrary/terra:test
     volumes:
-      - .:/home/django/terra
+      - ..:/home/django/terra
     env_file:
-      - .docker-compose_django.env
+      - ../.docker-compose_django.env
     ports:
      - "8000:8000"
     depends_on:
@@ -14,6 +15,6 @@ services:
     image: mysql:5.7
     command: --default-authentication-plugin=mysql_native_password
     env_file:
-      - .docker-compose_db.env
+      - ../.docker-compose_db.env
     ports:
       - "3306:3306"
