@@ -17,8 +17,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG')
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS')
 
 # Application definition
 
@@ -121,7 +120,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # There is a timing issue with Whitenoise that is described here:
 # https://github.com/evansd/whitenoise/issues/215
-# The work around suggested is to check for the existence of the 
+# The work around suggested is to check for the existence of the
 # static root directory, and if doesn't exist yet then create it
 if not os.path.isdir(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, mode=0o755)
