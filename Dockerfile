@@ -17,6 +17,8 @@ ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000 --access-logfile -
 
 WORKDIR /home/django/terra
 
+RUN chown django:django /home/django/terra
+
 COPY --chown=django:django requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt --user --no-warn-script-location
 COPY --chown=django:django . .
