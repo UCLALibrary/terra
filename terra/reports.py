@@ -49,25 +49,27 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         .annotate(
             profdev_alloc=Coalesce(
                 Subquery(
-                    profdev_alloc.values("profdev_alloc"), output_field=DecimalField()
+                    profdev_alloc.values("profdev_alloc")[:1],
+                    output_field=DecimalField(),
                 ),
                 Value(0),
             ),
             profdev_expend=Coalesce(
                 Subquery(
-                    profdev_expend.values("profdev_expend"), output_field=DecimalField()
+                    profdev_expend.values("profdev_expend")[:1],
+                    output_field=DecimalField(),
                 ),
                 Value(0),
             ),
             admin_alloc=Coalesce(
                 Subquery(
-                    admin_alloc.values("admin_alloc"), output_field=DecimalField()
+                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
                 ),
                 Value(0),
             ),
             admin_expend=Coalesce(
                 Subquery(
-                    admin_expend.values("admin_expend"), output_field=DecimalField()
+                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
                 ),
                 Value(0),
             ),
