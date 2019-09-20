@@ -15,7 +15,9 @@ ENV PATH /home/django/.local/bin:${PATH}
 # --access-logfile where to send HTTP access logs (- is stdout)
 ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000 --access-logfile -
 
-RUN mkdir /home/django/terra && chown django:django terra
+WORKDIR /home/django
+
+RUN mkdir terra && chown django:django terra
 
 WORKDIR /home/django/terra
 
