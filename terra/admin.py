@@ -9,6 +9,7 @@ from .models import (
     Approval,
     EstimatedExpense,
     ActualExpense,
+    FundAmount,
 )
 
 def custom_titled_filter(title):
@@ -18,6 +19,11 @@ def custom_titled_filter(title):
             instance.title = title
             return instance
     return Wrapper
+
+# Inline class to support ManyToMany with Fund and TravelRequest
+class FundAmountInline(admin.TabularInline):
+    model = FundAmount
+    extra = 1
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
@@ -46,6 +52,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "expenditures_total",
     )
     list_filter = ("traveler","activity",("departure_date", custom_titled_filter('departure date')),("return_date", custom_titled_filter('return date')),("days_ooo", custom_titled_filter('days out-of-office')),"closed","funding",)
+    inlines = (FundAmountInline,)
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
@@ -77,3 +84,4 @@ class ActualExpenseAdmin(admin.ModelAdmin):
     list_display = ("id", "treq", "type", "total_dollars")
     list_filter = ("treq__traveler",("treq__activity__name", custom_titled_filter('activity')),"type",("total", custom_titled_filter('total cost')),"fund",)
  
+

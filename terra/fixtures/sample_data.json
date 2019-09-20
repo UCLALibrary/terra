@@ -1,5 +1,131 @@
 [
 {
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
+    "last_login": "2019-09-06T20:55:57.899Z",
+    "is_superuser": true,
+    "username": "joshuagomez",
+    "first_name": "Joshua",
+    "last_name": "Gomez",
+    "email": "joshuago78@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-13T22:59:03Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$lze2IRK5REOf$vD3EobiBBGOorhQR+HUW0yzT/7SOynR6n4xxRk1LNk0=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "tgrappone",
+    "first_name": "Todd",
+    "last_name": "Grappone",
+    "email": "tgrappone@library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:21:24Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$uZEL9naPqn67$hlgkqVV0DjM5nY/5Jy2qXGu4+yj277vK6PY72PcFIVY=",
+    "last_login": "2019-09-02T04:21:02.658Z",
+    "is_superuser": false,
+    "username": "aprigge",
+    "first_name": "Ashton",
+    "last_name": "Prigge",
+    "email": "aprigge@library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:23:29Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$facETWBUJjYJ$URkIbGwPgJTz6prw4JVf0SSILwTM9I3wkosaDtQPunk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "vsteel",
+    "first_name": "Virginia",
+    "last_name": "Steel",
+    "email": "vsteel@library.library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:26:46Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$dhdmYBI1duvC$qBWXFWfIhYhY7/Sye4uLNbtFdLT3lgCtGgPKVVccj3Q=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "tawopetu",
+    "first_name": "Tinu",
+    "last_name": "Awopetu",
+    "email": "tinuola@library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-09-01T15:44:42Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$1KegWw2vRLcR$LOOI86ivTpeWXwWOV2omAm4BSAOEaJZFjupK2ChGuhw=",
+    "last_login": "2019-09-06T20:55:57.899Z",
+    "is_superuser": true,
+    "username": "doriswang",
+    "first_name": "Doris",
+    "last_name": "Wang",
+    "email": "doris@library.ucla.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-13T22:59:03Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$8qzKRp3WdmI3$2jaDvywSaYnntaWudwfxmjz/Frnff0W5WPqHMTj8+0M=",
+    "last_login": "2019-09-20T01:22:22.933Z",
+    "is_superuser": true,
+    "username": "ack",
+    "first_name": "",
+    "last_name": "",
+    "email": "a@b.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-09-20T01:22:17.295Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
   "model": "terra.unit",
   "pk": 1,
   "fields": {
@@ -40,6 +166,84 @@
   }
 },
 {
+  "model": "terra.employee",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "phone": "",
+    "unit": 2,
+    "active": true,
+    "uid": "FAKE001",
+    "supervisor": 4,
+    "type": "HEAD"
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "phone": "",
+    "unit": 3,
+    "active": true,
+    "uid": "FAKE002",
+    "supervisor": 3,
+    "type": "LIBR"
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "phone": "",
+    "unit": 3,
+    "active": true,
+    "uid": "FAKE003",
+    "supervisor": 1,
+    "type": "HEAD"
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 4,
+  "fields": {
+    "user": 4,
+    "phone": "",
+    "unit": 1,
+    "active": true,
+    "uid": "FAKE004",
+    "supervisor": null,
+    "type": "EXEC"
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "phone": "",
+    "unit": 3,
+    "active": true,
+    "uid": "FAKE005",
+    "supervisor": 3,
+    "type": "SENR"
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "phone": "",
+    "unit": 4,
+    "active": true,
+    "uid": "FAKE006",
+    "supervisor": 4,
+    "type": "HEAD"
+  }
+},
+{
   "model": "terra.fund",
   "pk": 1,
   "fields": {
@@ -60,6 +264,33 @@
   }
 },
 {
+  "model": "terra.fundamount",
+  "pk": 1,
+  "fields": {
+    "fund": 1,
+    "treq": 1,
+    "amount": "1200.00000"
+  }
+},
+{
+  "model": "terra.fundamount",
+  "pk": 2,
+  "fields": {
+    "fund": 2,
+    "treq": 1,
+    "amount": "800.00000"
+  }
+},
+{
+  "model": "terra.fundamount",
+  "pk": 3,
+  "fields": {
+    "fund": 1,
+    "treq": 2,
+    "amount": "2000.00000"
+  }
+},
+{
   "model": "terra.travelrequest",
   "pk": 1,
   "fields": {
@@ -70,11 +301,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
-    "funding": [
-      1,
-      2
-    ]
+    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference."
   }
 },
 {
@@ -88,10 +315,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      2
-    ]
+    "justification": ""
   }
 },
 {
@@ -105,10 +329,7 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -122,10 +343,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -139,10 +357,7 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -156,10 +371,7 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -173,10 +385,7 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -190,10 +399,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -794,192 +1000,6 @@
     "quantity": null,
     "total": "225.00000",
     "fund": 1
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 1,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
-    "last_login": "2019-09-06T20:55:57.899Z",
-    "is_superuser": true,
-    "username": "joshuagomez",
-    "first_name": "Joshua",
-    "last_name": "Gomez",
-    "email": "joshuago78@gmail.com",
-    "is_staff": true,
-    "is_active": true,
-    "date_joined": "2019-08-13T22:59:03Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 2,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$lze2IRK5REOf$vD3EobiBBGOorhQR+HUW0yzT/7SOynR6n4xxRk1LNk0=",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "tgrappone",
-    "first_name": "Todd",
-    "last_name": "Grappone",
-    "email": "tgrappone@library.ucla.edu",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2019-08-14T02:21:24Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 3,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$uZEL9naPqn67$hlgkqVV0DjM5nY/5Jy2qXGu4+yj277vK6PY72PcFIVY=",
-    "last_login": "2019-09-02T04:21:02.658Z",
-    "is_superuser": false,
-    "username": "aprigge",
-    "first_name": "Ashton",
-    "last_name": "Prigge",
-    "email": "aprigge@library.ucla.edu",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2019-08-14T02:23:29Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 4,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$facETWBUJjYJ$URkIbGwPgJTz6prw4JVf0SSILwTM9I3wkosaDtQPunk=",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "vsteel",
-    "first_name": "Virginia",
-    "last_name": "Steel",
-    "email": "vsteel@library.library.ucla.edu",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2019-08-14T02:26:46Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 5,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$dhdmYBI1duvC$qBWXFWfIhYhY7/Sye4uLNbtFdLT3lgCtGgPKVVccj3Q=",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "tawopetu",
-    "first_name": "Tinu",
-    "last_name": "Awopetu",
-    "email": "tinuola@library.ucla.edu",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2019-09-01T15:44:42Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 6,
-  "fields": {
-    "password": "pbkdf2_sha256$150000$1KegWw2vRLcR$LOOI86ivTpeWXwWOV2omAm4BSAOEaJZFjupK2ChGuhw=",
-    "last_login": "2019-09-06T20:55:57.899Z",
-    "is_superuser": true,
-    "username": "doriswang",
-    "first_name": "Doris",
-    "last_name": "Wang",
-    "email": "doris@library.ucla.edu",
-    "is_staff": true,
-    "is_active": true,
-    "date_joined": "2019-08-13T22:59:03Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 1,
-  "fields": {
-    "user": 2,
-    "phone": "",
-    "unit": 2,
-    "active": true,
-    "uid": "FAKE001",
-    "supervisor": 4,
-    "type": "HEAD"
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 2,
-  "fields": {
-    "user": 3,
-    "phone": "",
-    "unit": 3,
-    "active": true,
-    "uid": "FAKE002",
-    "supervisor": 3,
-    "type": "LIBR"
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 3,
-  "fields": {
-    "user": 1,
-    "phone": "",
-    "unit": 3,
-    "active": true,
-    "uid": "FAKE003",
-    "supervisor": 1,
-    "type": "HEAD"
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 4,
-  "fields": {
-    "user": 4,
-    "phone": "",
-    "unit": 1,
-    "active": true,
-    "uid": "FAKE004",
-    "supervisor": null,
-    "type": "EXEC"
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 5,
-  "fields": {
-    "user": 5,
-    "phone": "",
-    "unit": 3,
-    "active": true,
-    "uid": "FAKE005",
-    "supervisor": 3,
-    "type": "SENR"
-  }
-},
-{
-  "model": "terra.employee",
-  "pk": 6,
-  "fields": {
-    "user": 6,
-    "phone": "",
-    "unit": 4,
-    "active": true,
-    "uid": "FAKE006",
-    "supervisor": 4,
-    "type": "HEAD"
   }
 }
 ]

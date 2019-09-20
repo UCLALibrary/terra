@@ -117,6 +117,18 @@ class Fund(models.Model):
         return "<Fund {}: {}>".format(self.id, self)
 
 
+class FundAmount(models.Model):
+    fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
+    treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=10, decimal_places=5)
+
+    def __str__(self):
+        return "FundAmount str placeholder"
+
+    def __repr__(self):
+        return "FundAmount repr placeholder"
+
+
 class TravelRequest(models.Model):
     traveler = models.ForeignKey("Employee", on_delete=models.PROTECT)
     activity = models.ForeignKey("Activity", on_delete=models.PROTECT)
@@ -126,7 +138,7 @@ class TravelRequest(models.Model):
     closed = models.BooleanField(default=False)
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
-    funding = models.ManyToManyField(Fund)
+    funding = models.ManyToManyField("Fund", through="FundAmount")
 
     def __str__(self):
         return str(repr(self))
