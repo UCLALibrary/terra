@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, Q, Sum, Value
+from django.db.models import F, Q, Sum, Value, OuterRef, Subquery, DecimalField
 from django.db.models.functions import Coalesce
 
 from .models import TravelRequest, Employee
@@ -23,43 +23,58 @@ def get_subunits_and_employees(unit):
     return data
 
 
-def get_individual_data(employees, start_date=None, end_date=None):
+def get_individual_data(employee_ids, start_date=None, end_date=None):
     if start_date is None and end_date is None:
         start_date, end_date = fiscal_year_bookends()
     elif start_date is None or end_date is None:
         raise Exception("You must include a start and end date or leave both empty")
     elif end_date < start_date:
         raise Exception("Start date must come before end date")
+    # 4 subqueries plugged into the final query
+    profdev_alloc = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"), administrative=False, closed=False
+    ).annotate(profdev_alloc=Sum("estimatedexpense__total"))
+    profdev_expend = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"), administrative=False, closed=True
+    ).annotate(profdev_expend=Sum("actualexpense__total"))
+    admin_alloc = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"), administrative=True, closed=False
+    ).annotate(admin_alloc=Sum("estimatedexpense__total"))
+    admin_expend = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"), administrative=True, closed=True
+    ).annotate(admin_expend=Sum("actualexpense__total"))
+    # final query
     rows = (
-        TravelRequest.objects.filter(
-            traveler__in=employees,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-            approval__type="F",
-        )
-        .values(employee_id=F("traveler__id"))
-        .annotate(
-            admin_alloc=Coalesce(
-                Sum("estimatedexpense__total", filter=Q(administrative=True)), Value(0)
-            )
-        )
+        Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_alloc=Coalesce(
-                Sum("estimatedexpense__total", filter=Q(administrative=False)), Value(0)
-            )
-        )
-        .annotate(total_alloc=Coalesce(Sum("estimatedexpense__total"), Value(0)))
-        .annotate(
-            admin_expend=Coalesce(
-                Sum("actualexpense__total", filter=Q(administrative=True)), Value(0)
-            )
-        )
-        .annotate(
+                Subquery(
+                    profdev_alloc.values("profdev_alloc")[:1],
+                    output_field=DecimalField(),
+                ),
+                Value(0),
+            ),
             profdev_expend=Coalesce(
-                Sum("actualexpense__total", filter=Q(administrative=False)), Value(0)
-            )
+                Subquery(
+                    profdev_expend.values("profdev_expend")[:1],
+                    output_field=DecimalField(),
+                ),
+                Value(0),
+            ),
+            admin_alloc=Coalesce(
+                Subquery(
+                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
+                ),
+                Value(0),
+            ),
+            admin_expend=Coalesce(
+                Subquery(
+                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
+                ),
+                Value(0),
+            ),
         )
-        .annotate(total_expend=Coalesce(Sum("actualexpense__total"), Value(0)))
+        .values("id", "profdev_alloc", "profdev_expend", "admin_alloc", "admin_expend")
     )
     return rows
 
@@ -68,7 +83,15 @@ def merge_data(rows, data):
     for subunit in data["subunits"].values():
         for employee in subunit["employees"].values():
             try:
-                employee.data = rows.get(employee_id=employee.id)
+                employee.data = rows.get(id=employee.id)
+                employee.data["admin_alloc"] += employee.data["admin_expend"]
+                employee.data["profdev_alloc"] += employee.data["profdev_expend"]
+                employee.data["total_alloc"] = (
+                    employee.data["admin_alloc"] + employee.data["profdev_alloc"]
+                )
+                employee.data["total_expend"] = (
+                    employee.data["admin_expend"] + employee.data["profdev_expend"]
+                )
             except ObjectDoesNotExist:
                 employee.data = {
                     "admin_alloc": 0,
@@ -110,6 +133,6 @@ def calculate_totals(data):
 
 def unit_report(unit, start_date=None, end_date=None):
     data = get_subunits_and_employees(unit)
-    rows = get_individual_data(unit.all_employees())
+    rows = get_individual_data([e.id for e in unit.all_employees()])
     data = merge_data(rows, data)
     return calculate_totals(data)

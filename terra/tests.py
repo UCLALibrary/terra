@@ -377,12 +377,12 @@ class ReportsTestCase(TestCase):
             "subunits": {
                 2: {
                     "subunit_totals": {
-                        "profdev_alloc": Decimal("20350"),
+                        "profdev_alloc": Decimal("7695"),
                         "admin_alloc": Decimal("2350"),
-                        "total_alloc": Decimal("22700"),
-                        "profdev_expend": Decimal("14780"),
+                        "total_alloc": Decimal("10045"),
+                        "profdev_expend": Decimal("3695"),
                         "admin_expend": Decimal("0"),
-                        "total_expend": Decimal("14780"),
+                        "total_expend": Decimal("3695"),
                     }
                 },
                 1: {
@@ -409,10 +409,10 @@ class ReportsTestCase(TestCase):
             "unit_totals": {
                 "admin_alloc": Decimal("2350"),
                 "admin_expend": Decimal("0"),
-                "profdev_alloc": Decimal("20350"),
-                "profdev_expend": Decimal("14780"),
-                "total_alloc": Decimal("22700"),
-                "total_expend": Decimal("14780"),
+                "profdev_alloc": Decimal("7695"),
+                "profdev_expend": Decimal("3695"),
+                "total_alloc": Decimal("10045"),
+                "total_expend": Decimal("3695"),
             },
         }
         actual = unit_report(Unit.objects.get(pk=1))
