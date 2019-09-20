@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from admin_auto_filters.filters import AutocompleteFilter
+from django import forms
 from .models import (
     Unit,
     Employee,
@@ -51,7 +53,7 @@ class UIDFilter(InputFilter):
 
 
 class UserFilter(InputFilter):
-    parameter_name = 'user__username'
+    parameter_name = 'user__last_name'
     title = _('Library Employee')
 
     def queryset(self, request, queryset):
@@ -59,7 +61,7 @@ class UserFilter(InputFilter):
             user = self.value()
 
             return queryset.filter(
-                user__username=user 
+                user__last_name=user 
             )
 
 class UnitFilter(InputFilter):
@@ -74,16 +76,51 @@ class UnitFilter(InputFilter):
                 unit__name=unit 
             )
             
+class UnitManagerFilter(AutocompleteFilter):
+    title = 'Manager' # display title
+    field_name = 'manager' # name of the foreign key field
+
+class EmployeeSupervisorFilter(AutocompleteFilter):
+    title = 'Supervisor' # display title
+    field_name = 'supervisor' # name of the foreign key field
+
+class EmployeeUnitFilter(AutocompleteFilter):
+    title = 'Unit' # display title
+    field_name = 'unit' # name of the foreign key field
+
+class UnitParentFilter(AutocompleteFilter):
+    title = 'Parent Unit' # display title
+    field_name = 'parent_unit' # name of the foreign key field
+
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
-    list_filter = ("name","manager",("parent_unit", custom_titled_filter('parent unit')),)
+    list_filter = ("name",UnitManagerFilter,UnitParentFilter,) #"manager" ("parent_unit", custom_titled_filter('parent unit'))
+    search_fields = ['parent_unit__name']
+    autocomplete_fields = ['manager','parent_unit']
+    class Media: 
+        css = {}
+        js = ()
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ("uid", "name", "unit", "supervisor", "active")
     list_display_links = ("uid", "name")
-    list_filter = (UserFilter,UnitFilter,"active",UIDFilter,"supervisor",) #"uid" "unit" ("user",custom_titled_filter('employee')) 
+    sortable_by = ("uid", "user.get_full_name()", "unit", "supervisor", "active")
+    list_filter = (UserFilter,EmployeeUnitFilter,"active",UIDFilter,EmployeeSupervisorFilter,) #"uid" "unit" ("user",custom_titled_filter('employee')) UnitFilter "supervisor"
+    search_fields = ['user__last_name','supervisor__user__last_name__startswith','unit__name'] # this is required for django's autocomplete functionality ,'uid'
+    autocomplete_fields = ['supervisor','unit']
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+    
+        if request.path == '/admin/terra/unit/autocomplete/':
+            queryset = queryset.filter(supervisor__user__last_name=search_term)
+    
+        return queryset, use_distinct
+    class Media: 
+        css = {}
+        js = ()
+
 
 @admin.register(TravelRequest)
 class TravelRequestAdmin(admin.ModelAdmin):

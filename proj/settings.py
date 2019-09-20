@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "terra",
     "crispy_forms",
+    "admin_auto_filters",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
