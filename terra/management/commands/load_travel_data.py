@@ -6,6 +6,7 @@ from terra.models import (
     Approval,
     Employee,
     Fund,
+    FundAmount,
     TravelRequest,
     Unit,
 )
@@ -48,7 +49,6 @@ def load_data(self, travel_file):
 
             # Funds next
             # Funds are not unique, so check for existence
-            # TODO: Resolve fund model: TRRA-55
             fund, created = Fund.objects.get_or_create(
                 account=account,
                 cost_center=cost_center,
@@ -67,9 +67,15 @@ def load_data(self, travel_file):
                     days_ooo=workdays,
                     closed=True,
                 )
-                treq.funding.add(fund)
             except Employee.DoesNotExist:
                 raise CommandError(f"Employee {employee_name} does not exist")
+
+            # FundAmount
+            fa = FundAmount.objects.create(
+                treq=treq,
+                fund=fund,
+                amount=amount
+            )
 
             # Approval
             approval = Approval.objects.create(

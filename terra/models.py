@@ -123,10 +123,13 @@ class FundAmount(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=5)
 
     def __str__(self):
-        return "FundAmount str placeholder"
+        return "{}-{}".format(self.fund, self.amount)
 
     def __repr__(self):
-        return "FundAmount repr placeholder"
+        return "<FundAmount {}: {}>".format(self.id, self)
+
+    def total_dollars(self):
+        return "$%.2f" % self.amount
 
 
 class TravelRequest(models.Model):
