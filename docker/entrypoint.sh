@@ -16,7 +16,7 @@ if [ "$DJANGO_RUN_ENV" = "dev" ]; then
 fi
 
 # Build static files directory, starting fresh each time
-python ./manage.py collectstatic --clear --no-input
+python ./manage.py collectstatic --no-input
 
 # Start the Gunicorn web server
 gunicorn proj.wsgi:application
