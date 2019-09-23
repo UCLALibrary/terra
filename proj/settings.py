@@ -17,7 +17,11 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG')
 
-ALLOWED_HOSTS = [os.getenv('DJANGO_ALLOWED_HOSTS')]
+# Define the list of allowed hosts to connect to this application
+# This is passed in via the environment variable DJANGO_ALLOWED_HOSTS
+# which is a string - but ALLOWED_HOSTS requires a list
+
+ALLOWED_HOSTS = list(os.getenv('DJANGO_ALLOWED_HOSTS').split(","))
 
 # Application definition
 
