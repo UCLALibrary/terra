@@ -178,7 +178,10 @@ class TravelRequest(models.Model):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
 
     def total_funding(self):
-        return self.approval_set.aggregate(Sum("amount"))["amount__sum"]
+        total = self.approval_set.aggregate(Sum("amount"))["amount__sum"]
+        if total is None:
+            total = 0
+        return total
 
     in_fiscal_year.boolean = True
 
@@ -222,6 +225,17 @@ class Approval(models.Model):
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
     type = models.CharField(max_length=1, choices=APPROVAL_TYPES)
+
+    def __str__(self):
+        return str(repr(self))
+
+    def __repr__(self):
+        return "<Approval {}: {} {} {}>".format(
+            self.id,
+            self.get_type_display(),
+            self.treq.activity.name,
+            self.treq.traveler,
+        )
 
 
 class EstimatedExpense(models.Model):
