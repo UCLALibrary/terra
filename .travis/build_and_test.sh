@@ -12,10 +12,12 @@ ${DOCKER_COMPOSE_TRAVIS} exec django pip install -q coveralls --user --no-warn-s
 
 # Even though the build/up step above waits until the db is available, that's not always the case
 # Keep trying to set db permissions for the django test user, so it can create a clean db for testing.
-until ${DOCKER_COMPOSE_TRAVIS} exec db mysql -u root -pthis-is-a-fake-password -e "grant all privileges on test_terra.* to 'terrauser'@'%';"; do
-  echo "Waiting for mysql to become available..."
-  sleep 3
-done
+# Is this still necessary?  Let's just try a sleep.
+#until ${DOCKER_COMPOSE_TRAVIS} exec db mysql -u root -pthis-is-a-fake-password -e "grant all privileges on test_terra.* to 'terrauser'@'%';"; do
+#  echo "Waiting for mysql to become available..."
+#  sleep 3
+#done
+sleep 10
 
 # When building in Travis, the host directory is owned by Travis.  The volume mount in the django Docker
 # container apparently reflects that, leading to permissions problems inside the container when running tests.
