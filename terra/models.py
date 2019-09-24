@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 from terra import utils
 
@@ -126,7 +127,7 @@ class TravelRequest(models.Model):
     closed = models.BooleanField(default=False)
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
-    funding = models.ManyToManyField(Fund)
+    funds = models.ManyToManyField("Fund", through="Approval")
 
     def __str__(self):
         return str(repr(self))
@@ -143,14 +144,15 @@ class TravelRequest(models.Model):
         return self.activity.country != "USA"
 
     def approved(self):
+        # TODO: Clarify how international approval trumps funded approval
         if self.international():
             return len(self.approval_set.filter(type="I")) == 1
-        return len(self.approval_set.filter(type="S")) == 1
+        return self.funded()
 
     approved.boolean = True
 
     def funded(self):
-        return len(self.approval_set.filter(type="F")) == 1
+        return self.total_funding() >= self.estimated_expenses()
 
     funded.boolean = True
 
@@ -174,6 +176,9 @@ class TravelRequest(models.Model):
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
+
+    def total_funding(self):
+        return self.approval_set.aggregate(Sum("amount"))["amount__sum"]
 
     in_fiscal_year.boolean = True
 
@@ -211,21 +216,12 @@ class Activity(models.Model):
 
 
 class Approval(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
-    approver = models.ForeignKey("Employee", on_delete=models.PROTECT)
-    treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
+    approved_on = models.DateTimeField(auto_now_add=True)
+    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
+    fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=10, decimal_places=5)
     type = models.CharField(max_length=1, choices=APPROVAL_TYPES)
-
-    def __str__(self):
-        return str(repr(self))
-
-    def __repr__(self):
-        return "<Approval {}: {} {} {}>".format(
-            self.id,
-            self.get_type_display(),
-            self.treq.activity.name,
-            self.treq.traveler,
-        )
 
 
 class EstimatedExpense(models.Model):

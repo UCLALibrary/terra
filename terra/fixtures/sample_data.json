@@ -70,11 +70,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
-    "funding": [
-      1,
-      2
-    ]
+    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference."
   }
 },
 {
@@ -88,10 +84,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      2
-    ]
+    "justification": ""
   }
 },
 {
@@ -105,10 +98,7 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -122,10 +112,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -139,10 +126,7 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -156,10 +140,7 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -173,10 +154,7 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -190,10 +168,7 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "",
-    "funding": [
-      1
-    ]
+    "justification": ""
   }
 },
 {
@@ -259,126 +234,6 @@
     "city": "Los Angeles",
     "state": "CA",
     "country": "USA"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 1,
-  "fields": {
-    "timestamp": "2019-08-14T02:36:29.984Z",
-    "approver": 3,
-    "treq": 1,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 3,
-  "fields": {
-    "timestamp": "2019-09-02T15:26:10.109Z",
-    "approver": 3,
-    "treq": 5,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 4,
-  "fields": {
-    "timestamp": "2019-09-02T15:26:19.878Z",
-    "approver": 1,
-    "treq": 5,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 5,
-  "fields": {
-    "timestamp": "2019-09-02T15:27:58.201Z",
-    "approver": 3,
-    "treq": 6,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 6,
-  "fields": {
-    "timestamp": "2019-09-02T15:28:06.791Z",
-    "approver": 1,
-    "treq": 6,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 7,
-  "fields": {
-    "timestamp": "2019-09-05T13:39:20.590Z",
-    "approver": 1,
-    "treq": 3,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 8,
-  "fields": {
-    "timestamp": "2019-09-05T13:39:27.588Z",
-    "approver": 1,
-    "treq": 3,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 9,
-  "fields": {
-    "timestamp": "2019-09-05T13:40:56.287Z",
-    "approver": 3,
-    "treq": 4,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 10,
-  "fields": {
-    "timestamp": "2019-09-05T13:41:05.670Z",
-    "approver": 1,
-    "treq": 4,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 11,
-  "fields": {
-    "timestamp": "2019-09-05T19:37:01.540Z",
-    "approver": 1,
-    "treq": 7,
-    "type": "F"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 12,
-  "fields": {
-    "timestamp": "2019-09-05T21:28:53.612Z",
-    "approver": 1,
-    "treq": 8,
-    "type": "S"
-  }
-},
-{
-  "model": "terra.approval",
-  "pk": 13,
-  "fields": {
-    "timestamp": "2019-09-05T21:28:59.675Z",
-    "approver": 1,
-    "treq": 8,
-    "type": "F"
   }
 },
 {
