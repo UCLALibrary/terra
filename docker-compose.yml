@@ -6,6 +6,7 @@ services:
       - .:/home/django/terra
     env_file:
       - .docker-compose_django.env
+      - .docker-compose_db.env
     ports:
      - "8000:8000"
     depends_on:
