@@ -7,8 +7,6 @@ from terra import utils
 
 UNIT_TYPES = (("1", "Library"), ("2", "Executive Division"), ("3", "Managerial Unit"))
 
-APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
-
 EXPENSE_TYPES = (
     ("LDG", "Lodging"),
     ("AIR", "Airfare"),
