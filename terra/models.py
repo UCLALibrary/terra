@@ -128,6 +128,9 @@ class TravelRequest(models.Model):
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
     funds = models.ManyToManyField("Fund", through="Approval")
+    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="approved_by", null=True, blank=True)
+    approved_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    international_approved_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return str(repr(self))
@@ -144,10 +147,9 @@ class TravelRequest(models.Model):
         return self.activity.country != "USA"
 
     def approved(self):
-        # TODO: Clarify how international approval trumps funded approval
         if self.international():
-            return len(self.approval_set.filter(type="I")) == 1
-        return self.funded()
+            return self.international_approved_on is not None
+        return self.approved_on is not None
 
     approved.boolean = True
 
@@ -224,15 +226,13 @@ class Approval(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
-    type = models.CharField(max_length=1, choices=APPROVAL_TYPES)
 
     def __str__(self):
         return str(repr(self))
 
     def __repr__(self):
-        return "<Approval {}: {} {} {}>".format(
+        return "<Approval {}: {} {}>".format(
             self.id,
-            self.get_type_display(),
             self.treq.activity.name,
             self.treq.traveler,
         )

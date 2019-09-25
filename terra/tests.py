@@ -84,10 +84,10 @@ class ModelsTestCase(TestCase):
     def test_approval(self):
         approval = Approval.objects.get(pk=1)
         self.assertEqual(
-            repr(approval), "<Approval 1: Supervisor Code4lib 2020 Ashton Prigge>"
+            repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
         )
         self.assertEqual(
-            str(approval), "<Approval 1: Supervisor Code4lib 2020 Ashton Prigge>"
+            str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
         )
 
     def test_estimated_expense(self):

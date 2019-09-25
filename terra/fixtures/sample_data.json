@@ -274,7 +274,9 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference."
+    "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
+    "approved_by": 3,
+    "approved_on": "2019-09-24T00:47:23.526Z"
   }
 },
 {
@@ -448,8 +450,7 @@
     "approved_by": 3,
     "treq": 1,
     "fund": 1,
-    "amount": "1500.00000",
-    "type": "S"
+    "amount": "1500.00000"
   }
 },
 {
@@ -460,8 +461,7 @@
     "approved_by": 3,
     "treq": 1,
     "fund": 2,
-    "amount": "500.00000",
-    "type": "S"
+    "amount": "500.00000"
   }
 },
 {
@@ -472,8 +472,7 @@
     "approved_by": 3,
     "treq": 2,
     "fund": 1,
-    "amount": "2000.00000",
-    "type": "S"
+    "amount": "2000.00000"
   }
 },
 {

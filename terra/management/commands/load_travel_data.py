@@ -75,7 +75,6 @@ def load_data(self, travel_file):
                 approved_on=start_date,  # We don't have accurate data
                 approved_by=fake_employee,  # Use fau_approver when data is fixed
                 treq=treq,
-                type="S",  # Can we be more accurate?
                 fund=fund,
                 amount=amount,
             )
