@@ -129,8 +129,8 @@ class TravelRequest(models.Model):
     justification = models.TextField(blank=True)
     funds = models.ManyToManyField("Fund", through="Approval")
     approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="approved_by", null=True, blank=True)
-    approved_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    international_approved_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    approved_on = models.DateField(null=True, blank=True)
+    international_approved_on = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return str(repr(self))
