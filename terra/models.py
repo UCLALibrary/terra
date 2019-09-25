@@ -1,12 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 from terra import utils
 
 
 UNIT_TYPES = (("1", "Library"), ("2", "Executive Division"), ("3", "Managerial Unit"))
-
-APPROVAL_TYPES = (("S", "Supervisor"), ("F", "Funding"), ("I", "International"))
 
 EXPENSE_TYPES = (
     ("LDG", "Lodging"),
@@ -126,7 +125,10 @@ class TravelRequest(models.Model):
     closed = models.BooleanField(default=False)
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
-    funding = models.ManyToManyField(Fund)
+    funds = models.ManyToManyField("Fund", through="Approval")
+    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="approved_by", null=True, blank=True)
+    approved_on = models.DateField(null=True, blank=True)
+    international_approved_on = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return str(repr(self))
@@ -144,13 +146,13 @@ class TravelRequest(models.Model):
 
     def approved(self):
         if self.international():
-            return len(self.approval_set.filter(type="I")) == 1
-        return len(self.approval_set.filter(type="S")) == 1
+            return self.international_approved_on is not None
+        return self.approved_on is not None
 
     approved.boolean = True
 
     def funded(self):
-        return len(self.approval_set.filter(type="F")) == 1
+        return self.total_funding() >= self.estimated_expenses()
 
     funded.boolean = True
 
@@ -174,6 +176,12 @@ class TravelRequest(models.Model):
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
+
+    def total_funding(self):
+        total = self.approval_set.aggregate(Sum("amount"))["amount__sum"]
+        if total is None:
+            total = 0
+        return total
 
     in_fiscal_year.boolean = True
 
@@ -211,18 +219,18 @@ class Activity(models.Model):
 
 
 class Approval(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
-    approver = models.ForeignKey("Employee", on_delete=models.PROTECT)
-    treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
-    type = models.CharField(max_length=1, choices=APPROVAL_TYPES)
+    approved_on = models.DateTimeField(auto_now_add=True)
+    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
+    fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=10, decimal_places=5)
 
     def __str__(self):
         return str(repr(self))
 
     def __repr__(self):
-        return "<Approval {}: {} {} {}>".format(
+        return "<Approval {}: {} {}>".format(
             self.id,
-            self.get_type_display(),
             self.treq.activity.name,
             self.treq.traveler,
         )

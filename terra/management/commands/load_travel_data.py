@@ -67,16 +67,16 @@ def load_data(self, travel_file):
                     days_ooo=workdays,
                     closed=True,
                 )
-                treq.funding.add(fund)
             except Employee.DoesNotExist:
                 raise CommandError(f"Employee {employee_name} does not exist")
 
             # Approval
             approval = Approval.objects.create(
-                timestamp=start_date,  # We don't have accurate data
-                approver=fake_employee,  # Use fau_approver when data is fixed
+                approved_on=start_date,  # We don't have accurate data
+                approved_by=fake_employee,  # Use fau_approver when data is fixed
                 treq=treq,
-                type="S",  # Can we be more accurate?
+                fund=fund,
+                amount=amount,
             )
 
             # ActualExpense

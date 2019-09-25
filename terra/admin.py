@@ -19,6 +19,11 @@ def custom_titled_filter(title):
             return instance
     return Wrapper
 
+# Inline class to support ManyToMany with Approval and TravelRequest
+class ApprovalInline(admin.TabularInline):
+    model = Approval
+    extra = 1
+
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
@@ -45,7 +50,8 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "allocations_total",
         "expenditures_total",
     )
-    list_filter = ("traveler","activity",("departure_date", custom_titled_filter('departure date')),("return_date", custom_titled_filter('return date')),("days_ooo", custom_titled_filter('days out-of-office')),"closed","funding",)
+    list_filter = ("traveler","activity",("departure_date", custom_titled_filter('departure date')),("return_date", custom_titled_filter('return date')),("days_ooo", custom_titled_filter('days out-of-office')),"closed","funds",)
+    inlines = (ApprovalInline,)
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
@@ -64,8 +70,8 @@ class FundAdmin(admin.ModelAdmin):
 
 @admin.register(Approval)
 class ApprovalAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "type", "approver", "timestamp")
-    list_filter = (("timestamp", custom_titled_filter('approval date')),"approver","treq__traveler",("treq__activity__name", custom_titled_filter('activity')),"type",)
+    list_display = ("id", "treq", "approved_by", "approved_on", "fund", "amount")
+    list_filter = (("approved_on", custom_titled_filter('approval date')),"approved_by","treq__traveler",("treq__activity__name", custom_titled_filter('activity')),)
 
 @admin.register(EstimatedExpense)
 class EstimatedExpenseAdmin(admin.ModelAdmin):
