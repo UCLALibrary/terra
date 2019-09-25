@@ -1,5 +1,11 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import redirect
+from .autocomplete import (
+    AutocompleteSelect,
+    AutocompleteFilter,
+)
+#from admin_auto_filters.filters import AutocompleteFilter
 
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
@@ -206,3 +212,6 @@ class ActivityCountryFilter(InputFilter):
                 country=country
             )
             
+class UnitManagerFilter(AutocompleteFilter):
+    title = 'Manager' # display title
+    field_name = 'manager' # name of the foreign key field

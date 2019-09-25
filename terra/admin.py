@@ -28,16 +28,19 @@ from .filters import (
    AccountFilter,
    CostCenterFilter,
    ApproverNameFilter,
+   UnitManagerFilter,
 )
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
-    list_filter = ("name","manager",("parent_unit", custom_titled_filter('parent unit')),)
+    list_filter = ("name",UnitManagerFilter,("parent_unit", custom_titled_filter('parent unit')),) #"manager"
     search_fields = ['name','parent_unit__name']
-    autocomplete_fields = ['manager','parent_unit']
+    #autocomplete_fields = ['manager','parent_unit']
     def get_ordering(self, request):
         return ['name']
+    class Media:
+        pass;
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
@@ -47,6 +50,8 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ['user__last_name__startswith','supervisor__user__last_name__startswith','unit__name']
     autocomplete_fields = ['unit','supervisor']
     sortable_by = ("uid", "name", "unit", "supervisor", "active")
+    class Media:
+        pass;
 
 @admin.register(TravelRequest)
 class TravelRequestAdmin(admin.ModelAdmin):
