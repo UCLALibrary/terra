@@ -2,8 +2,8 @@ from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from .models import TravelRequest, Unit
-from .reports import unit_report
+from .models import TravelRequest, Unit, Fund
+from .reports import unit_report, fund_report
 
 
 class UserDashboard(LoginRequiredMixin, ListView):
@@ -54,3 +54,27 @@ class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if self.request.user.is_superuser:
             return Unit.objects.filter(type="1")
         return Unit.objects.filter(manager=self.request.user.employee)
+
+
+class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+
+    model = Fund
+    context_object_name = "fund"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def test_func(self):
+        if self.request.user.is_superuser:
+            return True
+        fund = self.get_object()
+        return self.request.user.employee in fund.super_managers()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["employees"], context['totals'] = fund_report(self.object)
+        return context
+
+
+
+
+

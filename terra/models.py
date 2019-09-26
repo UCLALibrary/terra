@@ -115,6 +115,12 @@ class Fund(models.Model):
     def __repr__(self):
         return "<Fund {}: {}>".format(self.id, self)
 
+    def super_managers(self):
+        mgrs = [self.manager]
+        while mgrs[-1].supervisor is not None:
+            mgrs.append(mgrs[-1].supervisor)
+        return mgrs
+
 
 class TravelRequest(models.Model):
     traveler = models.ForeignKey("Employee", on_delete=models.PROTECT)

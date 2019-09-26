@@ -4,7 +4,7 @@
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
-    "last_login": "2019-09-06T20:55:57.899Z",
+    "last_login": "2019-09-26T02:36:42.055Z",
     "is_superuser": true,
     "username": "joshuagomez",
     "first_name": "Joshua",
@@ -123,6 +123,14 @@
     "date_joined": "2019-09-24T00:46:19.396Z",
     "groups": [],
     "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "n1krfjlqcbez4xgiwusntyzi9n50d0ig",
+  "fields": {
+    "session_data": "OTBhMDE5ODhjNDkzMWFiYjIzYWQ5ZGRlNDU5MmUxNGU4NmMwNGZlZjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJlNDRiZDI2NmRjZDQ3NWJlYTY4YzEyYTQ1NDlkNjdlYzVlMTc5OGViIn0=",
+    "expire_date": "2019-10-10T02:36:42.058Z"
   }
 },
 {
@@ -276,7 +284,8 @@
     "administrative": false,
     "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
     "approved_by": 3,
-    "approved_on": "2019-09-24"
+    "approved_on": "2019-09-24",
+    "international_approved_on": null
   }
 },
 {
@@ -290,7 +299,10 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": ""
+    "justification": "",
+    "approved_by": null,
+    "approved_on": null,
+    "international_approved_on": null
   }
 },
 {
@@ -304,7 +316,10 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": ""
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-09-26",
+    "international_approved_on": null
   }
 },
 {
@@ -318,7 +333,10 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": ""
+    "justification": "",
+    "approved_by": null,
+    "approved_on": null,
+    "international_approved_on": null
   }
 },
 {
@@ -332,7 +350,10 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": ""
+    "justification": "",
+    "approved_by": null,
+    "approved_on": null,
+    "international_approved_on": null
   }
 },
 {
@@ -346,7 +367,10 @@
     "days_ooo": 5,
     "closed": true,
     "administrative": false,
-    "justification": ""
+    "justification": "",
+    "approved_by": null,
+    "approved_on": null,
+    "international_approved_on": null
   }
 },
 {
@@ -360,7 +384,10 @@
     "days_ooo": 3,
     "closed": false,
     "administrative": true,
-    "justification": ""
+    "justification": "",
+    "approved_by": 4,
+    "approved_on": "2019-09-26",
+    "international_approved_on": null
   }
 },
 {
@@ -374,7 +401,10 @@
     "days_ooo": 5,
     "closed": false,
     "administrative": false,
-    "justification": ""
+    "justification": "",
+    "approved_by": null,
+    "approved_on": null,
+    "international_approved_on": null
   }
 },
 {
@@ -473,6 +503,28 @@
     "treq": 2,
     "fund": 1,
     "amount": "2000.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 4,
+  "fields": {
+    "approved_on": "2019-09-26T13:34:33.727Z",
+    "approved_by": 1,
+    "treq": 3,
+    "fund": 1,
+    "amount": "1050.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 5,
+  "fields": {
+    "approved_on": "2019-09-26T13:35:24.030Z",
+    "approved_by": 4,
+    "treq": 7,
+    "fund": 2,
+    "amount": "1300.00000"
   }
 },
 {
