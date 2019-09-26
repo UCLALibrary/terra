@@ -12,9 +12,8 @@ ENV PATH /home/django/.local/bin:${PATH}
 # Gunicorn cmd line flags:
 # -w number of gunicorn worker processes
 # -b IPADDR:PORT binding
-# --reload pick up code changes as they happen
 # --access-logfile where to send HTTP access logs (- is stdout)
-ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000 --reload --access-logfile -
+ENV GUNICORN_CMD_ARGS -w 3 -b 0.0.0.0:8000 --access-logfile -
 
 WORKDIR /home/django/terra
 
