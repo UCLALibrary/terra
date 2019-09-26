@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, Q, Sum, Value, OuterRef, Subquery, DecimalField, ExpressionWrapper, IntegerField
-from django.db.models.functions import Coalesce
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import Coalesce, ExtractDay
 
 from .models import TravelRequest, Employee, Approval, ActualExpense
 from .utils import fiscal_year_bookends
@@ -75,6 +74,12 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     vacation_days = TravelRequest.objects.filter(
         traveler=OuterRef("pk")
     ).annotate(vacation_days=Sum(duration))
+
+    # TODO: Replace this platform-specific hack, maybe with custom db Func()
+    MYSQL_TO_DAYS = 86400 * 1000000
+    vacation_days = TravelRequest.objects.filter(
+        traveler=OuterRef("pk")
+    ).annotate(vacation_days=Sum(F("vacation__end")-F("vacation__start"), output_field=IntegerField()) / MYSQL_TO_DAYS)
 
     # final query
     rows = (

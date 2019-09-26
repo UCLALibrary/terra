@@ -294,7 +294,7 @@
   "fields": {
     "traveler": 3,
     "activity": 1,
-    "departure_date": "2020-02-02",
+    "departure_date": "2020-01-26",
     "return_date": "2020-02-08",
     "days_ooo": 5,
     "closed": false,
@@ -414,6 +414,15 @@
     "treq": 1,
     "start": "2020-02-17",
     "end": "2020-02-22"
+  }
+},
+{
+  "model": "terra.vacation",
+  "pk": 2,
+  "fields": {
+    "treq": 2,
+    "start": "2020-01-26",
+    "end": "2020-02-07"
   }
 },
 {

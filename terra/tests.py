@@ -89,9 +89,13 @@ class ModelsTestCase(TestCase):
         self.assertEqual(str(treq), "<TReq 1: Ashton Prigge Code4lib 2020 2020>")
 
     def test_vacation(self):
-        vac = Vacation.objects.get(pk=1)
-        self.assertEqual(repr(vac), "<Vacation 1: 2020-02-17 - 2020-02-22>")
-        self.assertEqual(str(vac), "<Vacation 1: 2020-02-17 - 2020-02-22>")
+        vac = Vacation.objects.get(pk=2)
+        self.assertEqual(repr(vac), "<Vacation 2: 2020-01-26 - 2020-02-07>")
+        self.assertEqual(str(vac), "<Vacation 2: 2020-01-26 - 2020-02-07>")
+
+    def test_vacation_days_across_months(self):
+        vac = Vacation.objects.get(pk=2)
+        self.assertEqual(vac.vacation_days(), 12)
 
     def test_activity(self):
         activity = Activity.objects.get(pk=1)
@@ -358,7 +362,7 @@ class UnitReportsTestCase(TestCase):
                     "total_expend": 0,
                     "traveler__uid": "FAKE003",
                     "uid": "FAKE003",
-                    "vacation_days": 0,
+                    "vacation_days": 12,
                 }
             ),
             FakeUser(
@@ -383,7 +387,7 @@ class UnitReportsTestCase(TestCase):
             "profdev_expend": 14780,
             "total_alloc": 21400,
             "total_expend": 14780,
-            "vacation_days": 5,
+            "vacation_days": 17,
         }
         actual = reports.unit_totals(data)
         for key, expected_value in expected.items():
@@ -400,6 +404,7 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": Decimal("3695"),
                         "admin_expend": Decimal("0"),
                         "total_expend": Decimal("3695"),
+                        "vacation_days": Decimal("17"),
                     }
                 },
                 1: {
@@ -410,6 +415,7 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": 0,
                         "admin_expend": 0,
                         "total_expend": 0,
+                        "vacation_days": 0,
                     }
                 },
                 4: {
@@ -420,6 +426,7 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": 0,
                         "admin_expend": 0,
                         "total_expend": 0,
+                        "vacation_days": 0,
                     }
                 },
             },
@@ -430,6 +437,7 @@ class UnitReportsTestCase(TestCase):
                 "profdev_expend": Decimal("3695"),
                 "total_alloc": Decimal("10045"),
                 "total_expend": Decimal("3695"),
+                "vacation_days": Decimal("17"),
             },
         }
         actual = reports.unit_report(Unit.objects.get(pk=1))
