@@ -216,6 +216,9 @@ class Vacation(models.Model):
     def __repr__(self):
         return "<Vacation {}: {} - {}>".format(self.id, self.start, self.end)
 
+    def vacation_days(self):
+        return (self.end - self.start).days
+
 
 class Activity(models.Model):
     name = models.CharField(max_length=128)
