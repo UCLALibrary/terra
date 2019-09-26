@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
 
+from fiscalyear import FiscalYear
+
 from .models import (
     Unit,
     Employee,
@@ -20,7 +22,7 @@ from .models import (
 )
 from .templatetags.terra_extras import check_or_cross, currency
 from .utils import current_fiscal_year, in_fiscal_year
-from .reports import unit_totals, unit_report, get_individual_data
+from terra import reports
 
 
 class ModelsTestCase(TestCase):
@@ -66,6 +68,13 @@ class ModelsTestCase(TestCase):
         self.assertEqual(str(fund), "605000-LD-19900")
         self.assertEqual(repr(fund), "<Fund 1: 605000-LD-19900>")
 
+    def test_fund_super_managers(self):
+        f = Fund.objects.get(pk=1)
+        smgrs = f.super_managers()
+        self.assertEqual(len(smgrs), 3)
+        eids = [mgr.id for mgr in smgrs]
+        self.assertEqual(eids, [3, 1, 4])
+
     def test_treq(self):
         treq = TravelRequest.objects.get(pk=1)
         self.assertEqual(repr(treq), "<TReq 1: Ashton Prigge Code4lib 2020 2020>")
@@ -83,12 +92,8 @@ class ModelsTestCase(TestCase):
 
     def test_approval(self):
         approval = Approval.objects.get(pk=1)
-        self.assertEqual(
-            repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
-        )
-        self.assertEqual(
-            str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
-        )
+        self.assertEqual(repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
+        self.assertEqual(str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
 
     def test_estimated_expense(self):
         estexp = EstimatedExpense.objects.get(pk=1)
@@ -310,7 +315,7 @@ class UtilsTestCase(TestCase):
         self.assertFalse(in_fiscal_year(date(2018, 6, 30), 2019))
 
 
-class ReportsTestCase(TestCase):
+class UnitReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
 
@@ -368,7 +373,7 @@ class ReportsTestCase(TestCase):
             "total_alloc": 21400,
             "total_expend": 14780,
         }
-        actual = unit_totals(data)
+        actual = reports.unit_totals(data)
         for key, expected_value in expected.items():
             self.assertEqual(actual[key], expected_value)
 
@@ -415,25 +420,76 @@ class ReportsTestCase(TestCase):
                 "total_expend": Decimal("3695"),
             },
         }
-        actual = unit_report(Unit.objects.get(pk=1))
+        actual = reports.unit_report(Unit.objects.get(pk=1))
         for sid, subunit in expected["subunits"].items():
             for key, value in subunit["subunit_totals"].items():
                 self.assertEqual(actual["subunits"][sid]["subunit_totals"][key], value)
         for key, value in expected["unit_totals"].items():
             self.assertEqual(actual["unit_totals"][key], value)
 
-    def test_unit_report_disallows_backward_dates(self):
-        self.assertRaises(Exception, unit_report, None, "2020-01-01", "2019-01-01")
+    def test_check_dates_disallows_backward_dates(self):
+        self.assertRaises(Exception, reports.check_dates, "2020-01-01", "2019-01-01")
 
-    def test_unit_report_disallows_awkward_dates(self):
-        self.assertRaises(Exception, unit_report, None, None, "2019-01-01")
-        self.assertRaises(Exception, unit_report, None, "2019-01-01", None)
+    def test_check_dates_disallows_awkward_dates(self):
+        self.assertRaises(Exception, reports.check_dates, None, "2019-01-01")
+        self.assertRaises(Exception, reports.check_dates, "2019-01-01", None)
 
-    def test_get_individual_data_disallows_backward_dates(self):
-        self.assertRaises(
-            Exception, get_individual_data, None, "2020-01-01", "2019-01-01"
+
+class FundReportsTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def setUp(self):
+        self.fy = FiscalYear(2020)
+        self.start_date = self.fy.start.date()
+        self.end_date = self.fy.end.date()
+
+    def test_get_fund_employee_list(self):
+        fund = Fund.objects.get(pk=1)
+        eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
+        expected = [2, 3, 5]
+        for eid in eids:
+            self.assertTrue(eid in expected)
+        fund = Fund.objects.get(pk=2)
+        eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
+        expected = [1, 2]
+        for eid in eids:
+            self.assertTrue(eid in expected)
+
+    def test_fund_report(self):
+        expected = {
+            "admin_alloc": Decimal("1050"),
+            "admin_expend": Decimal("0"),
+            "profdev_alloc": Decimal("7195"),
+            "profdev_expend": Decimal("3695"),
+            "total_alloc": Decimal("8245"),
+            "total_expend": Decimal("3695"),
+        }
+        fund = Fund.objects.get(pk=1)
+        employees, totals = reports.fund_report(fund)
+        self.assertEqual(len(employees), 3)
+        for key, value in expected.items():
+            self.assertEqual(totals[key], value)
+
+
+class TestFundDetailView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_fund_detail_denies_anonymous(self):
+        response = self.client.get("/fund/1/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/fund/1/", status_code=302
         )
 
-    def test_get_individual_data_disallows_awkward_dates(self):
-        self.assertRaises(Exception, get_individual_data, None, None, "2019-01-01")
-        self.assertRaises(Exception, get_individual_data, None, "2019-01-01", None)
+    def test_fund_detail_allows_superuser(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/fund/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/fund.html")
+
+    def test_fund_detail_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/fund/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/fund.html")
