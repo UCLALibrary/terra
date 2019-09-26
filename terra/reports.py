@@ -36,27 +36,39 @@ def get_subunits_and_employees(unit):
 def get_individual_data(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
-    
+
     profdev_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=False, closed=False,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(profdev_alloc=Sum("approval__amount"))
 
     profdev_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=False, closed=True,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(profdev_expend=Sum("actualexpense__total"))
 
     admin_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=True, closed=False,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(admin_alloc=Sum("approval__amount"))
-    
+
     admin_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=True, closed=True,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(admin_expend=Sum("actualexpense__total"))
-    
+
     # final query
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
@@ -155,73 +167,80 @@ def unit_report(unit, start_date=None, end_date=None):
 def get_fund_employee_list(fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     rows = Approval.objects.filter(
-            fund=fund,
-            treq__return_date__gte=start_date,
-            treq__return_date__lte=end_date
-        ).values(eid=F("treq__traveler"))
+        fund=fund, treq__return_date__gte=start_date, treq__return_date__lte=end_date
+    ).values(eid=F("treq__traveler"))
     rows2 = ActualExpense.objects.filter(
-            fund=fund,
-            treq__return_date__gte=start_date,
-            treq__return_date__lte=end_date
-        ).values(eid=F("treq__traveler"))
-    return set([e['eid'] for e in rows.union(rows2)])
+        fund=fund, treq__return_date__gte=start_date, treq__return_date__lte=end_date
+    ).values(eid=F("treq__traveler"))
+    return set([e["eid"] for e in rows.union(rows2)])
 
 
 def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
-    
+
     # 4 subqueries plugged into the final query
     profdev_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=False, closed=False,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(profdev_alloc=Sum("approval__amount", filter=Q(approval__fund=fund)))
-    
+
     profdev_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=False, closed=True,
-        departure_date__gte=start_date, return_date__lte=end_date
-    ).annotate(profdev_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund)))
-    
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(
+        profdev_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+    )
+
     admin_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=True, closed=False,
-        departure_date__gte=start_date, return_date__lte=end_date
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(admin_alloc=Sum("approval__amount"), filter=Q(approval__fund=fund))
-    
+
     admin_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"), administrative=True, closed=True,
-        departure_date__gte=start_date, return_date__lte=end_date
-    ).annotate(admin_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund)))
-    
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(
+        admin_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+    )
+
     # final query
-    rows = (
-        Employee.objects.filter(pk__in=employee_ids)
-        .annotate(
-            profdev_alloc=Coalesce(
-                Subquery(
-                    profdev_alloc.values("profdev_alloc")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+    rows = Employee.objects.filter(pk__in=employee_ids).annotate(
+        profdev_alloc=Coalesce(
+            Subquery(
+                profdev_alloc.values("profdev_alloc")[:1], output_field=DecimalField()
             ),
-            profdev_expend=Coalesce(
-                Subquery(
-                    profdev_expend.values("profdev_expend")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+            Value(0),
+        ),
+        profdev_expend=Coalesce(
+            Subquery(
+                profdev_expend.values("profdev_expend")[:1], output_field=DecimalField()
             ),
-            admin_alloc=Coalesce(
-                Subquery(
-                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+            Value(0),
+        ),
+        admin_alloc=Coalesce(
+            Subquery(
+                admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
             ),
-            admin_expend=Coalesce(
-                Subquery(
-                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+            Value(0),
+        ),
+        admin_expend=Coalesce(
+            Subquery(
+                admin_expend.values("admin_expend")[:1], output_field=DecimalField()
             ),
-        )
+            Value(0),
+        ),
     )
     return rows
 
@@ -240,12 +259,12 @@ def calculate_fund_totals(employees):
         e.admin_alloc += e.admin_expend
         e.total_alloc = e.profdev_alloc + e.admin_alloc
         e.total_expend = e.profdev_expend + e.admin_expend
-        totals['profdev_alloc'] += e.profdev_alloc
-        totals['profdev_expend'] += e.profdev_expend
-        totals['admin_alloc'] += e.admin_alloc
-        totals['admin_expend'] += e.admin_expend
-    totals['total_alloc'] = totals['admin_alloc'] + totals['profdev_alloc']
-    totals['total_expend'] = totals['admin_expend'] + totals['profdev_expend']
+        totals["profdev_alloc"] += e.profdev_alloc
+        totals["profdev_expend"] += e.profdev_expend
+        totals["admin_alloc"] += e.admin_alloc
+        totals["admin_expend"] += e.admin_expend
+    totals["total_alloc"] = totals["admin_alloc"] + totals["profdev_alloc"]
+    totals["total_expend"] = totals["admin_expend"] + totals["profdev_expend"]
     return employees, totals
 
 
@@ -253,12 +272,3 @@ def fund_report(fund, start_date=None, end_date=None):
     eids = get_fund_employee_list(fund, start_date, end_date)
     employee_data = get_individual_data_for_fund(eids, fund, start_date, end_date)
     return calculate_fund_totals(employee_data)
-
-
-
-
-
-
-
-
-

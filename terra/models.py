@@ -29,6 +29,7 @@ EMPLOYEE_TYPES = (
     ("OTHR", "Other"),
 )
 
+
 class Unit(models.Model):
     name = models.CharField(max_length=128)
     type = models.CharField(max_length=1, choices=UNIT_TYPES)
@@ -132,7 +133,13 @@ class TravelRequest(models.Model):
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
     funds = models.ManyToManyField("Fund", through="Approval")
-    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="approved_by", null=True, blank=True)
+    approved_by = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="approved_by",
+        null=True,
+        blank=True,
+    )
     approved_on = models.DateField(null=True, blank=True)
     international_approved_on = models.DateField(null=True, blank=True)
 
@@ -236,9 +243,7 @@ class Approval(models.Model):
 
     def __repr__(self):
         return "<Approval {}: {} {}>".format(
-            self.id,
-            self.treq.activity.name,
-            self.treq.traveler,
+            self.id, self.treq.activity.name, self.treq.traveler
         )
 
 

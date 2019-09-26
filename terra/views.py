@@ -71,10 +71,5 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["employees"], context['totals'] = fund_report(self.object)
+        context["employees"], context["totals"] = fund_report(self.object)
         return context
-
-
-
-
-

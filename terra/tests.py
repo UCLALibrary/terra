@@ -92,12 +92,8 @@ class ModelsTestCase(TestCase):
 
     def test_approval(self):
         approval = Approval.objects.get(pk=1)
-        self.assertEqual(
-            repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
-        )
-        self.assertEqual(
-            str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>"
-        )
+        self.assertEqual(repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
+        self.assertEqual(str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
 
     def test_estimated_expense(self):
         estexp = EstimatedExpense.objects.get(pk=1)
@@ -451,12 +447,12 @@ class FundReportsTestCase(TestCase):
     def test_get_fund_employee_list(self):
         fund = Fund.objects.get(pk=1)
         eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
-        expected = [2,3,5]
+        expected = [2, 3, 5]
         for eid in eids:
             self.assertTrue(eid in expected)
         fund = Fund.objects.get(pk=2)
         eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
-        expected = [1,2]
+        expected = [1, 2]
         for eid in eids:
             self.assertTrue(eid in expected)
 
@@ -472,7 +468,7 @@ class FundReportsTestCase(TestCase):
         fund = Fund.objects.get(pk=1)
         employees, totals = reports.fund_report(fund)
         self.assertEqual(len(employees), 3)
-        for key,value in expected.items():
+        for key, value in expected.items():
             self.assertEqual(totals[key], value)
 
 
@@ -482,7 +478,9 @@ class TestFundDetailView(TestCase):
 
     def test_fund_detail_denies_anonymous(self):
         response = self.client.get("/fund/1/", follow=True)
-        self.assertRedirects(response, "/accounts/login/?next=/fund/1/", status_code=302)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/fund/1/", status_code=302
+        )
 
     def test_fund_detail_allows_superuser(self):
         self.client.login(username="doriswang", password="Staples50141")
@@ -495,8 +493,3 @@ class TestFundDetailView(TestCase):
         response = self.client.get("/fund/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
-
-
-
-
-
