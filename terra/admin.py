@@ -31,6 +31,11 @@ from .filters import (
    UnitManagerFilter,
 )
 
+# Inline class to support ManyToMany with Approval and TravelRequest
+class ApprovalInline(admin.TabularInline):
+    model = Approval
+    extra = 1
+
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
@@ -68,9 +73,9 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "allocations_total",
         "expenditures_total",
     )
-    list_filter = (TreqEmpLastNameFilter,TreqActivityNameFilter,("departure_date", custom_titled_filter('Departure Date')),("return_date", custom_titled_filter('Return Date')),("days_ooo", custom_titled_filter('Days Out-of-Office')),"closed","funding",) # "traveler" "activity"
-    autocomplete_fields = ['funding']
-
+    list_filter = (TreqEmpLastNameFilter,TreqActivityNameFilter,("departure_date", custom_titled_filter('Departure Date')),("return_date", custom_titled_filter('Return Date')),("days_ooo", custom_titled_filter('Days Out-of-Office')),"closed","funds",) # "traveler" "activity"
+    autocomplete_fields = ['funds']
+    inlines = (ApprovalInline,)
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
@@ -93,9 +98,8 @@ class FundAdmin(admin.ModelAdmin):
 
 @admin.register(Approval)
 class ApprovalAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "type", "approver", "timestamp")
-    list_filter = (("timestamp", custom_titled_filter('Approval Date')),ApproverNameFilter,TreqEmpLastNameFilter,TreqActivityNameFilter,"type",) # "treq__traveler" ("treq__activity__name", custom_titled_filter('activity')) "approver"
-
+    list_display = ("id", "treq", "approved_by", "approved_on", "fund", "amount")
+    list_filter = (("approved_on", custom_titled_filter('Approval Date')),ApproverNameFilter,TreqEmpLastNameFilter,TreqActivityNameFilter,) # "treq__traveler" ("treq__activity__name", custom_titled_filter('activity')) "approver" "type",
 
 @admin.register(EstimatedExpense)
 class EstimatedExpenseAdmin(admin.ModelAdmin):
