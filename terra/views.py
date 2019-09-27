@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .models import TravelRequest, Unit, Fund
 from .reports import unit_report, fund_report
+from .utils import current_fiscal_year_object
 
 
 class UserDashboard(LoginRequiredMixin, ListView):
@@ -71,7 +72,13 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["employees"], context["totals"] = fund_report(self.object)
+        # For now get current fiscal year
+        # Override this by query params when we add historic data
+        fy = current_fiscal_year_object()
+        context["employees"], context["totals"] = fund_report(
+            fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         return context
 
 
