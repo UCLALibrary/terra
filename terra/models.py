@@ -88,6 +88,12 @@ class Employee(models.Model):
     def name(self):
         return str(self)
 
+    def is_unit_manager(self):
+        return self.managed_units.count() > 0
+
+    def is_fund_manager(self):
+        return self.fund_set.count() > 0
+
     def direct_reports(self):
         return Employee.objects.filter(supervisor=self)
 

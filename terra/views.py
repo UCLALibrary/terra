@@ -47,7 +47,7 @@ class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return (
             self.request.user.is_superuser
-            or len(self.request.user.employee.managed_units.all()) > 0
+            or self.request.user.employee.is_unit_manager()
         )
 
     def get_queryset(self):
@@ -73,3 +73,22 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(*args, **kwargs)
         context["employees"], context["totals"] = fund_report(self.object)
         return context
+
+
+class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
+    model = Fund
+    context_object_name = "funds"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def test_func(self):
+        return (
+            self.request.user.is_superuser
+            or self.request.user.employee.is_fund_manager()
+        )
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Fund.objects.all()
+        return Fund.objects.filter(manager=self.request.user.employee)
