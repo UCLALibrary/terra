@@ -4,7 +4,13 @@ from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
-from terra.views import UserDashboard, UnitDetailView, UnitListView, FundDetailView
+from terra.views import (
+    UserDashboard,
+    UnitDetailView,
+    UnitListView,
+    FundDetailView,
+    FundListView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -77,6 +83,11 @@ urlpatterns = [
         "fund/<int:pk>/",
         FundDetailView.as_view(template_name="terra/fund.html"),
         name="fund_detail",
+    ),
+    path(
+        "fund/",
+        FundListView.as_view(template_name="terra/fund_list.html"),
+        name="fund_list",
     ),
     path("", RedirectView.as_view(url="/dashboard"), name="home"),
 ]

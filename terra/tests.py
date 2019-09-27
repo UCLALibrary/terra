@@ -63,6 +63,14 @@ class ModelsTestCase(TestCase):
         self.assertEqual(len(staff), 3)
         self.assertEqual(len(mgrs), 1)
 
+    def test_employee_manager_methods(self):
+        emp = Employee.objects.get(pk=2)
+        self.assertFalse(emp.is_unit_manager())
+        self.assertFalse(emp.is_fund_manager())
+        emp = Employee.objects.get(pk=3)
+        self.assertTrue(emp.is_unit_manager())
+        self.assertTrue(emp.is_fund_manager())
+
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
         self.assertEqual(str(fund), "605000-LD-19900")
@@ -493,3 +501,18 @@ class TestFundDetailView(TestCase):
         response = self.client.get("/fund/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
+
+
+class TestFundListView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_fund_list_denies_anonymous(self):
+        response = self.client.get("/fund/", follow=True)
+        self.assertRedirects(response, "/accounts/login/?next=/fund/", status_code=302)
+
+    def test_fund_detail_allows_superuser(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/fund/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/fund_list.html")

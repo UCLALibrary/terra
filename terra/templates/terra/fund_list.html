@@ -1,0 +1,25 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Fund List{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>Fund Reports</h1>
+<hr/>
+<ul type="square">
+{% for fund in funds %}
+	<h3><li><a href="/fund/{{fund.pk}}">{{fund}}</a></li></h3>
+{% endfor %}
+</ul>
+
+{% endblock %}
