@@ -18,4 +18,8 @@ if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then
 
   # Push the terra image to the Docker Hub Registry
   docker push uclalibrary/terra:latest
+
+  # Deploy the image to the test environment via Jenkins/Ansible
+  curl ${JENKINS_DEPLOY_URL}
+
 fi
