@@ -90,8 +90,15 @@ class ModelsTestCase(TestCase):
 
     def test_vacation(self):
         vac = Vacation.objects.get(pk=1)
-        self.assertEqual(repr(vac), "<Vacation 1: 2020-02-17 - 2020-02-22>")
-        self.assertEqual(str(vac), "<Vacation 1: 2020-02-17 - 2020-02-22>")
+        self.assertEqual(repr(vac), "<Vacation 1: 2020-02-17 - 2020-02-21>")
+        self.assertEqual(str(vac), "<Vacation 1: 2020-02-17 - 2020-02-21>")
+
+    def test_vacation_duration(self):
+        treq = TravelRequest.objects.get(pk=1)
+        start = date(2020, 2, 10)
+        end = date(2020, 2, 12)
+        vac = Vacation.objects.create(treq=treq, start=start, end=end)
+        self.assertEqual(vac.duration, 3)
 
     def test_activity(self):
         activity = Activity.objects.get(pk=1)
@@ -327,6 +334,11 @@ class UnitReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
 
+    def setUp(self):
+        self.fy = FiscalYear(2020)
+        self.start_date = self.fy.start.date()
+        self.end_date = self.fy.end.date()
+
     def test_unit_totals(self):
         class FakeUser:
             def __init__(self, data):
@@ -344,6 +356,9 @@ class UnitReportsTestCase(TestCase):
                     "total_expend": 7420,
                     "traveler__uid": "FAKE002",
                     "uid": "FAKE002",
+                    "days_vacation": 5,
+                    "days_away": 0,
+                    "total_days_ooo": 5,
                 }
             ),
             FakeUser(
@@ -357,6 +372,9 @@ class UnitReportsTestCase(TestCase):
                     "total_expend": 0,
                     "traveler__uid": "FAKE003",
                     "uid": "FAKE003",
+                    "days_vacation": 9,
+                    "days_away": 0,
+                    "total_days_ooo": 9,
                 }
             ),
             FakeUser(
@@ -370,15 +388,21 @@ class UnitReportsTestCase(TestCase):
                     "total_expend": 7360,
                     "traveler__uid": "FAKE005",
                     "uid": "FAKE005",
+                    "days_vacation": 0,
+                    "days_away": 0,
+                    "total_days_ooo": 0,
                 }
             ),
         ]
         expected = {
             "admin_alloc": 1050,
             "admin_expend": 0,
+            "days_away": 0,
+            "days_vacation": 14,
             "profdev_alloc": 20350,
             "profdev_expend": 14780,
             "total_alloc": 21400,
+            "total_days_ooo": 14,
             "total_expend": 14780,
         }
         actual = reports.unit_totals(data)
@@ -396,6 +420,8 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": Decimal("3695"),
                         "admin_expend": Decimal("0"),
                         "total_expend": Decimal("3695"),
+                        "days_vacation": Decimal("14"),
+                        "days_away": Decimal("33"),
                     }
                 },
                 1: {
@@ -406,6 +432,8 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": 0,
                         "admin_expend": 0,
                         "total_expend": 0,
+                        "days_vacation": 0,
+                        "days_away": 0,
                     }
                 },
                 4: {
@@ -416,6 +444,8 @@ class UnitReportsTestCase(TestCase):
                         "profdev_expend": 0,
                         "admin_expend": 0,
                         "total_expend": 0,
+                        "days_vacation": 0,
+                        "days_away": 0,
                     }
                 },
             },
@@ -426,9 +456,13 @@ class UnitReportsTestCase(TestCase):
                 "profdev_expend": Decimal("3695"),
                 "total_alloc": Decimal("10045"),
                 "total_expend": Decimal("3695"),
+                "days_vacation": Decimal("14"),
+                "days_away": Decimal("33"),
             },
         }
-        actual = reports.unit_report(Unit.objects.get(pk=1))
+        actual = reports.unit_report(
+            Unit.objects.get(pk=1), start_date=self.start_date, end_date=self.end_date
+        )
         for sid, subunit in expected["subunits"].items():
             for key, value in subunit["subunit_totals"].items():
                 self.assertEqual(actual["subunits"][sid]["subunit_totals"][key], value)
@@ -441,6 +475,16 @@ class UnitReportsTestCase(TestCase):
     def test_check_dates_disallows_awkward_dates(self):
         self.assertRaises(Exception, reports.check_dates, None, "2019-01-01")
         self.assertRaises(Exception, reports.check_dates, "2019-01-01", None)
+
+    def test_ooo_is_for_specified_fiscal_year_only(self):
+        data = reports.get_individual_data(
+            [5], start_date=self.start_date, end_date=self.end_date
+        )
+        self.assertEqual(data[0]["days_vacation"], 0)
+        data = reports.get_individual_data(
+            [5], start_date="2018-07-01", end_date="2019-06-30"
+        )
+        self.assertEqual(data[0]["days_vacation"], 5)
 
 
 class FundReportsTestCase(TestCase):

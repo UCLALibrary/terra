@@ -1,6 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, Q, Sum, Value, OuterRef, Subquery, DecimalField
-from django.db.models.functions import Coalesce
+from django.db.models import (
+    F,
+    Q,
+    Sum,
+    Value,
+    OuterRef,
+    Subquery,
+    DecimalField,
+    ExpressionWrapper,
+    IntegerField,
+)
+from django.db.models.functions import Coalesce, ExtractDay
 
 from .models import TravelRequest, Employee, Approval, ActualExpense
 from .utils import fiscal_year_bookends
@@ -69,6 +79,22 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         return_date__lte=end_date,
     ).annotate(admin_expend=Sum("actualexpense__total"))
 
+    days_vacation = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(days_vacation=Sum("vacation__duration"))
+
+    days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler_id")
+        .annotate(days_away=Sum("days_ooo"))
+    )
+
     # final query
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
@@ -99,8 +125,29 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
                 ),
                 Value(0),
             ),
+            days_vacation=Coalesce(
+                Subquery(
+                    days_vacation.values("days_vacation")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
+            days_away=Coalesce(
+                Subquery(
+                    days_away.values("days_away")[:1], output_field=IntegerField()
+                ),
+                Value(0),
+            ),
         )
-        .values("id", "profdev_alloc", "profdev_expend", "admin_alloc", "admin_expend")
+        .values(
+            "id",
+            "profdev_alloc",
+            "profdev_expend",
+            "admin_alloc",
+            "admin_expend",
+            "days_vacation",
+            "days_away",
+        )
     )
     return rows
 
@@ -118,13 +165,19 @@ def merge_data(rows, data):
                 employee.data["total_expend"] = (
                     employee.data["admin_expend"] + employee.data["profdev_expend"]
                 )
+                employee.data["total_days_ooo"] = (
+                    employee.data["days_away"] + employee.data["days_vacation"]
+                )
             except ObjectDoesNotExist:
                 employee.data = {
                     "admin_alloc": 0,
                     "admin_expend": 0,
+                    "days_away": 0,
+                    "days_vacation": 0,
                     "profdev_alloc": 0,
                     "profdev_expend": 0,
                     "total_alloc": 0,
+                    "total_days_ooo": 0,
                     "total_expend": 0,
                 }
     return data
@@ -138,6 +191,9 @@ def unit_totals(employees):
         "profdev_expend": sum(e.data["profdev_expend"] for e in employees),
         "admin_expend": sum(e.data["admin_expend"] for e in employees),
         "total_expend": sum(e.data["total_expend"] for e in employees),
+        "days_vacation": sum(e.data["days_vacation"] for e in employees),
+        "days_away": sum(e.data["days_away"] for e in employees),
+        "total_days_ooo": sum(e.data["total_days_ooo"] for e in employees),
     }
 
 
@@ -145,9 +201,12 @@ def calculate_totals(data):
     data["unit_totals"] = {
         "admin_alloc": 0,
         "admin_expend": 0,
+        "days_away": 0,
+        "days_vacation": 0,
         "profdev_alloc": 0,
         "profdev_expend": 0,
         "total_alloc": 0,
+        "total_days_ooo": 0,
         "total_expend": 0,
     }
     for subunit in data["subunits"].values():

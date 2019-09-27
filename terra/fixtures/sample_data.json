@@ -4,7 +4,7 @@
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
-    "last_login": "2019-09-26T02:36:42.055Z",
+    "last_login": "2019-09-27T14:53:48.640Z",
     "is_superuser": true,
     "username": "joshuagomez",
     "first_name": "Joshua",
@@ -123,14 +123,6 @@
     "date_joined": "2019-09-24T00:46:19.396Z",
     "groups": [],
     "user_permissions": []
-  }
-},
-{
-  "model": "sessions.session",
-  "pk": "n1krfjlqcbez4xgiwusntyzi9n50d0ig",
-  "fields": {
-    "session_data": "OTBhMDE5ODhjNDkzMWFiYjIzYWQ5ZGRlNDU5MmUxNGU4NmMwNGZlZjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJlNDRiZDI2NmRjZDQ3NWJlYTY4YzEyYTQ1NDlkNjdlYzVlMTc5OGViIn0=",
-    "expire_date": "2019-10-10T02:36:42.058Z"
   }
 },
 {
@@ -294,7 +286,7 @@
   "fields": {
     "traveler": 3,
     "activity": 1,
-    "departure_date": "2020-02-02",
+    "departure_date": "2020-01-26",
     "return_date": "2020-02-08",
     "days_ooo": 5,
     "closed": false,
@@ -313,7 +305,7 @@
     "activity": 3,
     "departure_date": "2019-12-08",
     "return_date": "2019-09-11",
-    "days_ooo": 3,
+    "days_ooo": 0,
     "closed": false,
     "administrative": true,
     "justification": "",
@@ -408,12 +400,60 @@
   }
 },
 {
+  "model": "terra.travelrequest",
+  "pk": 9,
+  "fields": {
+    "traveler": 5,
+    "activity": 5,
+    "departure_date": "2019-05-05",
+    "return_date": "2019-05-18",
+    "days_ooo": 5,
+    "closed": true,
+    "administrative": false,
+    "justification": "",
+    "approved_by": 3,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
   "model": "terra.vacation",
   "pk": 1,
   "fields": {
     "treq": 1,
     "start": "2020-02-17",
-    "end": "2020-02-22"
+    "end": "2020-02-21",
+    "duration": 5
+  }
+},
+{
+  "model": "terra.vacation",
+  "pk": 2,
+  "fields": {
+    "treq": 2,
+    "start": "2020-01-28",
+    "end": "2020-01-31",
+    "duration": 4
+  }
+},
+{
+  "model": "terra.vacation",
+  "pk": 3,
+  "fields": {
+    "treq": 2,
+    "start": "2020-02-03",
+    "end": "2020-02-07",
+    "duration": 5
+  }
+},
+{
+  "model": "terra.vacation",
+  "pk": 4,
+  "fields": {
+    "treq": 9,
+    "start": "2019-05-13",
+    "end": "2019-05-17",
+    "duration": 5
   }
 },
 {
@@ -473,6 +513,20 @@
   }
 },
 {
+  "model": "terra.activity",
+  "pk": 5,
+  "fields": {
+    "name": "Smashing Conf 2019",
+    "url": "",
+    "description": "",
+    "start": "2019-05-06",
+    "end": "2019-05-10",
+    "city": "Toronto",
+    "state": "Ontario",
+    "country": "Canada"
+  }
+},
+{
   "model": "terra.approval",
   "pk": 1,
   "fields": {
@@ -525,6 +579,17 @@
     "treq": 7,
     "fund": 2,
     "amount": "1300.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 6,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 9,
+    "fund": 1,
+    "amount": "3500.00000"
   }
 },
 {
@@ -939,6 +1004,54 @@
     "rate": null,
     "quantity": null,
     "total": "225.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 10,
+  "fields": {
+    "treq": 9,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 6,
+    "total": "1200.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 11,
+  "fields": {
+    "treq": 9,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 12,
+  "fields": {
+    "treq": 9,
+    "type": "CON",
+    "rate": null,
+    "quantity": null,
+    "total": "1200.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 13,
+  "fields": {
+    "treq": 9,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "330.00000",
     "fund": 1
   }
 }

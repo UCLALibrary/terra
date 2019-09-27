@@ -1,0 +1,32 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Unit List{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>Unit Vacation Reports</h1>
+<hr/>
+<ul type="square">
+{% for unit in units %}
+  <h{{unit.type}}><li><a href="/vacation/{{unit.pk}}">{{unit.name}}</a></li></h{{unit.type}}>
+    {% if unit.subunits.all %}
+    <ul type="square">
+    {% for subunit in unit.subunits.all %}
+      {% include "terra/vacation_list_item.html"%}
+    {% endfor %}
+    </ul>
+    {% endif %}
+{% endfor %}
+</ul>
+
+{% endblock %}

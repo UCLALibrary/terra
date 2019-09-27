@@ -209,12 +209,21 @@ class Vacation(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
     start = models.DateField()
     end = models.DateField()
+    duration = models.IntegerField(blank=True)
 
     def __str__(self):
         return str(repr(self))
 
     def __repr__(self):
         return "<Vacation {}: {} - {}>".format(self.id, self.start, self.end)
+
+    def vacation_days(self):
+        # Assuming vacation days are inclusive, so add 1 to the difference.
+        return (self.end - self.start).days + 1
+
+    def save(self, *args, **kwargs):
+        self.duration = self.vacation_days()
+        super().save(*args, **kwargs)
 
 
 class Activity(models.Model):

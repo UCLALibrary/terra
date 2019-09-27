@@ -1,0 +1,88 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Vacation Report - {{unit.name}}{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <h1>{{unit.name}}</h1>
+    <p>Manager: {{unit.manager}}</p>
+    <h2>Current Fiscal Year</h2>
+    <hr/>
+
+    {% for subunit_id, subunit in report.subunits.items %}
+    <h3>{{subunit.subunit.name}}</h3>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="1" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Days Out of Office</th>
+            </tr>
+            <tr>
+                <th scope="col">Employee</th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vacation</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eid, employee in subunit.employees.items %}
+            <tr>
+                <td>{{employee.user.last_name}}, {{employee.user.first_name}}</td>
+                <td class="text-right">{{employee.data.days_away}}</td>
+                <td class="text-right">{{employee.data.days_vacation}}</td>
+                <td class="text-right">{{employee.data.total_days_ooo}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
+                <th class="text-right">{{subunit.subunit_totals.days_vacation}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_days_ooo}}</th>
+            </tr>
+        </tfoot>
+    </table>
+    {% endfor %}
+
+    {% if unit.subunits.all %}
+    <hr/>
+    <h3>Unit Totals</h3>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="1" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Allocation</th>
+            </tr>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vacation</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th class="text-right">{{report.unit_totals.days_away}}</th>
+                <th class="text-right">{{report.unit_totals.days_vacation}}</th>
+                <th class="text-right">{{report.unit_totals.total_days_ooo}}</th>
+            </tr>
+        </tfoot>
+    </table>
+    {% endif %}
+
+
+{% endblock %}
+

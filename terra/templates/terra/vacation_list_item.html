@@ -1,0 +1,10 @@
+<h{{subunit.type}}><li><a href="/vacation/{{subunit.pk}}">{{subunit.name}}</a></li></h{{subunit.type}}>
+{% if subunit.subunits.all %}
+  <ul type="square">
+  {% for subsubunit in subunit.subunits.all %}
+    {% with subunit=subsubunit template_name="terra/vacation_list_item.html" %}
+      {% include template_name %}
+    {% endwith %}
+  {% endfor %}
+  </ul>
+{% endif %}
