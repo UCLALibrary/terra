@@ -83,6 +83,7 @@ urlpatterns = [
         "fund/<int:pk>/",
         FundDetailView.as_view(template_name="terra/fund.html"),
         name="fund_detail",
+    ),
     path(
         "vacation/<int:pk>/",
         UnitDetailView.as_view(template_name="terra/unit.html"),

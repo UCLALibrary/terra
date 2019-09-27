@@ -69,17 +69,13 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         return_date__lte=end_date,
     ).annotate(admin_expend=Sum("actualexpense__total"))
 
-    # A new subquery for vacations.  Date math needs an Expresssion.
-    duration = ExpressionWrapper(ExtractDay(F("vacation__end")) - ExtractDay(F("vacation__start")),output_field=IntegerField())
-    vacation_days = TravelRequest.objects.filter(
+    days_vacation = TravelRequest.objects.filter(
         traveler=OuterRef("pk")
-    ).annotate(vacation_days=Sum(duration))
+    ).annotate(days_vacation=Sum("vacation__duration"))
 
-    # TODO: Replace this platform-specific hack, maybe with custom db Func()
-    MYSQL_TO_DAYS = 86400 * 1000000
-    vacation_days = TravelRequest.objects.filter(
+    days_away = TravelRequest.objects.filter(
         traveler=OuterRef("pk")
-    ).annotate(vacation_days=Sum(F("vacation__end")-F("vacation__start"), output_field=IntegerField()) / MYSQL_TO_DAYS)
+    ).values("traveler_id").annotate(days_away=Sum("days_ooo"))
 
     # final query
     rows = (
@@ -111,14 +107,20 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
                 ),
                 Value(0),
             ),
-            vacation_days=Coalesce(
+            days_vacation=Coalesce(
                 Subquery(
-                    vacation_days.values("vacation_days")[:1]
+                    days_vacation.values("days_vacation")[:1]
+                ),
+                Value(0),
+            ),
+            days_away=Coalesce(
+                Subquery(
+                    days_away.values("days_away")[:1]
                 ),
                 Value(0),
             ),
         )
-        .values("id", "profdev_alloc", "profdev_expend", "admin_alloc", "admin_expend", "vacation_days")
+        .values("id", "profdev_alloc", "profdev_expend", "admin_alloc", "admin_expend", "days_vacation", "days_away")
     )
     return rows
 
@@ -144,7 +146,8 @@ def merge_data(rows, data):
                     "profdev_expend": 0,
                     "total_alloc": 0,
                     "total_expend": 0,
-                    "vacation_days": 0,
+                    "days_vacation": 0,
+                    "days_away": 0,
                 }
     return data
 
@@ -157,7 +160,8 @@ def unit_totals(employees):
         "profdev_expend": sum(e.data["profdev_expend"] for e in employees),
         "admin_expend": sum(e.data["admin_expend"] for e in employees),
         "total_expend": sum(e.data["total_expend"] for e in employees),
-        "vacation_days": sum(e.data["vacation_days"] for e in employees),
+        "days_vacation": sum(e.data["days_vacation"] for e in employees),
+        "days_away": sum(e.data["days_away"] for e in employees),
     }
 
 
@@ -169,7 +173,8 @@ def calculate_totals(data):
         "profdev_expend": 0,
         "total_alloc": 0,
         "total_expend": 0,
-        "vacation_days": 0,
+        "days_vacation": 0,
+        "days_away": 0,
     }
     for subunit in data["subunits"].values():
         subunit["subunit_totals"] = unit_totals(subunit["employees"].values())

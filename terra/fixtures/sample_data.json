@@ -313,7 +313,7 @@
     "activity": 3,
     "departure_date": "2019-12-08",
     "return_date": "2019-09-11",
-    "days_ooo": 3,
+    "days_ooo": 0,
     "closed": false,
     "administrative": true,
     "justification": "",
@@ -413,7 +413,8 @@
   "fields": {
     "treq": 1,
     "start": "2020-02-17",
-    "end": "2020-02-22"
+    "end": "2020-02-21",
+    "duration": 5
   }
 },
 {
@@ -421,8 +422,19 @@
   "pk": 2,
   "fields": {
     "treq": 2,
-    "start": "2020-01-26",
-    "end": "2020-02-07"
+    "start": "2020-01-28",
+    "end": "2020-01-31",
+    "duration": 4
+  }
+},
+{
+  "model": "terra.vacation",
+  "pk": 3,
+  "fields": {
+    "treq": 2,
+    "start": "2020-02-03",
+    "end": "2020-02-07",
+    "duration": 5
   }
 },
 {
