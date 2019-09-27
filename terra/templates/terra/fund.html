@@ -2,7 +2,7 @@
 
 {% load terra_extras %}
 
-{% block title %}Unit Report - {{unit.name}}{% endblock %}
+{% block title %}FAU Report - {{fund}}{% endblock %}
 
 {% block supplemental_css %}
 <style>
@@ -15,9 +15,10 @@
 
 {% block body %}
 
-    <h1>{{unit}}</h1>
-    <p>Manager: {{fund.manager}}</p>
-    <h2>Current Fiscal Year</h2>
+    <h1>Fiscal Year {{fiscalyear}}</h1>
+    <h2>{{fund.manager.unit.name}}</h2>
+    <h3>{{fund.manager}}</h3>
+    <h3>{{fund}}</h3>
     <hr/>
 
     <table class="table">
