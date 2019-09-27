@@ -353,6 +353,7 @@ class UnitReportsTestCase(TestCase):
                     "uid": "FAKE002",
                     "days_vacation": 5,
                     "days_away": 0,
+                    "total_days_ooo": 5,
                 }
             ),
             FakeUser(
@@ -368,6 +369,7 @@ class UnitReportsTestCase(TestCase):
                     "uid": "FAKE003",
                     "days_vacation": 9,
                     "days_away": 0,
+                    "total_days_ooo": 9,
                 }
             ),
             FakeUser(
@@ -383,18 +385,20 @@ class UnitReportsTestCase(TestCase):
                     "uid": "FAKE005",
                     "days_vacation": 0,
                     "days_away": 0,
+                    "total_days_ooo": 0,
                 }
             ),
         ]
         expected = {
             "admin_alloc": 1050,
             "admin_expend": 0,
+            "days_away": 0,
+            "days_vacation": 14,
             "profdev_alloc": 20350,
             "profdev_expend": 14780,
             "total_alloc": 21400,
+            "total_days_ooo": 14,
             "total_expend": 14780,
-            "days_vacation": 14,
-            "days_away": 0,
         }
         actual = reports.unit_totals(data)
         for key, expected_value in expected.items():

@@ -86,13 +86,13 @@ urlpatterns = [
     ),
     path(
         "vacation/<int:pk>/",
-        UnitDetailView.as_view(template_name="terra/unit.html"),
-        name="frogspawn",
+        UnitDetailView.as_view(template_name="terra/vacation.html"),
+        name="vacation_detail",
     ),
     path(
         "vacation/",
-        UnitListView.as_view(template_name="terra/unit_vacation_list.html"),
-        name="frogspawn",
+        UnitListView.as_view(template_name="terra/vacation_list.html"),
+        name="vacation_list",
     ),
     path(
         "fund/",

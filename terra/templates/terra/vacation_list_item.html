@@ -2,7 +2,7 @@
 {% if subunit.subunits.all %}
   <ul type="square">
   {% for subsubunit in subunit.subunits.all %}
-    {% with subunit=subsubunit template_name="terra/unit_vacation_list_item.html" %}
+    {% with subunit=subsubunit template_name="terra/vacation_list_item.html" %}
       {% include template_name %}
     {% endwith %}
   {% endfor %}

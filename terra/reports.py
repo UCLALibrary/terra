@@ -138,16 +138,20 @@ def merge_data(rows, data):
                 employee.data["total_expend"] = (
                     employee.data["admin_expend"] + employee.data["profdev_expend"]
                 )
+                employee.data["total_days_ooo"] = (
+                    employee.data["days_away"] + employee.data["days_vacation"]
+                )
             except ObjectDoesNotExist:
                 employee.data = {
                     "admin_alloc": 0,
                     "admin_expend": 0,
+                    "days_away": 0,
+                    "days_vacation": 0,
                     "profdev_alloc": 0,
                     "profdev_expend": 0,
                     "total_alloc": 0,
+                    "total_days_ooo": 0,
                     "total_expend": 0,
-                    "days_vacation": 0,
-                    "days_away": 0,
                 }
     return data
 
@@ -162,6 +166,7 @@ def unit_totals(employees):
         "total_expend": sum(e.data["total_expend"] for e in employees),
         "days_vacation": sum(e.data["days_vacation"] for e in employees),
         "days_away": sum(e.data["days_away"] for e in employees),
+        "total_days_ooo": sum(e.data["total_days_ooo"] for e in employees),
     }
 
 
@@ -169,12 +174,13 @@ def calculate_totals(data):
     data["unit_totals"] = {
         "admin_alloc": 0,
         "admin_expend": 0,
+        "days_away": 0,
+        "days_vacation": 0,
         "profdev_alloc": 0,
         "profdev_expend": 0,
         "total_alloc": 0,
+        "total_days_ooo": 0,
         "total_expend": 0,
-        "days_vacation": 0,
-        "days_away": 0,
     }
     for subunit in data["subunits"].values():
         subunit["subunit_totals"] = unit_totals(subunit["employees"].values())
