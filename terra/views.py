@@ -34,7 +34,13 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["report"] = unit_report(self.object)
+        # For now get current fiscal year
+        # Override this by query params when we add historic data
+        fy = current_fiscal_year_object()
+        context["report"] = unit_report(
+            unit=self.object, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         return context
 
 

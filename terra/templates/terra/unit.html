@@ -15,9 +15,9 @@
 
 {% block body %}
 
-    <h1>{{unit.name}}</h1>
-    <p>Manager: {{unit.manager}}</p>
-    <h2>Current Fiscal Year</h2>
+    <h1>Fiscal Year {{fiscalyear}}</h1>
+    <h2>{{unit.name}}</h2>
+    <h3>{{unit.manager}}</h3>
     <hr/>
     
     {% for subunit_id, subunit in report.subunits.items %}
@@ -28,6 +28,7 @@
                 <th colspan="1" scope="colgroup"></th>
                 <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
                 <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
                 <th scope="col">Employee</th>
@@ -36,6 +37,9 @@
                 <th scope="col" class="text-right">Total</th>
                 <th scope="col" class="text-right">Prof. Dev.</th>
                 <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vaction</th>
                 <th scope="col" class="text-right">Total</th>
             </tr>
         </thead>
@@ -49,18 +53,24 @@
                 <td class="text-right">{{employee.data.profdev_expend|currency}}</td>
                 <td class="text-right">{{employee.data.admin_expend|currency}}</td>
                 <td class="text-right">{{employee.data.total_expend|currency}}</td>
+                <td class="text-right">{{employee.data.days_away}}</td>
+                <td class="text-right">{{employee.data.days_vacation}}</td>
+                <td class="text-right">{{employee.data.total_days_ooo}}</td>
             </tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
-                <th>Totals</th>
+                <th>Subtotals</th>
                 <th class="text-right">{{subunit.subunit_totals.profdev_alloc|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.admin_alloc|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.total_alloc|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.profdev_expend|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.admin_expend|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.total_expend|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
+                <th class="text-right">{{subunit.subunit_totals.days_vacation}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
     </table>
@@ -68,13 +78,14 @@
 
     {% if unit.subunits.all %}
     <hr/>
-    <h3>Unit Totals</h3>
+    <h3>{{unit.name}} Totals</h3>
     <table class="table">
         <thead class="thead-light">
             <tr>
                 <th colspan="1" scope="colgroup"></th>
                 <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
                 <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
                 <th scope="col"></th>
@@ -83,6 +94,9 @@
                 <th scope="col" class="text-right">Total</th>
                 <th scope="col" class="text-right">Prof. Dev.</th>
                 <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vaction</th>
                 <th scope="col" class="text-right">Total</th>
             </tr>
         </thead>
@@ -95,6 +109,9 @@
                 <th class="text-right">{{report.unit_totals.profdev_expend|currency}}</th>
                 <th class="text-right">{{report.unit_totals.admin_expend|currency}}</th>
                 <th class="text-right">{{report.unit_totals.total_expend|currency}}</th>
+                <th class="text-right">{{report.unit_totals.days_away}}</th>
+                <th class="text-right">{{report.unit_totals.days_vacation}}</th>
+                <th class="text-right">{{report.unit_totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
     </table>
