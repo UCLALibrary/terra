@@ -209,7 +209,7 @@ class Vacation(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
     start = models.DateField()
     end = models.DateField()
-    duration = models.IntegerField()
+    duration = models.IntegerField(blank=True)
 
     def __str__(self):
         return str(repr(self))

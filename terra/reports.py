@@ -1,5 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, Q, Sum, Value, OuterRef, Subquery, DecimalField, ExpressionWrapper, IntegerField
+from django.db.models import (
+    F,
+    Q,
+    Sum,
+    Value,
+    OuterRef,
+    Subquery,
+    DecimalField,
+    ExpressionWrapper,
+    IntegerField,
+)
 from django.db.models.functions import Coalesce, ExtractDay
 
 from .models import TravelRequest, Employee, Approval, ActualExpense
@@ -70,12 +80,20 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     ).annotate(admin_expend=Sum("actualexpense__total"))
 
     days_vacation = TravelRequest.objects.filter(
-        traveler=OuterRef("pk")
+        traveler=OuterRef("pk"),
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
     ).annotate(days_vacation=Sum("vacation__duration"))
 
-    days_away = TravelRequest.objects.filter(
-        traveler=OuterRef("pk")
-    ).values("traveler_id").annotate(days_away=Sum("days_ooo"))
+    days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler_id")
+        .annotate(days_away=Sum("days_ooo"))
+    )
 
     # final query
     rows = (
@@ -109,18 +127,27 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             ),
             days_vacation=Coalesce(
                 Subquery(
-                    days_vacation.values("days_vacation")[:1]
+                    days_vacation.values("days_vacation")[:1],
+                    output_field=IntegerField(),
                 ),
                 Value(0),
             ),
             days_away=Coalesce(
                 Subquery(
-                    days_away.values("days_away")[:1]
+                    days_away.values("days_away")[:1], output_field=IntegerField()
                 ),
                 Value(0),
             ),
         )
-        .values("id", "profdev_alloc", "profdev_expend", "admin_alloc", "admin_expend", "days_vacation", "days_away")
+        .values(
+            "id",
+            "profdev_alloc",
+            "profdev_expend",
+            "admin_alloc",
+            "admin_expend",
+            "days_vacation",
+            "days_away",
+        )
     )
     return rows
 

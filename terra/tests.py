@@ -334,6 +334,11 @@ class UnitReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
 
+    def setUp(self):
+        self.fy = FiscalYear(2020)
+        self.start_date = self.fy.start.date()
+        self.end_date = self.fy.end.date()
+
     def test_unit_totals(self):
         class FakeUser:
             def __init__(self, data):
@@ -455,7 +460,9 @@ class UnitReportsTestCase(TestCase):
                 "days_away": Decimal("33"),
             },
         }
-        actual = reports.unit_report(Unit.objects.get(pk=1))
+        actual = reports.unit_report(
+            Unit.objects.get(pk=1), start_date=self.start_date, end_date=self.end_date
+        )
         for sid, subunit in expected["subunits"].items():
             for key, value in subunit["subunit_totals"].items():
                 self.assertEqual(actual["subunits"][sid]["subunit_totals"][key], value)
@@ -468,6 +475,16 @@ class UnitReportsTestCase(TestCase):
     def test_check_dates_disallows_awkward_dates(self):
         self.assertRaises(Exception, reports.check_dates, None, "2019-01-01")
         self.assertRaises(Exception, reports.check_dates, "2019-01-01", None)
+
+    def test_ooo_is_for_specified_fiscal_year_only(self):
+        data = reports.get_individual_data(
+            [5], start_date=self.start_date, end_date=self.end_date
+        )
+        self.assertEqual(data[0]["days_vacation"], 0)
+        data = reports.get_individual_data(
+            [5], start_date="2018-07-01", end_date="2019-06-30"
+        )
+        self.assertEqual(data[0]["days_vacation"], 5)
 
 
 class FundReportsTestCase(TestCase):
