@@ -50,11 +50,6 @@
             <a class="nav-link" href="/fund/">FAU Reports</a>
           </li>
           {% endif %}
-          {% if request.user.employee.is_unit_manager or request.user.is_superuser %}
-          <li class="nav-item">
-            <a class="nav-link" href="/vacation">Vacation Reports</a>
-          </li>
-          {% endif %}
         </ul>
         <ul class="nav justify-content end">
             <li class="navbar-nav dropdown">
