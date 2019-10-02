@@ -78,6 +78,7 @@ class Employee(models.Model):
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
     type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
+    extraallocation = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
 
     def __str__(self):
         return self.user.get_full_name()

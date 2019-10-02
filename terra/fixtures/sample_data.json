@@ -188,7 +188,8 @@
     "active": true,
     "uid": "FAKE002",
     "supervisor": 3,
-    "type": "LIBR"
+    "type": "LIBR",
+    "extraallocation": "500.00000"
   }
 },
 {

@@ -70,6 +70,7 @@ class ModelsTestCase(TestCase):
         emp = Employee.objects.get(pk=3)
         self.assertTrue(emp.is_unit_manager())
         self.assertTrue(emp.is_fund_manager())
+        self.assertEqual(extraallocation,500.00000)
 
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
