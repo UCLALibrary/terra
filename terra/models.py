@@ -158,9 +158,6 @@ class TravelRequest(models.Model):
     approved_on = models.DateField(null=True, blank=True)
     international_approved_on = models.DateField(null=True, blank=True)
 
-    class Meta:
-        ordering = ["-return_date"]
-
     def __str__(self):
         return str(repr(self))
 
@@ -223,9 +220,6 @@ class Vacation(models.Model):
     end = models.DateField()
     duration = models.IntegerField(blank=True)
 
-    class Meta:
-        ordering = ["-end"]
-
     def __str__(self):
         return str(repr(self))
 
@@ -269,9 +263,6 @@ class Approval(models.Model):
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
 
-    class Meta:
-        ordering = ["-approved_on"]
-
     def __str__(self):
         return str(repr(self))
 
@@ -287,9 +278,6 @@ class EstimatedExpense(models.Model):
     rate = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
     quantity = models.IntegerField(null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=5)
-
-    class Meta:
-        ordering = [F("treq__return_date").desc(), F("treq__traveler")]
 
     def __str__(self):
         return str(repr(self))
@@ -313,9 +301,6 @@ class ActualExpense(models.Model):
     quantity = models.IntegerField(null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=5)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
-
-    class Meta:
-        ordering = [F("treq__return_date").desc(), F("treq__traveler")]
 
     def __str__(self):
         return str(repr(self))

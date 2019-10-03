@@ -40,9 +40,9 @@ class ModelsTestCase(TestCase):
 
     def test_employee(self):
         employee = Employee.objects.get(pk=3)
-        self.assertEqual(str(employee), "Joshua Gomez")
-        self.assertEqual(employee.name(), "Joshua Gomez")
-        self.assertEqual(repr(employee), "<Employee 3: Joshua Gomez>")
+        self.assertEqual(str(employee), "Gomez, Joshua")
+        self.assertEqual(employee.name(), "Gomez, Joshua")
+        self.assertEqual(repr(employee), "<Employee 3: Gomez, Joshua>")
         self.assertEqual(employee.type, "HEAD")
 
     def test_employee_direct_reports(self):
@@ -85,8 +85,8 @@ class ModelsTestCase(TestCase):
 
     def test_treq(self):
         treq = TravelRequest.objects.get(pk=1)
-        self.assertEqual(repr(treq), "<TReq 1: Ashton Prigge Code4lib 2020 2020>")
-        self.assertEqual(str(treq), "<TReq 1: Ashton Prigge Code4lib 2020 2020>")
+        self.assertEqual(repr(treq), "<TReq 1: Prigge, Ashton Code4lib 2020 2020>")
+        self.assertEqual(str(treq), "<TReq 1: Prigge, Ashton Code4lib 2020 2020>")
 
     def test_vacation(self):
         vac = Vacation.objects.get(pk=1)
@@ -107,29 +107,29 @@ class ModelsTestCase(TestCase):
 
     def test_approval(self):
         approval = Approval.objects.get(pk=1)
-        self.assertEqual(repr(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
-        self.assertEqual(str(approval), "<Approval 1: Code4lib 2020 Ashton Prigge>")
+        self.assertEqual(repr(approval), "<Approval 1: Code4lib 2020 Prigge, Ashton>")
+        self.assertEqual(str(approval), "<Approval 1: Code4lib 2020 Prigge, Ashton>")
 
     def test_estimated_expense(self):
         estexp = EstimatedExpense.objects.get(pk=1)
         self.assertEqual(
             repr(estexp),
-            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>",
+            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Prigge, Ashton>",
         )
         self.assertEqual(
             str(estexp),
-            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Ashton Prigge>",
+            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Prigge, Ashton>",
         )
 
     def test_actual_expense(self):
         actexp = ActualExpense.objects.get(pk=2)
         self.assertEqual(
             repr(actexp),
-            "<ActualExpense 2: Conference Registration Summer Con Ashton Prigge>",
+            "<ActualExpense 2: Conference Registration Summer Con Prigge, Ashton>",
         )
         self.assertEqual(
             str(actexp),
-            "<ActualExpense 2: Conference Registration Summer Con Ashton Prigge>",
+            "<ActualExpense 2: Conference Registration Summer Con Prigge, Ashton>",
         )
 
     def test_unit_employee_count(self):
@@ -407,7 +407,8 @@ class UnitReportsTestCase(TestCase):
         }
         actual = reports.unit_totals(data)
         for key, expected_value in expected.items():
-            self.assertEqual(actual[key], expected_value)
+            with self.subTest(key=key, value=expected_value):
+                self.assertEqual(actual[key], expected_value)
 
     def test_unit_report(self):
         expected = {
@@ -465,9 +466,13 @@ class UnitReportsTestCase(TestCase):
         )
         for sid, subunit in expected["subunits"].items():
             for key, value in subunit["subunit_totals"].items():
-                self.assertEqual(actual["subunits"][sid]["subunit_totals"][key], value)
+                with self.subTest(key=key, value=value):
+                    self.assertEqual(
+                        actual["subunits"][sid]["subunit_totals"][key], value
+                    )
         for key, value in expected["unit_totals"].items():
-            self.assertEqual(actual["unit_totals"][key], value)
+            with self.subTest(key=key, value=value):
+                self.assertEqual(actual["unit_totals"][key], value)
 
     def test_check_dates_disallows_backward_dates(self):
         self.assertRaises(Exception, reports.check_dates, "2020-01-01", "2019-01-01")
@@ -501,12 +506,14 @@ class FundReportsTestCase(TestCase):
         eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
         expected = [2, 3, 5]
         for eid in eids:
-            self.assertTrue(eid in expected)
+            with self.subTest(eid=eid):
+                self.assertTrue(eid in expected)
         fund = Fund.objects.get(pk=2)
         eids = reports.get_fund_employee_list(fund, self.start_date, self.end_date)
         expected = [1, 2]
         for eid in eids:
-            self.assertTrue(eid in expected)
+            with self.subTest(eid=eid):
+                self.assertTrue(eid in expected)
 
     def test_fund_report(self):
         expected = {
@@ -521,7 +528,8 @@ class FundReportsTestCase(TestCase):
         employees, totals = reports.fund_report(fund)
         self.assertEqual(len(employees), 3)
         for key, value in expected.items():
-            self.assertEqual(totals[key], value)
+            with self.subTest(key=key, value=value):
+                self.assertEqual(totals[key], value)
 
 
 class TestFundDetailView(TestCase):
