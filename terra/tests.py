@@ -71,6 +71,14 @@ class ModelsTestCase(TestCase):
         self.assertTrue(emp.is_unit_manager())
         self.assertTrue(emp.is_fund_manager())
 
+    def test_employee_has_full_report_access(self):
+        emp = Employee.objects.get(user=User.objects.get(username='doriswang'))
+        self.assertTrue(emp.has_full_report_access())
+        emp = Employee.objects.get(user=User.objects.get(username='aprigge'))
+        self.assertFalse(emp.has_full_report_access())
+        emp.user.groups.add(1)
+        self.assertTrue(emp.has_full_report_access())
+
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
         self.assertEqual(str(fund), "605000-LD-19900")
@@ -250,7 +258,7 @@ class TestUnitDetailView(TestCase):
         response = self.client.get("/unit/3/")
         self.assertEqual(response.status_code, 200)
 
-    def test_unit_detail_allows_superuser(self):
+    def test_unit_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/unit/1/")
         self.assertTemplateUsed(response, "terra/unit.html")
@@ -271,7 +279,7 @@ class TestUnitListView(TestCase):
         response = self.client.get("/unit/", follow=True)
         self.assertRedirects(response, "/accounts/login/?next=/unit/", status_code=302)
 
-    def test_unit_detail_allows_superuser(self):
+    def test_unit_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/unit/")
         self.assertEqual(response.status_code, 200)
@@ -542,7 +550,7 @@ class TestFundDetailView(TestCase):
             response, "/accounts/login/?next=/fund/1/", status_code=302
         )
 
-    def test_fund_detail_allows_superuser(self):
+    def test_fund_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/fund/1/")
         self.assertEqual(response.status_code, 200)
@@ -563,7 +571,7 @@ class TestFundListView(TestCase):
         response = self.client.get("/fund/", follow=True)
         self.assertRedirects(response, "/accounts/login/?next=/fund/", status_code=302)
 
-    def test_fund_detail_allows_superuser(self):
+    def test_fund_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/fund/")
         self.assertEqual(response.status_code, 200)

@@ -94,6 +94,13 @@ class Employee(models.Model):
     def name(self):
         return str(self)
 
+    def has_full_report_access(self):
+        # Superusers and members of LBS Staff have full access to reports.
+        return (
+            self.user.is_superuser
+            or self.user.groups.filter(name='LBS Staff').exists()
+        )
+
     def is_unit_manager(self):
         return self.managed_units.count() > 0
 
