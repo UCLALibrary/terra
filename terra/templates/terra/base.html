@@ -40,12 +40,12 @@
           <li class="nav-item">
             <a class="nav-link" href="/dashboard/">Dashboard</a>
           </li>
-          {% if request.user.employee.is_unit_manager or request.user.is_superuser %}
+          {% if request.user.employee.is_unit_manager or request.user.employee.has_full_report_access %}
           <li class="nav-item">
             <a class="nav-link" href="/unit/">Unit Reports</a>
           </li>
           {% endif %}
-          {% if request.user.employee.is_fund_manager or request.user.is_superuser %}
+          {% if request.user.employee.is_fund_manager or request.user.employee.has_full_report_access %}
           <li class="nav-item">
             <a class="nav-link" href="/fund/">FAU Reports</a>
           </li>
