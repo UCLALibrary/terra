@@ -81,7 +81,9 @@ class Employee(models.Model):
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
     type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
-    extraallocation = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    extraallocation = models.ForeignKey(
+        "ExtraAllocation", on_delete=models.PROTECT, null=True, blank=True
+    )
 
     class Meta:
         ordering = [F("user__last_name"), F("user__first_name")]
@@ -116,6 +118,17 @@ class Employee(models.Model):
                 managers.extend(submgrs)
         return staff, managers
 
+class ExtraAllocation(models.Model):
+    receiver = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    approver = models.ForeignKey("Employee", on_delete=models.PROTECT, limit_choices_to={'type': 'EXEC'})
+    amount = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    expires = models.DateField()
+
+    def __str__(self):
+        return f"{self.amount} {self.approver.user.last_name} {self.expires}"
+
+    def __repr__(self):
+        return "<ExtraAllocation {}: {}>".format(self.id, self)
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
