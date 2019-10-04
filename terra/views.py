@@ -27,7 +27,7 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     redirect_field_name = "next"
 
     def test_func(self):
-        if self.request.user.is_superuser:
+        if self.request.user.employee.has_full_report_access():
             return True
         unit = self.get_object()
         return self.request.user.employee in unit.super_managers()
@@ -53,12 +53,12 @@ class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return (
-            self.request.user.is_superuser
+            self.request.user.employee.has_full_report_access()
             or self.request.user.employee.is_unit_manager()
         )
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if self.request.user.employee.has_full_report_access():
             return Unit.objects.filter(type="1")
         return Unit.objects.filter(manager=self.request.user.employee)
 
@@ -71,7 +71,7 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     redirect_field_name = "next"
 
     def test_func(self):
-        if self.request.user.is_superuser:
+        if self.request.user.employee.has_full_report_access():
             return True
         fund = self.get_object()
         return self.request.user.employee in fund.super_managers()
@@ -97,11 +97,11 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return (
-            self.request.user.is_superuser
+            self.request.user.employee.has_full_report_access()
             or self.request.user.employee.is_fund_manager()
         )
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if self.request.user.employee.has_full_report_access():
             return Fund.objects.all()
         return Fund.objects.filter(manager=self.request.user.employee)
