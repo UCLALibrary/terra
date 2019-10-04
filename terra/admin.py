@@ -31,7 +31,7 @@ class UnitAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ("uid", "name", "unit", "supervisor", "extraallocation", "active")
+    list_display = ("uid", "name", "unit", "supervisor", "extraallocation", "allocationexpires", "active")
     list_display_links = ("uid", "name")
     list_filter = ("user","unit","active","uid","supervisor",)
 

@@ -44,6 +44,7 @@ class ModelsTestCase(TestCase):
         self.assertEqual(employee.name(), "Gomez, Joshua")
         self.assertEqual(repr(employee), "<Employee 3: Gomez, Joshua>")
         self.assertEqual(employee.type, "HEAD")
+        self.assertEqual(extraallocation,500.00000)
 
     def test_employee_direct_reports(self):
         mgr1 = Employee.objects.get(pk=3)
@@ -70,7 +71,6 @@ class ModelsTestCase(TestCase):
         emp = Employee.objects.get(pk=3)
         self.assertTrue(emp.is_unit_manager())
         self.assertTrue(emp.is_fund_manager())
-        self.assertEqual(extraallocation,500.00000)
 
     def test_employee_has_full_report_access(self):
         emp = Employee.objects.get(user=User.objects.get(username='doriswang'))
