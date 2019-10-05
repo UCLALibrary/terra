@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from terra.models import (
     Activity,
     ActualExpense,
@@ -17,7 +18,7 @@ import csv, pytz
 
 def load_data(self, travel_file):
     """
-    Loads historical data: everything except units.
+    Loads historical data: everything except units and employees.
     """
     # For now, we need a fake employee to use as fund manager.
     fund_manager = _create_placeholder_employee()
@@ -94,7 +95,11 @@ def _get_user(employee_name, email):
 
 
 def _get_employee(user, ucla_id, unit):
-    employee, created = Employee.objects.get_or_create(user=user, uid=ucla_id, unit=unit)
+    # Create Employee only if needed - should have been created earlier.
+    try:
+        employee = Employee.objects.get(user=user, uid=ucla_id)
+    except ObjectDoesNotExist:
+        employee, created = Employee.objects.get_or_create(user=user, uid=ucla_id, unit=unit)
     return employee
 
 def _get_activity(purpose, start_date, end_date):
