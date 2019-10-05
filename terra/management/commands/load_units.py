@@ -19,7 +19,8 @@ def create_units(self, unit_file):
 
             unit = Unit.objects.create(name=unit_name, type=unit_type)
             # These get read from CSV as strings...
-            if int(unit_parent) > 0:
+            unit_parent = int(unit_parent)
+            if unit_parent > 0:
                 unit.parent_unit = Unit.objects.get(pk=unit_parent)
                 unit.save()
 
