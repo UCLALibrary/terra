@@ -294,29 +294,29 @@ class TestUnitListView(TestCase):
 
 
 class DataLoadTestCase(TestCase):
-    def test_load_units(self):
-        call_command("load_units", "terra/fixtures/test_units.csv")
-        unit_count = Unit.objects.all().count()
-        self.assertEqual(unit_count, 2)
-        arts = Unit.objects.get(name__exact="Arts Library")
-        self.assertEqual(str(arts), "Arts Library")
-
-    def test_load_employees(self):
-        # Employees require Units
+    @classmethod
+    def setUpTestData(cls):
+        # Travel data requires Employees, which require Units
         call_command("load_units", "terra/fixtures/test_units.csv")
         call_command("load_employees", "terra/fixtures/test_employees.csv")
+        call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
+
+    def test_load_units(self):
+        unit_count = Unit.objects.all().count()
+        self.assertEqual(unit_count, 3)
+        unit = Unit.objects.get(name__exact="East Asian Library")
+        self.assertEqual(str(unit), "East Asian Library")
+
+    def test_load_employees(self):
         emp_count = Employee.objects.all().count()
-        self.assertEqual(emp_count, 2)
+        # Edward, Sally, and fake placeholder = 3
+        self.assertEqual(emp_count, 3)
         # Edward Employee works for Sally Supervisor
         emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
         sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
         self.assertEqual(emp.supervisor, sup)
 
     def test_load_travel_data(self):
-        # Travel data requires Employees, which require Units
-        call_command("load_units", "terra/fixtures/test_units.csv")
-        call_command("load_employees", "terra/fixtures/test_employees.csv")
-        call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
         treq_count = TravelRequest.objects.all().count()
         self.assertEqual(treq_count, 3)
         activity_count = Activity.objects.all().count()
