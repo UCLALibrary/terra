@@ -1,3 +1,3 @@
-employee_name,ucla_id,email,supervisor,department
-"Supervisor,Sally",12345,sally@example.com,"","Arts Library"
-"Employee,Edward",54321,edward@example.com,"Supervisor,Sally","Arts Library"
+employee_name,ucla_id,email,supervisor,department,staff_type
+"Supervisor,Sally",12345,sally@example.com,"","General Library","Librarian"
+"Employee,Edward",54321,edward@example.com,"Supervisor,Sally","East Asian Library","Other"
