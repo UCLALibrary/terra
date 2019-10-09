@@ -780,7 +780,7 @@
     "uid": "FAKE002",
     "supervisor": 3,
     "type": "LIBR",
-    "extraallocation": "0.00000"
+    "extraallocation": "0.00000",
     "allocationexpires": null
   }
 },
