@@ -765,8 +765,8 @@
     "uid": "FAKE001",
     "supervisor": 4,
     "type": "HEAD",
-    "extraallocation": "0.00000",
-    "allocationexpires": null
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
   }
 },
 {
@@ -780,8 +780,8 @@
     "uid": "FAKE002",
     "supervisor": 3,
     "type": "LIBR",
-    "extraallocation": "0.00000",
-    "allocationexpires": null
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
   }
 },
 {
@@ -795,8 +795,8 @@
     "uid": "FAKE003",
     "supervisor": 1,
     "type": "HEAD",
-    "extraallocation": "500.00000",
-    "allocationexpires": "2020-12-31"
+    "extra_allocation": "500.00000",
+    "allocation_expire_date": "2020-12-31"
   }
 },
 {
@@ -810,8 +810,8 @@
     "uid": "FAKE004",
     "supervisor": null,
     "type": "EXEC",
-    "extraallocation": "0.00000",
-    "allocationexpires": null
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
   }
 },
 {
@@ -825,8 +825,8 @@
     "uid": "FAKE005",
     "supervisor": 3,
     "type": "SENR",
-    "extraallocation": "0.00000",
-    "allocationexpires": null
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
   }
 },
 {
@@ -840,8 +840,8 @@
     "uid": "FAKE006",
     "supervisor": 4,
     "type": "HEAD",
-    "extraallocation": "0.00000",
-    "allocationexpires": null
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
   }
 },
 {

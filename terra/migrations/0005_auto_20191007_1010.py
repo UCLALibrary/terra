@@ -29,12 +29,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='employee',
-            name='allocationexpires',
+            name='allocation_expire_date',
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name='employee',
-            name='extraallocation',
+            name='extra_allocation',
             field=models.DecimalField(blank=True, decimal_places=5, max_digits=10, null=True),
         ),
     ]
