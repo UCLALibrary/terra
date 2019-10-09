@@ -44,6 +44,7 @@ class ModelsTestCase(TestCase):
         self.assertEqual(employee.name(), "Gomez, Joshua")
         self.assertEqual(repr(employee), "<Employee 3: Gomez, Joshua>")
         self.assertEqual(employee.type, "HEAD")
+        self.assertEqual(employee.extra_allocation,500.00000)
 
     def test_employee_direct_reports(self):
         mgr1 = Employee.objects.get(pk=3)

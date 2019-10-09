@@ -81,6 +81,8 @@ class Employee(models.Model):
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
     type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
+    extra_allocation = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    allocation_expire_date = models.DateField(null=True, blank=True)
 
     class Meta:
         ordering = [F("user__last_name"), F("user__first_name")]
@@ -121,7 +123,6 @@ class Employee(models.Model):
                 staff.extend(substaff)
                 managers.extend(submgrs)
         return staff, managers
-
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
