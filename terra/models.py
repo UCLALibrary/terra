@@ -81,7 +81,9 @@ class Employee(models.Model):
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
     type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
-    extra_allocation = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    extra_allocation = models.DecimalField(
+        max_digits=10, decimal_places=5, null=True, blank=True
+    )
     allocation_expire_date = models.DateField(null=True, blank=True)
 
     class Meta:
@@ -99,8 +101,7 @@ class Employee(models.Model):
     def has_full_report_access(self):
         # Superusers and members of LBS Staff have full access to reports.
         return (
-            self.user.is_superuser
-            or self.user.groups.filter(name='LBS Staff').exists()
+            self.user.is_superuser or self.user.groups.filter(name="LBS Staff").exists()
         )
 
     def is_unit_manager(self):
@@ -124,11 +125,13 @@ class Employee(models.Model):
                 managers.extend(submgrs)
         return staff, managers
 
+
 class Fund(models.Model):
     account = models.CharField(max_length=6)
     cost_center = models.CharField(max_length=2)
     fund = models.CharField(max_length=5)
     manager = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    unit = models.ForeignKey("Unit", null=True, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["account", "cost_center", "fund"]
