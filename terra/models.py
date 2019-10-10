@@ -129,6 +129,7 @@ class Fund(models.Model):
     cost_center = models.CharField(max_length=2)
     fund = models.CharField(max_length=5)
     manager = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    unit = models.ForeignKey("Unit", null=True, blank=True, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["account", "cost_center", "fund"]
