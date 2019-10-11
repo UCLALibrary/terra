@@ -13,7 +13,6 @@ from .models import (
     ActualExpense,
 )
 
-#need to add this as a class? or will this override the django built in 
 class UserAdmin(UserAdmin):
     UserAdmin.add_fieldsets = (
         (None, {
