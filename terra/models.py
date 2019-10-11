@@ -166,6 +166,7 @@ class TravelRequest(models.Model):
     )
     approved_on = models.DateField(null=True, blank=True)
     international_approved_on = models.DateField(null=True, blank=True)
+    note = models.TextField(blank=True)
 
     def __str__(self):
         return str(repr(self))
@@ -271,6 +272,7 @@ class Approval(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
+    note = models.TextField(blank=True)
 
     def __str__(self):
         return str(repr(self))
