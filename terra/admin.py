@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import (
+
     Unit,
     Employee,
     TravelRequest,
@@ -11,6 +13,12 @@ from .models import (
     ActualExpense,
 )
 
+UserAdmin.add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('first_name', 'last_name','username', 'password1', 'password2', )}
+        ),
+    )
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
         def __new__(cls, *args, **kwargs):
@@ -24,6 +32,7 @@ class ApprovalInline(admin.TabularInline):
     model = Approval
     extra = 1
     autocomplete_fields = ["approved_by", "fund"]
+
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
