@@ -13,12 +13,15 @@ from .models import (
     ActualExpense,
 )
 
-UserAdmin.add_fieldsets = (
+#need to add this as a class? or will this override the django built in 
+class UserAdmin(UserAdmin):
+    UserAdmin.add_fieldsets = (
         (None, {
             'classes': ('wide'),
             'fields': ('first_name', 'last_name', 'email','username', 'password1', 'password2' )}
         ),
     )
+
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
         def __new__(cls, *args, **kwargs):
