@@ -13,13 +13,7 @@ from .models import (
     ActualExpense,
 )
 
-class UserAdmin(UserAdmin):
-    UserAdmin.add_fieldsets = (
-        (None, {
-            'classes': ('wide'),
-            'fields': ('first_name', 'last_name', 'email','username', 'password1', 'password2' )}
-        ),
-    )
+
 
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
@@ -28,6 +22,15 @@ def custom_titled_filter(title):
             instance.title = title
             return instance
     return Wrapper
+
+# Class to add fields to admin user form
+class UserAdmin(UserAdmin):
+    UserAdmin.add_fieldsets = (
+        (None, {
+            'classes': ('wide'),
+            'fields': ('first_name', 'last_name', 'email','username', 'password1', 'password2' )}
+        ),
+    )
 
 # Inline class to support ManyToMany with Approval and TravelRequest
 class ApprovalInline(admin.TabularInline):
