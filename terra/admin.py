@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import (
 
     Unit,
@@ -13,8 +14,6 @@ from .models import (
     ActualExpense,
 )
 
-
-
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
         def __new__(cls, *args, **kwargs):
@@ -23,11 +22,10 @@ def custom_titled_filter(title):
             return instance
     return Wrapper
 
-# Class to add fields to admin user form
+# Class to add fields to admin user creation popup form
 class UserAdmin(UserAdmin):
     UserAdmin.add_fieldsets = (
         (None, {
-            'classes': ('wide'),
             'fields': ('first_name', 'last_name', 'email','username', 'password1', 'password2' )}
         ),
     )
@@ -37,7 +35,6 @@ class ApprovalInline(admin.TabularInline):
     model = Approval
     extra = 1
     autocomplete_fields = ["approved_by", "fund"]
-
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
