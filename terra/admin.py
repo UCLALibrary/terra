@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
 from .models import (
+
     Unit,
     Employee,
     TravelRequest,
@@ -18,6 +21,14 @@ def custom_titled_filter(title):
             instance.title = title
             return instance
     return Wrapper
+
+# Class to add fields to admin user creation popup form
+class UserAdmin(UserAdmin):
+    UserAdmin.add_fieldsets = (
+        (None, {
+            'fields': ('first_name', 'last_name', 'email','username', 'password1', 'password2' )}
+        ),
+    )
 
 # Inline class to support ManyToMany with Approval and TravelRequest
 class ApprovalInline(admin.TabularInline):
