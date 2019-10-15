@@ -38,7 +38,7 @@
       <div class="collapse navbar-collapse" id="header">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard/">Dashboard</a>
+            <a class="nav-link" href="/employee/{{request.user.employee.pk}}">Employee Report</a>
           </li>
           {% if request.user.employee.is_unit_manager or request.user.employee.has_full_report_access %}
           <li class="nav-item">
