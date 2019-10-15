@@ -2,7 +2,7 @@
 
 {% load terra_extras %}
 
-{% block title %}Individual Dashboard{% endblock %}
+{% block title %}{{employee}}{% endblock %}
 
 {% block supplemental_css %}
 <style>
@@ -14,27 +14,40 @@
 {% endblock %}
 
 {% block body %}
-    <h1>My Travel Requests</h1>
+    <h1>{{employee}}</h1>
+    <h3>{{employee.unit}}</h3>
+    <br/>
+    <h2>FY {{fiscal_year}} Travel Requests</h2>
     <table class="table">
         <thead class="thead-light">
             <tr>
                 <th scope="col">Activity</th>
-                <th scope="col">Destination</th>
                 <th scope="col">Dates</th>
+                <th scope="col">Admin</th>
+                <th scope="col">Days OOO</th>
+                <th scope="col">Vacation Days</th>                
                 <th scope="col">Approved</th>
                 <th scope="col">Funded</th>
                 <th scope="col">Closed</th>
+                <th scope="col">Estimated Expenses</th>
+                <th scope="col">Approved Funds</th>
+                <th scope="col">Actual Expenses</th>
             </tr>
         </thead>
         <tbody>
-    {% for treq in treqs %}
+    {% for treq in employee.travelrequest_set.all %}
             <tr>
                 <td>{{treq.activity.name}}</td>
-                <td>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</td>
                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                <td>{{treq.administrative|check_or_cross|safe}}</td>
+                <td>{{treq.days_ooo}}</td>
+                <td>{{treq.vacation_days}}</td>
                 <td>{{treq.approved|check_or_cross|safe}}</td>
                 <td>{{treq.funded|check_or_cross|safe}}</td>
                 <td>{{treq.closed|check_or_cross|safe}}</td>
+                <td>{{treq.estimated_expenses|currency}}</td>
+                <td>{{treq.approved_funds|currency}}</td>
+                <td>{{treq.actual_expenses|currency}}</td>
             </tr>
     {% endfor %}
         </tbody>
