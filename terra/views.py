@@ -1,22 +1,40 @@
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund
+from .models import TravelRequest, Unit, Fund, Employee
 from .reports import unit_report, fund_report
-from .utils import current_fiscal_year_object
+from .utils import current_fiscal_year_object, current_fiscal_year
 
 
-class UserDashboard(LoginRequiredMixin, ListView):
+@login_required
+def home(request):
+    return HttpResponseRedirect(
+        reverse("employee_detail", kwargs={"pk": request.user.employee.pk})
+    )
 
-    model = TravelRequest
-    context_object_name = "treqs"
+
+class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+
+    model = Employee
+    context_object_name = "employee"
     login_url = "/accounts/login/"
     redirect_field_name = "next"
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(traveler__user=self.request.user)
+    def test_func(self):
+        user = self.request.user
+        employee = self.get_object()
+        eligible_users = [employee, employee.supervisor]
+        eligible_users.extend(employee.unit.super_managers())
+        return user.employee in eligible_users or user.employee.has_full_report_access()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["fiscal_year"] = current_fiscal_year()
+        return context
 
 
 class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):

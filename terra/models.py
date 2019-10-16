@@ -81,7 +81,9 @@ class Employee(models.Model):
         "self", on_delete=models.PROTECT, null=True, blank=True
     )
     type = models.CharField(max_length=4, choices=EMPLOYEE_TYPES, default="OTHR")
-    extra_allocation = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    extra_allocation = models.DecimalField(
+        max_digits=10, decimal_places=5, null=True, blank=True
+    )
     allocation_expire_date = models.DateField(null=True, blank=True)
 
     class Meta:
@@ -99,8 +101,7 @@ class Employee(models.Model):
     def has_full_report_access(self):
         # Superusers and members of LBS Staff have full access to reports.
         return (
-            self.user.is_superuser
-            or self.user.groups.filter(name='LBS Staff').exists()
+            self.user.is_superuser or self.user.groups.filter(name="LBS Staff").exists()
         )
 
     def is_unit_manager(self):
@@ -123,6 +124,13 @@ class Employee(models.Model):
                 staff.extend(substaff)
                 managers.extend(submgrs)
         return staff, managers
+
+    def treqs_in_fiscal_year(self, fiscal_year=None):
+        start, end = utils.fiscal_year_bookends(fiscal_year)
+        return TravelRequest.objects.filter(
+            traveler=self, return_date__lte=end, return_date__gte=start
+        )
+
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
@@ -195,22 +203,19 @@ class TravelRequest(models.Model):
     funded.boolean = True
 
     def estimated_expenses(self):
-        total = 0
-        for ee in self.estimatedexpense_set.all():
-            total += ee.total
-        return total
+        return sum([ee.total for ee in self.estimatedexpense_set.all()])
 
     def allocations_total(self):
         return utils.format_currency(self.estimated_expenses())
 
     def actual_expenses(self):
-        total = 0
-        for ae in self.actualexpense_set.all():
-            total += ae.total
-        return total
+        return sum([ae.total for ae in self.actualexpense_set.all()])
 
     def expenditures_total(self):
         return utils.format_currency(self.actual_expenses())
+
+    def approved_funds(self):
+        return sum([a.amount for a in self.approval_set.all()])
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
@@ -222,6 +227,9 @@ class TravelRequest(models.Model):
         return total
 
     in_fiscal_year.boolean = True
+
+    def vacation_days(self):
+        return sum([v.vacation_days() for v in self.vacation_set.all()])
 
 
 class Vacation(models.Model):
@@ -264,6 +272,9 @@ class Activity(models.Model):
 
     def __repr__(self):
         return "<Activity {}: {}>".format(self.id, self.name)
+
+    def domestic(self):
+        return self.country == "USA"
 
 
 class Approval(models.Model):

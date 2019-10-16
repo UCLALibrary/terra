@@ -5,11 +5,12 @@ from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
 from terra.views import (
-    UserDashboard,
+    EmployeeDetailView,
     UnitDetailView,
     UnitListView,
     FundDetailView,
     FundListView,
+    home,
 )
 
 urlpatterns = [
@@ -65,9 +66,9 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path(
-        "dashboard/",
-        UserDashboard.as_view(template_name="terra/dashboard.html"),
-        name="user_dashboard",
+        "employee/<int:pk>/",
+        EmployeeDetailView.as_view(template_name="terra/employee.html"),
+        name="employee_detail",
     ),
     path(
         "unit/<int:pk>/",
@@ -89,5 +90,5 @@ urlpatterns = [
         FundListView.as_view(template_name="terra/fund_list.html"),
         name="fund_list",
     ),
-    path("", RedirectView.as_view(url="/dashboard"), name="home"),
+    path("", home, name="home"),
 ]

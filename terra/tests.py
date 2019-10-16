@@ -44,7 +44,7 @@ class ModelsTestCase(TestCase):
         self.assertEqual(employee.name(), "Gomez, Joshua")
         self.assertEqual(repr(employee), "<Employee 3: Gomez, Joshua>")
         self.assertEqual(employee.type, "HEAD")
-        self.assertEqual(employee.extra_allocation,500.00000)
+        self.assertEqual(employee.extra_allocation, 500.00000)
 
     def test_employee_direct_reports(self):
         mgr1 = Employee.objects.get(pk=3)
@@ -73,12 +73,17 @@ class ModelsTestCase(TestCase):
         self.assertTrue(emp.is_fund_manager())
 
     def test_employee_has_full_report_access(self):
-        emp = Employee.objects.get(user=User.objects.get(username='doriswang'))
+        emp = Employee.objects.get(user=User.objects.get(username="doriswang"))
         self.assertTrue(emp.has_full_report_access())
-        emp = Employee.objects.get(user=User.objects.get(username='aprigge'))
+        emp = Employee.objects.get(user=User.objects.get(username="aprigge"))
         self.assertFalse(emp.has_full_report_access())
         emp.user.groups.add(1)
         self.assertTrue(emp.has_full_report_access())
+
+    def test_employee_treqs_in_fiscal_year(self):
+        emp = Employee.objects.get(user=User.objects.get(username="tawopetu"))
+        treqs = emp.treqs_in_fiscal_year(2020)
+        self.assertEqual(len(treqs), 1)
 
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
@@ -185,6 +190,10 @@ class ModelsTestCase(TestCase):
         treq = TravelRequest.objects.get(pk=5)
         self.assertEqual(treq.actual_expenses(), 1855)
 
+    def test_treq_approved_funds(self):
+        treq = TravelRequest.objects.get(pk=9)
+        self.assertEqual(treq.approved_funds(), 3500)
+
     def test_expense_total_dollars(self):
         estexp = EstimatedExpense.objects.get(pk=1)
         self.assertEqual(estexp.total_dollars(), "$250.00")
@@ -198,6 +207,12 @@ class ModelsTestCase(TestCase):
     def test_treq_expenditures_total(self):
         treq = TravelRequest.objects.get(pk=5)
         self.assertEqual(treq.expenditures_total(), "$1,855.00")
+
+    def test_treq_domestic(self):
+        act = Activity.objects.get(pk=4)
+        self.assertTrue(act.domestic())
+        act = Activity.objects.get(pk=5)
+        self.assertFalse(act.domestic())
 
 
 class TemplateTagsTestCase(TestCase):
@@ -219,22 +234,43 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(currency(None), "$0.00")
 
 
-class TestDashboardView(TestCase):
+class TestEmpoyeeDetailView(TestCase):
 
     fixtures = ["sample_data.json"]
 
-    def test_dashboard_denies_anonymous(self):
-        response = self.client.get("/dashboard", follow=True)
+    def test_employee_detail_denies_anonymous(self):
+        response = self.client.get("/employee/3/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/dashboard/", status_code=301
+            response, "/accounts/login/?next=/employee/3/", status_code=302
         )
 
-    def test_dashboard_loads(self):
-        self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/dashboard/")
+    def test_employee_detail_requires_manager(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/employee/1/")
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "terra/dashboard.html")
-        self.assertEqual(len(response.context["treqs"]), 3)
+        self.client.login(username="aprigge", password="Staples50141")
+        response = self.client.get("/employee/3/")
+        self.assertEqual(response.status_code, 403)
+        response = self.client.get("/employee/2/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_employee_detail_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/employee/2/")
+        self.assertTemplateUsed(response, "terra/employee.html")
+        self.assertEqual(response.status_code, 200)
+
+    def test_employee_detail_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/employee/2/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee.html")
+
+    def test_employee_detail_loads(self):
+        self.client.login(username="aprigge", password="Staples50141")
+        response = self.client.get("/employee/2/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee.html")
 
 
 class TestUnitDetailView(TestCase):
