@@ -33,3 +33,4 @@ fi
 
 # Run the tests
 ${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
+${DOCKER_COMPOSE_TRAVIS} exec django coveralls
