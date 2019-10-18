@@ -8,4 +8,3 @@ script:
   - .travis/build_and_test.sh
 after_success:
   - .travis/tag_and_push.sh
-  - coveralls

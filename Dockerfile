@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster
 
-RUN apt-get update -qq && apt-get install build-essential python3-dev default-libmysqlclient-dev locales -y -qq
+RUN apt-get update -qq && apt-get install build-essential python3-dev default-libmysqlclient-dev locales git -y -qq
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && dpkg-reconfigure --frontend=noninteractive locales
 
 RUN useradd -c "django app user" -d /home/django -s /bin/bash -m django
