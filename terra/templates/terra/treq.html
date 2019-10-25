@@ -1,0 +1,78 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}{{employee}}{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Travel Request</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Activity</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href='#'>Expenses</a>
+  </li>
+</ul>
+    <h1><a href='#'>{{treq.traveler}}</a></h1>
+    <h3>{{treq.traveler.unit}}</h3>
+    <br/>
+<dl>
+    <dt>Activity</dt>
+    <dd>{{treq.activity}}</dd>
+    <dt>Departure Date</dt>
+    <dd>{{treq.departure_date}}</dd>
+    <dt>Return Date</dt>
+    <dd>{{treq.return_date}}</dd>
+    <dt>Days Out of Office</dt>
+    <dd>{{treq.days_ooo}}</dd>
+    <dt>Closed</dt>
+    <dd>{{treq.closed}}</dd>
+    <dt>Administrative</dt>
+    <dd>{{treq.administrative}}</dd>
+    <dt>Justification</dt>
+    <dd>{{treq.justification}}</dd>
+    <dt>Funds</dt>
+    <dd>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th>FAU</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for approval in treq.approval_set.all %}
+            <tr>
+                <td>{{approval.fund}}</td>
+                <td>{{approval.amount|currency}}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    </dd>
+    <dt>Approved By</dt>
+    <dd>{{treq.approved_by}}</dd>
+    <dt>Approved On</dt>
+    <dd>{{treq.approved_on}}</dd>
+    <dt>International Approved On</dt>
+    <dd>{{treq.international_approved_on}}</dd>
+    <dt>Note</dt>
+    <dd>{{treq.note}}</dd>
+ </dl>
+
+{% endblock %}
+

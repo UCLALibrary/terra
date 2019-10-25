@@ -7,6 +7,7 @@ from django.views.generic.base import RedirectView
 from terra.views import (
     EmployeeDetailView,
     UnitDetailView,
+    TreqDetailView,
     UnitListView,
     FundDetailView,
     FundListView,
@@ -70,6 +71,13 @@ urlpatterns = [
         EmployeeDetailView.as_view(template_name="terra/employee.html"),
         name="employee_detail",
     ),
+
+    path(
+        "treq/<int:pk>/",
+        TreqDetailView.as_view(template_name="terra/treq.html"),
+        name="treq_detail",
+    ),
+
     path(
         "unit/<int:pk>/",
         UnitDetailView.as_view(template_name="terra/unit.html"),
