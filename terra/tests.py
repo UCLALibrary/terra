@@ -308,6 +308,28 @@ class TestUnitDetailView(TestCase):
         self.assertTemplateUsed(response, "terra/unit.html")
 
 
+class TestTreqDetailView(TestCase):
+    fixtures = ["sample_data.json"]
+
+    def test_treq_detail_denies_anonymous(self):
+        response = self.client.get("/treq/1", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/unit/1/", status_code=301
+        )
+
+    def test_treq_detail_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/unit/1/")
+        self.assertTemplateUsed(response, "terra/unit.html")
+        self.assertEqual(response.status_code, 200)
+
+    def test_treq_detail_loads(self):
+        self.client.login(username="aprigge", password="Staples50141")
+        response = self.client.get("/unit/1/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/treq.html")
+
+
 class TestUnitListView(TestCase):
 
     fixtures = ["sample_data.json"]

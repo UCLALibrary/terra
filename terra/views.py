@@ -37,6 +37,21 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
+class TreqDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+
+    model = TravelRequest
+    context_object_name = "treq"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def test_func(self):
+        user = self.request.user
+        treq = self.get_object()
+        eligible_users = [treq.traveler, treq.traveler.supervisor]
+        eligible_users.extend(treq.traveler.unit.super_managers())
+        return user.employee in eligible_users or user.employee.has_full_report_access()
+
+
 class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     model = Unit

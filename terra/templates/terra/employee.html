@@ -37,7 +37,7 @@
         <tbody>
     {% for treq in employee.travelrequest_set.all %}
             <tr>
-                <td>{{treq.activity.name}}</td>
+                <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                 <td>{{treq.administrative|check_or_cross|safe}}</td>
                 <td>{{treq.days_ooo}}</td>
