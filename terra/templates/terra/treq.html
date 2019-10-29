@@ -19,20 +19,20 @@
     <h4>Travel Request: {{treq.activity}}</h4>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Travel Request Summary</a>
+    <a class="nav-link active" id="treq-tab" data-toggle="tab" href="#treq" role="tab" aria-controls="treq" aria-selected="true">Travel Request Summary</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Activity Details</a>
+    <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab" aria-controls="activity" aria-selected="false">Activity Details</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="expenses-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="expenses" aria-selected="false">Estimated Expenses Details</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Funds Details</a>
+    <a class="nav-link" id="fund-tab" data-toggle="tab" href="#fund" role="tab" aria-controls="fund" aria-selected="false">Funds Details</a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+  <div class="tab-pane fade show active" id="treq" role="tabpanel" aria-labelledby="treq-tab">
     <br>
     <dt>Activity</dt>
     <dd>{{treq.activity}}</dd>
@@ -62,7 +62,7 @@
     <dd>{{treq.note}}</dd>
 </dl>
 </div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+<div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
     <br>
     <dt>Activity URL</dt>
     <dd>{{treq.activity.url}}</dd>
@@ -72,10 +72,8 @@
     <dd>{{treq.activity.start}} - {{treq.activity.end}} </dd>
     <dt>Activity Location</dt>
     <dd>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</dd>
-  </div>
- 
-
-  <div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+</div>
+<div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
     <br>
     <dt>Estimated Expenses</dt>
     <table class="table">
@@ -91,8 +89,8 @@
                 <td>{{estimatedexpense.get_type_display}}</td>
                 <td>{{estimatedexpense.total|currency}}</td>
             </tr>
-        </tbody>
             {% endfor %}
+        </tbody>
         <tfoot>
             <tr>
                 <th>Total</th>
@@ -100,8 +98,8 @@
             </tr> 
         </tfoot> 
     </table>
-  </div>
-   <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+</div>
+   <div class="tab-pane fade" id="fund" role="tabpanel" aria-labelledby="fund-tab">
     <br>
     <dt>Funds</dt>
     <table class="table">
@@ -120,7 +118,7 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
+    </div>
 </div>
 
 {% endblock %}
