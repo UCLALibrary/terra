@@ -2,7 +2,7 @@
 
 {% load terra_extras %}
 
-{% block title %}{{employee}}{% endblock %}
+{% block title %}{{treq.traveler}}{% endblock %}
 
 {% block supplemental_css %}
 <style>
@@ -14,42 +14,42 @@
 {% endblock %}
 
 {% block body %}
-<h1><a href='/employee/{{treq.traveler.employee.pk}}'>{{treq.traveler}}</a></h1>
+<h1><a href='/employee/{{treq.traveler.pk}}'>{{treq.traveler}}</a></h1>
     <h3>{{treq.traveler.unit}}</h3>
-    <h4>{{treq.activity}}</h4>
+    <h4>Travel Request: {{treq.activity}}</h4>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Travel Request</a>
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Travel Request Summary</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Activity</a>
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Activity Details</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Fund</a>
+    <a class="nav-link" id="expenses-tab" data-toggle="tab" href="#expenses" role="tab" aria-controls="expenses" aria-selected="false">Estimated Expenses Details</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Funds Details</a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-    <dl>
-            <style>
-    body {
-        padding-top: 6.5rem;
-
-}
-</style>
+    <br>
     <dt>Activity</dt>
     <dd>{{treq.activity}}</dd>
-    <dt>Departure Date</dt>
-    <dd>{{treq.departure_date}}</dd>
-    <dt>Return Date</dt>
-    <dd>{{treq.return_date}}</dd>
+    <dt>Total Estimated Expenses</dt>
+    <dd>{{treq.estimated_expenses|currency}}</dd>
+    <dt>Departure Date - Return Date</dt>
+    <dd>{{treq.departure_date}} - {{treq.return_date}}</dd>
     <dt>Days Out of Office</dt>
     <dd>{{treq.days_ooo}}</dd>
+    <dt>Approved</dt>
+    <dd>{{treq.approved|check_or_cross|safe}}</dd>
+    <dt>Funded</dt>
+    <dd>{{treq.funded|check_or_cross|safe}}</dd>
     <dt>Closed</dt>
-    <dd>{{treq.closed}}</dd>
-    <dt>Administrative</dt>
-    <dd>{{treq.administrative}}</dd>
+    <dd>{{treq.closed|check_or_cross|safe}}</dd>
+    <dt>Admin</dt>
+    <dd>{{treq.administrative|check_or_cross|safe}}</dd>
     <dt>Justification</dt>
     <dd>{{treq.justification}}</dd>
     <dt>Approved By</dt>
@@ -63,28 +63,48 @@
 </dl>
 </div>
   <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    
+    <br>
     <dt>Activity URL</dt>
     <dd>{{treq.activity.url}}</dd>
-    <dt>Activity description</dt>
+    <dt>Activity Description</dt>
     <dd>{{treq.activity.description}}</dd>
-    <dt>Activity Start Date</dt>
-    <dd>{{treq.activity.start}}</dd>
-    <dt>Activity End Date</dt>
-    <dd>{{treq.activity.end}}</dd>
-    <dt>Activity City</dt>
-    <dd>{{treq.activity.city}}</dd>
-    <dt>Activity State</dt>
-    <dd>{{treq.activity.state}}</dd>
-    <dt>Activity Country</dt>
-    <dd>{{treq.activity.country}}</dd>
+    <dt>Activity Dates</dt>
+    <dd>{{treq.activity.start}} - {{treq.activity.end}} </dd>
+    <dt>Activity Location</dt>
+    <dd>{{treq.activity.city}}, {{treq.activity.state}} {{treq.activity.country}}</dd>
   </div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-    <div class="container">
+ 
+
+  <div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+    <br>
+    <dt>Estimated Expenses</dt>
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th>Expense Type</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estimatedexpense in treq.estimatedexpense_set.all %}
+            <tr>
+                <td>{{estimatedexpense.get_type_display}}</td>
+                <td>{{estimatedexpense.total|currency}}</td>
+            </tr>
+        </tbody>
+            {% endfor %}
+        <tfoot>
+            <tr>
+                <th>Total</th>
+                <td>{{treq.estimated_expenses|currency}}</td>
+            </tr> 
+        </tfoot> 
+    </table>
+  </div>
+   <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+    <br>
     <dt>Funds</dt>
-    <div class="row">
-    <div class="col-md-auto">
-      <table class="table">
+    <table class="table">
         <thead class="thead-light">
             <tr>
                 <th>FAU</th>
@@ -98,36 +118,10 @@
                 <td>{{approval.amount|currency}}</td>
             </tr>
             {% endfor %}
+        </tbody>
     </table>
-    </div>
-  </div>
-
-  <div class="container">
-    <dt>Expenses</dt>
-    <div class="row">
-    <div class="col-md-auto">
-      <table class="table">
-        <thead class="thead-light">
-            <tr>
-                <th>Expense Type</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for estimatedexpense in treq.estimatedexpense_set.all %}
-            <tr>
-                <td>{{estimatedexpense.type}}</td>
-                <td>{{estimatedexpense.total|currency}}</td>
-            </tr>
-            {% endfor %}
-    </table>
-    </div>
-    <div class="col-6">
-    </div>
-  </div>
-  </div>
 </div>
- </dl>
+</div>
 
 {% endblock %}
 
