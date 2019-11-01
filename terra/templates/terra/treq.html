@@ -98,8 +98,9 @@
             </tr> 
         </tfoot> 
     </table>
-    <button type="submit" class="btn btn-primary" >Add Actual Expenses</button>
-    <input type="hidden" value="{{treq/<int:pk>/addexpenses}}">
+    
+    <button type="submit" class="btn btn-primary" href='{% url 'actualexpense_form' pk=treq.pk %}' >Add Actual Expenses</button>
+    
     <br>
     {% if treq.closed %}
     <br>
