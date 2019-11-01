@@ -11,6 +11,9 @@ from terra.views import (
     UnitListView,
     FundDetailView,
     FundListView,
+    ActualExpenseCreate,
+    ActualExpenseUpdate,
+    # ActualExpenseDelete,
     home,
 )
 
@@ -71,13 +74,11 @@ urlpatterns = [
         EmployeeDetailView.as_view(template_name="terra/employee.html"),
         name="employee_detail",
     ),
-
     path(
         "treq/<int:pk>/",
         TreqDetailView.as_view(template_name="terra/treq.html"),
         name="treq_detail",
     ),
-
     path(
         "unit/<int:pk>/",
         UnitDetailView.as_view(template_name="terra/unit.html"),
@@ -97,6 +98,16 @@ urlpatterns = [
         "fund/",
         FundListView.as_view(template_name="terra/fund_list.html"),
         name="fund_list",
+    ),
+    path(
+        "treq/<int:pk>/addexpenses",
+        ActualExpenseCreate.as_view(template_name="terra/actualexpense_form.html"),
+        name="actualexpense_form",
+    ),
+    path(
+        "actualexpense/<int:pk>/edit",
+        ActualExpenseUpdate.as_view(template_name="terra/actualexpense_edit_form.html"),
+        name="actual-expense-update",
     ),
     path("", home, name="home"),
 ]

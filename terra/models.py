@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum, F
+from django.urls import reverse
 
 from terra import utils
 
@@ -230,6 +231,9 @@ class TravelRequest(models.Model):
 
     def vacation_days(self):
         return sum([v.vacation_days() for v in self.vacation_set.all()])
+
+    def get_absolute_url(self):
+        return reverse("treq_detail", kwargs={"pk": self.pk})
 
 
 class Vacation(models.Model):

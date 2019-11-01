@@ -1,0 +1,28 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+{% load crispy_forms_tags %}
+
+{% block title %}Delete Actual Expense {% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<main role="main">
+    <div class="container">
+        <h2>Delete{{actualexpense.get_type_display}} expense for {{actualexpense.treq.activity}}, {{actualexpense.treq.traveler}}</h2>
+        <form method="POST" class="form">
+            {% csrf_token %}
+            {{ form|crispy}}
+            <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

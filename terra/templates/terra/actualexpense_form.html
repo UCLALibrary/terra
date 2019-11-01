@@ -1,0 +1,54 @@
+{% extends "terra/base.html" %}
+
+{% load static from staticfiles %}
+
+{% load terra_extras %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Add Actual Expense{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block early_js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="{% static '/admin/js/jquery.formset.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<h1>Add actual expenses</h1>
+
+<div>
+   <form method="POST" class="form">
+        {% csrf_token %}
+          <fieldset>
+
+          <div>
+            {{ actualexpense_form.management_form }}
+            {% for actualexpense in actualexpense_form %}
+            <div class="link-formset">
+              {{ actualexpense|crispy}}
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+     <script>
+
+    $('.link-formset').formset({
+        addText: 'Add Expense',
+        deleteText: 'Remove Expense'
+    });
+    </script>
+    <button type="submit" class="btn btn-primary" >Submit</button>
+    <input type="hidden" name="next" value="{{next}}">
+</form>
+</div>
+{% endblock %}
