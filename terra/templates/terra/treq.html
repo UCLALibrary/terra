@@ -98,8 +98,7 @@
             </tr> 
         </tfoot> 
     </table>
-    
-    <button type="submit" class="btn btn-primary" href='{% url 'actualexpense_form' pk=treq.pk %}' >Add Actual Expenses</button>
+    <a class="btn btn-default" href="{% url 'actualexpense_form' treq_id=treq.pk %}">Add actual expenses<span class="glyphicon glyphicon-pencil"></span></a>
     
     <br>
     {% if treq.closed %}

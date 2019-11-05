@@ -10,11 +10,12 @@ from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.forms import formset_factory
+from django.forms.models import modelformset_factory
 
 from .models import TravelRequest, Unit, Fund, Employee, ActualExpense
 from .reports import unit_report, fund_report
 from .utils import current_fiscal_year_object, current_fiscal_year
-from .forms import ActualExpenseForm
+from .forms import ActualExpenseForm, BaseActualExpenseFormSet
 
 
 @login_required
@@ -148,44 +149,32 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
-
-    ActualExpense_FormSet = formset_factory(ActualExpenseForm)
+    ActualExpense_FormSet = modelformset_factory(ActualExpense, exclude=(), extra=1)
     template_name = "terra/actualexpense_form.html"
 
+    def get_formset(self):
+        formset = self.ActualExpense_FormSet()
+        formset.queryset = ActualExpense.objects.filter(treq=self.kwargs["treq_id"])
+        return formset
+
     def get(self, request, *args, **kwargs):
-        context = {"actualexpense_form": self.ActualExpense_FormSet()}
+        context = {"actualexpense_form": self.get_formset()}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
         actualexpense_formset = self.ActualExpense_FormSet(self.request.POST)
 
         # Checking the if the form is valid
         if actualexpense_formset.is_valid():
             for actualexpense in actualexpense_formset:
                 actualexpense.save()
-            return HttpResponseRedirect(reverse("treq_detail", kwargs={"pk": "5"}))
+            return HttpResponseRedirect(
+                reverse("treq_detail", kwargs={"pk": self.kwargs["treq_id"]})
+            )
 
         else:
-            context = {"actualexpense_form": self.ActualExpense_FormSet()}
+            context = {"actualexpense_form": self.get_formset()}
             return render(request, self.template_name, context)
-
-    def test_func(self):
-        return self.request.user.employee.has_full_report_access()
-
-
-class ActualExpenseUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = ActualExpense
-    fields = "__all__"
-    success_url = reverse_lazy("home")
-
-    def test_func(self):
-        return self.request.user.employee.has_full_report_access()
-
-
-class ActualExpenseDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = ActualExpense
-    success_url = reverse_lazy("home")
 
     def test_func(self):
         return self.request.user.employee.has_full_report_access()

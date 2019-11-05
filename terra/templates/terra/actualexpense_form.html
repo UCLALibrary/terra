@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block body %}
-<h1>Add actual expenses</h1>
+<h1>Actual Expenses</h1>
 
 <div>
    <form method="POST" class="form">
@@ -34,6 +34,7 @@
             {{ actualexpense_form.management_form }}
             {% for actualexpense in actualexpense_form %}
             <div class="link-formset">
+
               {{ actualexpense|crispy}}
             </div>
             {% endfor %}
