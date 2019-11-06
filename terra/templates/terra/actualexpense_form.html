@@ -4,7 +4,6 @@
 
 {% load terra_extras %}
 
-{% load bootstrap_tags %}
 
 {% load crispy_forms_tags %}
 
@@ -26,7 +25,7 @@
 {% endblock %}
 
 {% block body %}
-<h1>Actual Expenses</h1>
+<h1>Add or Edit Actual Expenses</h1>
 
 <div>
    <form method="POST" class="form">
@@ -36,26 +35,27 @@
           <div>
             {{ actualexpense_form.management_form }}
             {% for actualexpense in actualexpense_form %}
-            
             <div class="link-formset">
-              {{ actualexpense|as_bootstrap_inline}}
+              <div class="row">
+              {{ actualexpense|crispy}}
+              </div>
             </div>
+            </form>
             {% endfor %}
-          </div>
+            <br>
+            <br>
+    <button type="submit" class="btn btn-primary">Save Expenses</button>
+    <input type="hidden" name="next" value="{{next}}">
           </div>
         </fieldset>
-
      <script>
 
     $('.link-formset').formset({
         addText: 'Add Expense',
         deleteText: 'Remove Expense'
     });
-
-
     </script>
-    <button type="submit" class="btn btn-primary" >Submit</button>
-    <input type="hidden" name="next" value="{{next}}">
+
 </form>
 </div>
 {% endblock %}
