@@ -4,6 +4,8 @@
 
 {% load terra_extras %}
 
+{% load bootstrap_tags %}
+
 {% load crispy_forms_tags %}
 
 {% block title %}Add Actual Expense{% endblock %}
@@ -20,6 +22,7 @@
 {% block early_js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="{% static '/admin/js/jquery.formset.js' %}"></script>
+
 {% endblock %}
 
 {% block body %}
@@ -33,11 +36,12 @@
           <div>
             {{ actualexpense_form.management_form }}
             {% for actualexpense in actualexpense_form %}
+            
             <div class="link-formset">
-
-              {{ actualexpense|crispy}}
+              {{ actualexpense|as_bootstrap_inline}}
             </div>
             {% endfor %}
+          </div>
           </div>
         </fieldset>
 
@@ -47,6 +51,8 @@
         addText: 'Add Expense',
         deleteText: 'Remove Expense'
     });
+
+
     </script>
     <button type="submit" class="btn btn-primary" >Submit</button>
     <input type="hidden" name="next" value="{{next}}">
