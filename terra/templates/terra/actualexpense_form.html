@@ -4,7 +4,6 @@
 
 {% load terra_extras %}
 
-
 {% load crispy_forms_tags %}
 
 {% block title %}Add Actual Expense{% endblock %}
@@ -38,21 +37,23 @@
             <div class="link-formset">
               <div class="row">
               {{ actualexpense|crispy}}
+              {{actualexpense.DELETE}}
+                </div>
               </div>
             </div>
             </form>
             {% endfor %}
             <br>
             <br>
-    <button type="submit" class="btn btn-primary">Save Expenses</button>
-    <input type="hidden" name="next" value="{{next}}">
+            <button type="submit" class="btn btn-primary">Save Expenses</button>
+            <input type="hidden" name="next" value="{{next}}">
           </div>
         </fieldset>
      <script>
 
     $('.link-formset').formset({
         addText: 'Add Expense',
-        deleteText: 'Remove Expense'
+        deleteText: ''
     });
     </script>
 

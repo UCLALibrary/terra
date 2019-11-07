@@ -150,7 +150,7 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
     ActualExpense_FormSet = modelformset_factory(
-        ActualExpense, exclude=(), extra=1, can_delete=True
+        ActualExpense, exclude=(), extra=0, can_delete=True
     )
     template_name = "terra/actualexpense_form.html"
 

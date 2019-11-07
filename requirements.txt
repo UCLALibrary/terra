@@ -1,6 +1,5 @@
 Django>=2.2,<2.3
 django-crispy-forms
-django-forms-bootstrap
 black
 pre-commit
 fiscalyear

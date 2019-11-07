@@ -635,3 +635,30 @@ class TestFundListView(TestCase):
         response = self.client.get("/fund/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund_list.html")
+
+
+class TestActualExpenseCreateView(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_actual_expense_form_denies_anonymous(self):
+        response = self.client.get("/treq/5/addexpenses/", follow=True)
+        self.assertRedirects(response, "/treq/5/addexpenses/", status_code=302)
+
+    def test_fund_detail_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/treq/5/addexpenses/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "actualexpense_form.html")
+
+    def test_fund_detail_loads(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/treq/5/addexpenses/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "actualexpense_form.html")
+
+    # def test_get_formset(self):
+
+    # def test_get(self):
+
+    # def test_post(self):
