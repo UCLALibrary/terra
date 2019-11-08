@@ -659,9 +659,9 @@ class TestActualExpenseCreateView(TestCase):
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
     def test_validformset(self):
-        ActualExpense = ActualExpense.objects.get(pk=5)
+        actualexpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
-            ActualExpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+            actualexpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
         )
         formset = ActualExpense_FormSet
         formset.save()
