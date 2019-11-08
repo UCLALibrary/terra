@@ -19,7 +19,7 @@
 
 {% block early_js %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="{% static '/admin/js/jquery.formset.js' %}"></script>
+<script src="{% static '/terra/js/jquery.formset.js' %}"></script>
 
 {% endblock %}
 
@@ -34,7 +34,9 @@
 <h2></h2>
 <div class = link-formset>
 <div class =row>
+  {{actualexpense_form.id}}
   {{ actualexpense_form|crispy}}
+  
 </div>
 
 

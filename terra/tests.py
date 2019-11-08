@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
+from django.forms.models import modelformset_factory
 
 from fiscalyear import FiscalYear
 
@@ -234,7 +235,7 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(currency(None), "$0.00")
 
 
-class TestEmpoyeeDetailView(TestCase):
+class TestEmployeeDetailView(TestCase):
 
     fixtures = ["sample_data.json"]
 
@@ -657,8 +658,12 @@ class TestActualExpenseCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
-    # def test_get_formset(self):
+    def test_deletetion(self):
+        ActualExpense = ActualExpense.objects.get(pk=5)
+        ActualExpense_FormSet = modelformset_factory(
+            ActualExpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+        )
 
-    # def test_get(self):
-
-    # def test_post(self):
+        formset = ActualExpense_FormSet
+        formset.save()
+        self.assertTrue(formset.is_valid())

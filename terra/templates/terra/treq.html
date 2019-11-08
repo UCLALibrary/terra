@@ -98,10 +98,9 @@
             </tr> 
         </tfoot> 
     </table>
-    <a class="btn btn-primary" href="{% url 'actualexpense_form' treq_id=treq.pk %}">Edit actual expenses<span class="glyphicon glyphicon-pencil"></span></a>
+    
     
     <br>
-    {% if treq.closed %}
     <br>
     <dt>Actual Expenses</dt>
     <table class="table">
@@ -126,7 +125,6 @@
             </tr> 
         </tfoot> 
     </table>
-    {% endif %}
 </div>
    <div class="tab-pane fade" id="fund" role="tabpanel" aria-labelledby="fund-tab">
     <br>
@@ -147,7 +145,9 @@
             {% endfor %}
         </tbody>
     </table>
+
     </div>
+    <a class="btn btn-primary" href="{% url 'actualexpense_form' treq_id=treq.pk %}">Edit actual expenses<span class="glyphicon glyphicon-pencil"></span></a>
 </div>
 
 {% endblock %}
