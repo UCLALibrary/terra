@@ -658,7 +658,7 @@ class TestActualExpenseCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
-    def test_deletetion(self):
+    def test_validformset(self):
         ActualExpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
             ActualExpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
@@ -667,3 +667,19 @@ class TestActualExpenseCreateView(TestCase):
         formset = ActualExpense_FormSet
         formset.save()
         self.assertTrue(formset.is_valid())
+
+    def test_get(self):
+        formset = self.ActualExpense_FormSet()
+        formset.queryset = ActualExpense.objects.filter(treq=self.kwargs[5])
+        context = {"actualexpense_formset": formset}
+        self.assertTrue(
+            response=self.client.get(request, "actualexpense_form", context)
+        )
+
+    def test_post(self):
+        ActualExpense = ActualExpense.objects.get(pk=5)
+        ActualExpense_FormSet = modelformset_factory(
+            ActualExpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+        )
+
+        formset = ActualExpense_FormSet
