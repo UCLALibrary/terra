@@ -326,7 +326,7 @@ class TestTreqDetailView(TestCase):
 
     def test_treq_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/treq/2/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/treq.html")
 
@@ -670,11 +670,17 @@ class TestActualExpenseCreateView(TestCase):
 
     def test_get(self):
         formset = self.ActualExpense_FormSet()
-        formset.queryset = ActualExpense.objects.filter(treq=self.kwargs[5])
         context = {"actualexpense_formset": formset}
         self.assertTrue(
             response=self.client.get(request, "actualexpense_form", context)
         )
+
+
+"""
+
+    def test_get_formset(self):
+
+
 
     def test_post(self):
         ActualExpense = ActualExpense.objects.get(pk=5)
@@ -683,3 +689,5 @@ class TestActualExpenseCreateView(TestCase):
         )
 
         formset = ActualExpense_FormSet
+
+"""
