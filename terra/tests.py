@@ -76,7 +76,7 @@ class ModelsTestCase(TestCase):
     def test_employee_has_full_report_access(self):
         emp = Employee.objects.get(user=User.objects.get(username="doriswang"))
         self.assertTrue(emp.has_full_report_access())
-        emp = Employee.objects.get(user=User.objects.get(username="aprigge"))
+        emp = Employee.objects.get(user=User.objects.get(username="tawopetu"))
         self.assertFalse(emp.has_full_report_access())
         emp.user.groups.add(1)
         self.assertTrue(emp.has_full_report_access())
@@ -678,12 +678,7 @@ class TestActualExpenseCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
-
-"""
-
-    def test_get_formset(self):
-
-
+    # def test_get_formset(self):
 
     def test_post(self):
         ActualExpense = ActualExpense.objects.get(pk=5)
@@ -692,5 +687,6 @@ class TestActualExpenseCreateView(TestCase):
         )
 
         formset = ActualExpense_FormSet
+        formset.save()
 
-"""
+        self.assertRedirects(response, "/treq/5", status_code=200)
