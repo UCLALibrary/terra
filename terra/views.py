@@ -150,8 +150,9 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
     ActualExpense_FormSet = modelformset_factory(
-        ActualExpense, exclude=(), extra=0, can_delete=True
+        ActualExpense, form=ActualExpenseForm, exclude=(), extra=1, can_delete=True
     )
+
     template_name = "terra/actualexpense_form.html"
 
     def get_formset(self):
@@ -160,7 +161,7 @@ class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
         return formset
 
     def get(self, request, *args, **kwargs):
-        context = {"actualexpense_form": self.get_formset()}
+        context = {"actualexpense_formset": self.get_formset()}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -168,15 +169,14 @@ class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
 
         # Checking the if the form is valid
         if actualexpense_formset.is_valid():
-            for actualexpense in actualexpense_formset:
-                actualexpense.save()
+            actualexpense_formset.save()
 
             return HttpResponseRedirect(
                 reverse("treq_detail", kwargs={"pk": self.kwargs["treq_id"]})
             )
 
         else:
-            context = {"actualexpense_form": self.get_formset()}
+            context = {"actualexpense_formset": self.get_formset()}
             return render(request, self.template_name, context)
 
     def test_func(self):
