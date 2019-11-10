@@ -136,5 +136,7 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.employee.has_full_report_access():
-            return Fund.objects.all()
-        return Fund.objects.filter(manager=self.request.user.employee)
+            funds = Fund.objects.all()
+        else:
+            funds = Fund.objects.filter(manager=self.request.user.employee)
+        return funds.order_by("unit__name", "account", "cost_center", "fund")
