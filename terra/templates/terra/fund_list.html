@@ -39,6 +39,9 @@
 {% block supplemental_js %}
 <script type="text/javascript">
 $(document).ready(function($) {
+
+	$(".table-row").css('cursor', 'pointer');
+	
     $(".table-row").click(function() {
         window.document.location = $(this).data("href");
     });
