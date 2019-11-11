@@ -128,7 +128,7 @@ class FundExportView(FundDetailView):
         fy = context.get("fiscalyear", "").replace(" ", "")
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f'attachment; filename={fund}_FY{fy}.csv"'
+        response["Content-Disposition"] = f'attachment; filename="{fund}_FY{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [
