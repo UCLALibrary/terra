@@ -1,4 +1,5 @@
-from django.http import HttpResponseRedirect
+import csv
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
@@ -119,6 +120,51 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         return context
+
+
+class FundExportView(FundDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        fund = context.get("fund")
+        fy = context.get("fiscalyear", "").replace(" ", "")
+        totals = context.get("totals")
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{fund}_FY{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Employee",
+                "Prof Dev Approved",
+                "Admin Approved",
+                "Total Approved",
+                "Prof Dev Expenditures",
+                "Admin Expenditures",
+                "Total Expenditures",
+            ]
+        )
+        for e in context["employees"]:
+            writer.writerow(
+                [
+                    f"{e.user.last_name}, {e.user.first_name}",
+                    e.profdev_alloc,
+                    e.admin_alloc,
+                    e.total_alloc,
+                    e.profdev_expend,
+                    e.admin_expend,
+                    e.total_expend,
+                ]
+            )
+        writer.writerow(
+            [
+                "Totals",
+                totals["profdev_alloc"],
+                totals["admin_alloc"],
+                totals["total_alloc"],
+                totals["profdev_expend"],
+                totals["admin_expend"],
+                totals["total_expend"],
+            ]
+        )
+        return response
 
 
 class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
