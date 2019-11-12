@@ -690,17 +690,16 @@ class TestActualExpenseCreateView(TestCase):
 
     def test_edit_expense(self):
         self.client.login(username="doriswang", password="Staples50141")
-        data = (
-            {
-                "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
-                "Type": "Other",
-                "Rate": "125.00",
-                "Quantity": "1",
-                "Total": "125.00",
-                "Fund": "605000-LD-19900",
-                "Delete": "",
-            },
-        )
+        data = {
+            "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
+            "Type": "Other",
+            "Rate": "125.00",
+            "Quantity": "1",
+            "Total": "125.00",
+            "Fund": "605000-LD-19900",
+            "Delete": "",
+        }
+
         data["Fund"] = "605000-LD-18084"
         response = self.client.post("/treq/5/addexpenses/", data)
         self.assertEqual(response.status_code, 200)
