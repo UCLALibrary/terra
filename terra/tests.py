@@ -657,7 +657,7 @@ class TestActualExpenseCreateView(TestCase):
     def test_validformset(self):
         actualexpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
-            actualexpense, exclude=(), extra=5, can_delete=True
+            actualexpense, exclude=(), extra=0, can_delete=True
         )
         formset = ActualExpense_FormSet
         formset.save()
@@ -666,12 +666,10 @@ class TestActualExpenseCreateView(TestCase):
     def test_post(self):
         actualexpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
-            actualexpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+            actualexpense, exclude=(), extra=5, can_delete=True
         )
-
         formset = ActualExpense_FormSet
         formset.save()
-
         self.assertRedirects(response, "/treq/5", status_code=200)
 
     def test_add_expense(self):
@@ -685,9 +683,10 @@ class TestActualExpenseCreateView(TestCase):
                 "Quantity": "1",
                 "Total": "125.00",
                 "Fund": "605000-LD-19900",
+                "Delete": "",
             },
         )
-        self.assertRedirects(response, "/treq/5", status_code=200)
+        self.assertTrue(status_code=200)
 
     def test_edit_expense(self):
         self.client.login(username="doriswang", password="Staples50141")
