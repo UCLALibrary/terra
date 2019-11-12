@@ -690,3 +690,18 @@ class TestActualExpenseCreateView(TestCase):
         formset.save()
 
         self.assertRedirects(response, "/treq/5", status_code=200)
+
+    def test_add_expense(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = c.post(
+            "/treq/5/addexpenses/",
+            {
+                "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
+                "Type": "Other",
+                "Rate": "125.00",
+                "Quantity": "1",
+                "Total": "125.00",
+                "Fund": "605000-LD-19900",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
