@@ -654,24 +654,6 @@ class TestActualExpenseCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
-    def test_validformset(self):
-        actualexpense = ActualExpense.objects.get(pk=5)
-        ActualExpense_FormSet = modelformset_factory(
-            actualexpense, exclude=(), extra=0, can_delete=True
-        )
-        formset = ActualExpense_FormSet
-        formset.save()
-        self.assertTrue(formset.is_valid())
-
-    def test_post(self):
-        actualexpense = ActualExpense.objects.get(pk=5)
-        ActualExpense_FormSet = modelformset_factory(
-            actualexpense, exclude=(), extra=5, can_delete=True
-        )
-        formset = ActualExpense_FormSet
-        formset.save()
-        self.assertRedirects(response, "/treq/5", status_code=200)
-
     def test_add_expense(self):
         self.client.login(username="aprigge", password="Staples50141")
         data = {
@@ -685,7 +667,6 @@ class TestActualExpenseCreateView(TestCase):
         }
         response = self.client.post("/treq/5/addexpenses/", data)
         self.assertRedirects(response, "/treq/5", status_code=200)
-        # self.assertEqual(response.status_code, 200)
 
     def test_edit_expense(self):
         self.client.login(username="aprigge", password="Staples50141")
@@ -701,8 +682,9 @@ class TestActualExpenseCreateView(TestCase):
 
         data["Fund"] = "605000-LD-18084"
         response = self.client.post("/treq/5/addexpenses/", data)
-        # self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, "/treq/5", status_code=200)
+        r = self.client.get("/treq/5/addexpenses/")
+        self.assertContains(r, "605000-LD-18084")
 
     def test_delete_expense(self):
         self.client.login(username="aprigge", password="Staples50141")
@@ -719,5 +701,4 @@ class TestActualExpenseCreateView(TestCase):
         data["Rate"] = ""
         data["Quantity"] = ""
         response = self.client.post("/treq/5/addexpenses/", data)
-        # self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, "/treq/5", status_code=200)
