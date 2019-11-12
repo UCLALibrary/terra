@@ -642,10 +642,6 @@ class TestActualExpenseCreateView(TestCase):
 
     fixtures = ["sample_data.json"]
 
-    def test_actual_expense_form_denies_anonymous(self):
-        response = self.client.get("/treq/5/addexpenses/", follow=True)
-        self.assertRedirects(response, "/treq/5/addexpenses/", status_code=302)
-
     def test_fund_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/treq/5/addexpenses/")
@@ -666,17 +662,6 @@ class TestActualExpenseCreateView(TestCase):
         formset = ActualExpense_FormSet
         formset.save()
         self.assertTrue(formset.is_valid())
-
-    def test_get(self):
-
-        actualexpense = ActualExpense.objects.get(pk=5)
-        ActualExpense_FormSet = modelformset_factory(
-            actualexpense, exclude=(), extra=5, can_delete=True
-        )
-        formset = ActualExpense_FormSet
-        context = {"actualexpense_formset": formset}
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "actualexpense_form.html")
 
     def test_post(self):
         actualexpense = ActualExpense.objects.get(pk=5)
