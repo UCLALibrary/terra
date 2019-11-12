@@ -663,7 +663,7 @@ class TestActualExpenseCreateView(TestCase):
             "Quantity": "1",
             "Total": "125.00",
             "Fund": "605000-LD-19900",
-            "Delete": "",
+            "Delete": "False",
         }
         response = self.client.post("/treq/5/addexpenses/", data)
         self.assertEqual(response.status_code, 200)
@@ -677,7 +677,7 @@ class TestActualExpenseCreateView(TestCase):
             "Quantity": "1",
             "Total": "125.00",
             "Fund": "605000-LD-19900",
-            "Delete": "",
+            "Delete": "False",
         }
 
         data["Fund"] = "605000-LD-18084"
@@ -693,7 +693,7 @@ class TestActualExpenseCreateView(TestCase):
             "Quantity": "1",
             "Total": "125.00",
             "Fund": "605000-LD-19900",
-            "Delete": "",
+            "Delete": "False",
         }
 
         data["Rate"] = ""
