@@ -18,6 +18,9 @@
     <h1>Fiscal Year {{fiscalyear}}</h1>
     <h2>{{unit.name}}</h2>
     <h3>{{unit.manager}}</h3>
+        <div class="col text-right">
+            <a href="/unit/{{unit.pk}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
     <hr/>
     
     {% for subunit_id, subunit in report.subunits.items %}
