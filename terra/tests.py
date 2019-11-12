@@ -686,15 +686,21 @@ class TestActualExpenseCreateView(TestCase):
                 "Delete": "",
             },
         )
-        self.assertTrue(status_code=200)
+        self.assertEqual(response.status_code, 200)
 
     def test_edit_expense(self):
         self.client.login(username="doriswang", password="Staples50141")
-        r = self.client.get("/treq/5/addexpenses/")
-        form = r.context["form"]
-        data = form.initial
-        data["Total"] = "1000.00"
-        r = self.client.post("/treq/5/addexpenses/", data)
-        r = self.client.get("/treq/5/addexpenses/")
-        self.assertContains(r, "1000.00")  # or
-        # self.assertEqual(r.context['form'].initial['field_to_be_changed'], 'updated_value')
+        data = (
+            {
+                "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
+                "Type": "Other",
+                "Rate": "125.00",
+                "Quantity": "1",
+                "Total": "125.00",
+                "Fund": "605000-LD-19900",
+                "Delete": "",
+            },
+        )
+        data["Fund"] = "605000-LD-18084"
+        response = self.client.post("/treq/5/addexpenses/", data)
+        self.assertEqual(response.status_code, 200)
