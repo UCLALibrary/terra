@@ -683,7 +683,7 @@ class TestActualExpenseCreateView(TestCase):
         data["Fund"] = "605000-LD-18084"
         response = self.client.post("/treq/5/addexpenses/", data)
         r = self.client.get("/treq/5/addexpenses/")
-        self.assertContains(r, "605000-LD-18084")
+        self.assertContains(r.data["Fund"], "605000-LD-18084")
 
     def test_delete_expense(self):
         self.client.login(username="aprigge", password="Staples50141")
@@ -700,6 +700,5 @@ class TestActualExpenseCreateView(TestCase):
         data["Rate"] = ""
         data["Quantity"] = ""
         response = self.client.post("/treq/5/addexpenses/", data)
-        self.assertRedirects(response, "/treq/5", status_code=200)
-        self.client.get("/treq/5/addexpenses/")
-        self.assertEqual(data["Rate"], "")
+        r = self.client.get("/treq/5/addexpenses/")
+        self.assertEqual(str(data["Rate"]), "")
