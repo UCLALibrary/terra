@@ -673,7 +673,7 @@ class TestActualExpenseCreateView(TestCase):
         self.assertRedirects(response, "/treq/5", status_code=200)
 
     def test_add_expense(self):
-        self.client.login(username="doriswang", password="Staples50141")
+        self.client.login(username="aprigge", password="Staples50141")
         data = {
             "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
             "Type": "Other",
@@ -684,10 +684,11 @@ class TestActualExpenseCreateView(TestCase):
             "Delete": "",
         }
         response = self.client.post("/treq/5/addexpenses/", data)
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, "/treq/5", status_code=200)
+        # self.assertEqual(response.status_code, 200)
 
     def test_edit_expense(self):
-        self.client.login(username="doriswang", password="Staples50141")
+        self.client.login(username="aprigge", password="Staples50141")
         data = {
             "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
             "Type": "Other",
@@ -700,4 +701,23 @@ class TestActualExpenseCreateView(TestCase):
 
         data["Fund"] = "605000-LD-18084"
         response = self.client.post("/treq/5/addexpenses/", data)
-        self.assertEqual(response.status_code, 200)
+        # self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, "/treq/5", status_code=200)
+
+    def test_delete_expense(self):
+        self.client.login(username="aprigge", password="Staples50141")
+        data = {
+            "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
+            "Type": "Other",
+            "Rate": "125.00",
+            "Quantity": "1",
+            "Total": "125.00",
+            "Fund": "605000-LD-19900",
+            "Delete": "",
+        }
+
+        data["Rate"] = ""
+        data["Quantity"] = ""
+        response = self.client.post("/treq/5/addexpenses/", data)
+        # self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, "/treq/5", status_code=200)
