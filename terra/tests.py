@@ -661,7 +661,7 @@ class TestActualExpenseCreateView(TestCase):
     def test_validformset(self):
         actualexpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
-            actualexpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+            actualexpense, exclude=(), extra=5, can_delete=True
         )
         formset = ActualExpense_FormSet
         formset.save()
@@ -671,7 +671,7 @@ class TestActualExpenseCreateView(TestCase):
 
         actualexpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
-            actualexpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
+            actualexpense, exclude=(), extra=5, can_delete=True
         )
         formset = ActualExpense_FormSet
         context = {"actualexpense_formset": formset}
@@ -702,4 +702,15 @@ class TestActualExpenseCreateView(TestCase):
                 "Fund": "605000-LD-19900",
             },
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, "/treq/5", status_code=200)
+
+    def test_edit_expense(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        r = self.client.get("/treq/5/addexpenses/")
+        form = r.context["form"]
+        data = form.initial
+        data["Total"] = "1000.00"
+        r = self.client.post("/treq/5/addexpenses/", data)
+        r = self.client.get("/treq/5/addexpenses/")
+        self.assertContains(r, "1000.00")  # or
+        # self.assertEqual(r.context['form'].initial['field_to_be_changed'], 'updated_value')
