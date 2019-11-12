@@ -315,13 +315,13 @@ class TestTreqDetailView(TestCase):
     def test_treq_detail_denies_anonymous(self):
         response = self.client.get("/treq/1", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/", status_code=301
+            response, "/accounts/login/?next=/treq/1/", status_code=301
         )
 
     def test_treq_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/")
-        self.assertTemplateUsed(response, "terra/unit.html")
+        response = self.client.get("/treq/1/")
+        self.assertTemplateUsed(response, "terra/treq.html")
         self.assertEqual(response.status_code, 200)
 
     def test_treq_detail_loads(self):
@@ -678,8 +678,6 @@ class TestActualExpenseCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "actualexpense_form.html")
 
-    # def test_get_formset(self):
-
     def test_post(self):
         ActualExpense = ActualExpense.objects.get(pk=5)
         ActualExpense_FormSet = modelformset_factory(
@@ -694,6 +692,23 @@ class TestActualExpenseCreateView(TestCase):
     def test_add_expense(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = c.post(
+            "/treq/5/addexpenses/",
+            {
+                "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
+                "Type": "Other",
+                "Rate": "125.00",
+                "Quantity": "1",
+                "Total": "125.00",
+                "Fund": "605000-LD-19900",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_expense(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        self.client.get(ActualExpense.objects.get(pk=5))
+
+        response = client.post(
             "/treq/5/addexpenses/",
             {
                 "Treq": "<TReq 5: Prigge, Ashton Summer Con 2019>",
