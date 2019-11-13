@@ -1,4 +1,5 @@
-from django.http import HttpResponseRedirect
+import csv
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import View
 from django.views.generic.list import ListView
@@ -129,6 +130,51 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
+class FundExportView(FundDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        fund = context.get("fund")
+        fy = context.get("fiscalyear", "").replace(" ", "")
+        totals = context.get("totals")
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{fund}_FY{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Employee",
+                "Prof Dev Approved",
+                "Admin Approved",
+                "Total Approved",
+                "Prof Dev Expenditures",
+                "Admin Expenditures",
+                "Total Expenditures",
+            ]
+        )
+        for e in context["employees"]:
+            writer.writerow(
+                [
+                    f"{e.user.last_name}, {e.user.first_name}",
+                    e.profdev_alloc,
+                    e.admin_alloc,
+                    e.total_alloc,
+                    e.profdev_expend,
+                    e.admin_expend,
+                    e.total_expend,
+                ]
+            )
+        writer.writerow(
+            [
+                "Totals",
+                totals["profdev_alloc"],
+                totals["admin_alloc"],
+                totals["total_alloc"],
+                totals["profdev_expend"],
+                totals["admin_expend"],
+                totals["total_expend"],
+            ]
+        )
+        return response
+
+
 class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     model = Fund
@@ -144,10 +190,12 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.employee.has_full_report_access():
-            return Fund.objects.all()
-        return Fund.objects.filter(manager=self.request.user.employee)
-
-
+            funds = Fund.objects.all()
+        else:
+            funds = Fund.objects.filter(manager=self.request.user.employee)
+        return funds.order_by("unit__name", "account", "cost_center", "fund")
+      
+      
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
     ActualExpense_FormSet = modelformset_factory(
         ActualExpense, form=ActualExpenseForm, exclude=(), extra=5, can_delete=True
@@ -181,3 +229,4 @@ class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
         return self.request.user.employee.has_full_report_access()
+

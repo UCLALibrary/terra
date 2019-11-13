@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Pick up any local changes to requirements.txt, which do *not* automatically get re-installed when starting the container.
+# Do this only in dev environment!
+if [ "$DJANGO_RUN_ENV" = "dev" ]; then
+  pip install --no-cache-dir -r requirements.txt --user --no-warn-script-location
+fi
+
 # Check when database is ready for connections
 until python -c 'import os ; import MySQLdb ; db=MySQLdb.connect(host=os.environ.get("DJANGO_DB_HOST"),user=os.environ.get("DJANGO_DB_USER"),passwd=os.environ.get("DJANGO_DB_PASSWD"),db=os.environ.get("DJANGO_DB_NAME"))' ; do
   echo "Database connection not ready - waiting"
