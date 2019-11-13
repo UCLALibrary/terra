@@ -15,18 +15,35 @@
 
 {% block body %}
 <h1>Unit Reports</h1>
-<hr/>
-<ul type="square">
-{% for unit in units %}
-	<h{{unit.type}}><li><a href="/unit/{{unit.pk}}">{{unit.name}}</a></li></h{{unit.type}}>
-		{% if unit.subunits.all %}
-		<ul type="square">
-		{% for subunit in unit.subunits.all %}
-			{% include "terra/unit_list_item.html"%}
-		{% endfor %}
-		</ul>
-		{% endif %}
-{% endfor %}
-</ul>
+<br/>
 
+<div class="col-7">
+	<div class="list-group">
+	{% for unit in units %}
+	  <a href="/unit/{{unit.pk}}" class="list-group-item list-group-item-action">
+	    <b>{{unit}}</b> - {{unit.manager}}
+	  </a>
+	  {% if unit.subunits.all %}
+	  <div class="list-group">
+		{% for subunit in unit.subunits.all %}
+		  <a href="/unit/{{subunit.pk}}" class="list-group-item list-group-item-action">
+		    &nbsp; &nbsp; &nbsp;
+		    <b>{{subunit}}</b> - {{subunit.manager}}
+		  </a>
+		  {% if subunit.subunits.all %}
+		  <div class="list-group">
+			{% for subsubunit in subunit.subunits.all %}
+			  <a href="/unit/{{subsubunit.pk}}" class="list-group-item list-group-item-action">
+			    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+			    <b>{{subsubunit}}</b> - {{subsubunit.manager}}
+			  </a>
+			{% endfor %}
+		  </div>
+		  {% endif %}
+		{% endfor %}
+	  </div>
+	  {% endif %}
+	{% endfor %}
+	</div>
+</div>
 {% endblock %}

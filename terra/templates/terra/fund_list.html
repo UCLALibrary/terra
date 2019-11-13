@@ -15,11 +15,36 @@
 
 {% block body %}
 <h1>FAU Reports</h1>
-<hr/>
-<ul type="square">
-{% for fund in funds %}
-	<h3><li><a href="/fund/{{fund.pk}}">{{fund}}</a></li></h3>
-{% endfor %}
-</ul>
+<br/>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">FAU</th>
+      <th scope="col">Unit</th>
+      <th scope="col">Manager</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for fund in funds %}
+  	<tr class="table-row" data-href="/fund/{{fund.pk}}">
+  		<td>{{ fund }}</td>
+  		<td>{% if fund.unit %}{{ fund.unit }}{% endif %}</td>
+  		<td>{{ fund.manager }}</td>
+  	</tr>
+  	{% endfor %}
+  </tbody>
+</table>
+{% endblock %}
 
+{% block supplemental_js %}
+<script type="text/javascript">
+$(document).ready(function($) {
+
+	$(".table-row").css('cursor', 'pointer');
+	
+    $(".table-row").click(function() {
+        window.document.location = $(this).data("href");
+    });
+});
+</script>
 {% endblock %}

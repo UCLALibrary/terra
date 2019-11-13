@@ -45,7 +45,6 @@
 </ul>
 
 <div class="tab-content" id="myTabContent">
-
   <div class="tab-pane fade show active" id="approval" role="tabpanel" aria-labelledby="approval-tab">
     <br/>
     <div class="row">
@@ -131,7 +130,7 @@
                 </tfoot> 
             </table>
             {% endif %}
-             <a class="btn btn-primary" href="{% url 'actualexpense_form' treq_id=treq.pk %}">Edit actual expenses<span class="glyphicon glyphicon-pencil"></span></a>
+          <a class="btn btn-primary" href="{% url 'actualexpense_form' treq_id=treq.pk %}">Edit actual expenses<span class="glyphicon glyphicon-pencil"></span></a>
         </div>
         <div class="col">
             <b>Funding</b>
@@ -166,10 +165,5 @@
         </div>
     </div>
   </div>
-
 </div>
 {% endblock %}
-
-
-   
-
