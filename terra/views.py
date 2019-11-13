@@ -78,6 +78,80 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
+class UnitExportView(UnitDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        unit = context.get("unit")
+        team = unit.all_employees()
+        fy = context.get("fiscalyear", "").replace(" ", "")
+        totals = context.get("totals")
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{unit}_FY{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Employee",
+                "Prof Dev Approved",
+                "Admin Approved",
+                "Total Approved",
+                "Prof Dev Expenditures",
+                "Admin Expenditures",
+                "Total Expenditures",
+                "Working Days Out",
+                "Vacation Days Out",
+                "Total Days Out",
+            ]
+        )
+        for subunit in context["report"]["subunits"].values():
+            writer.writerow([])
+            writer.writerow([subunit["subunit"]])
+            for employee in subunit["employees"].values():
+                writer.writerow(
+                    [
+                        employee,
+                        employee.data["profdev_alloc"],
+                        employee.data["admin_alloc"],
+                        employee.data["total_alloc"],
+                        employee.data["profdev_expend"],
+                        employee.data["admin_expend"],
+                        employee.data["total_expend"],
+                        employee.data["days_away"],
+                        employee.data["days_vacation"],
+                        employee.data["total_days_ooo"],
+                    ]
+                )
+            writer.writerow(
+                [
+                    "Subtotals",
+                    subunit["subunit_totals"]["profdev_alloc"],
+                    subunit["subunit_totals"]["admin_alloc"],
+                    subunit["subunit_totals"]["total_alloc"],
+                    subunit["subunit_totals"]["profdev_expend"],
+                    subunit["subunit_totals"]["admin_expend"],
+                    subunit["subunit_totals"]["total_expend"],
+                    subunit["subunit_totals"]["days_away"],
+                    subunit["subunit_totals"]["days_vacation"],
+                    subunit["subunit_totals"]["total_days_ooo"],
+                ]
+            )
+        writer.writerow([])
+        writer.writerow([])
+        writer.writerow(
+            [
+                "Totals",
+                context["report"]["unit_totals"]["profdev_alloc"],
+                context["report"]["unit_totals"]["admin_alloc"],
+                context["report"]["unit_totals"]["total_alloc"],
+                context["report"]["unit_totals"]["profdev_expend"],
+                context["report"]["unit_totals"]["admin_expend"],
+                context["report"]["unit_totals"]["total_expend"],
+                context["report"]["unit_totals"]["days_away"],
+                context["report"]["unit_totals"]["days_vacation"],
+                context["report"]["unit_totals"]["total_days_ooo"],
+            ]
+        )
+        return response
+
+
 class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     model = Unit

@@ -14,12 +14,17 @@
 {% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col">
+            <h1>Fiscal Year {{fiscalyear}}</h1>
+            <h2>{{unit.name}}</h2>
+            <h3>{{unit.manager}}</h3>
+        </div>
+        <div class="col text-right">
+            <a href="/unit/{{unit.pk}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
+    </div>
 
-    <h1>Fiscal Year {{fiscalyear}}</h1>
-    <h2>{{unit.name}}</h2>
-    <h3>{{unit.manager}}</h3>
-    <hr/>
-    
     {% for subunit_id, subunit in report.subunits.items %}
     <h3>{{subunit.subunit.name}}</h3>
     <table class="table">
@@ -39,7 +44,7 @@
                 <th scope="col" class="text-right">Admin.</th>
                 <th scope="col" class="text-right">Total</th>
                 <th scope="col" class="text-right">Working</th>
-                <th scope="col" class="text-right">Vaction</th>
+                <th scope="col" class="text-right">Vacation</th>
                 <th scope="col" class="text-right">Total</th>
             </tr>
         </thead>
