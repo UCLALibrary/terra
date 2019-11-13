@@ -96,6 +96,9 @@ class UnitExportView(UnitDetailView):
                 "Prof Dev Expenditures",
                 "Admin Expenditures",
                 "Total Expenditures",
+                "Working Days Out",
+                "Vacation Days Out",
+                "Total Days Out",
             ]
         )
         for subunit in context["report"]["subunits"].values():
@@ -110,6 +113,9 @@ class UnitExportView(UnitDetailView):
                         employee.data["profdev_expend"],
                         employee.data["admin_expend"],
                         employee.data["total_expend"],
+                        employee.data["days_away"],
+                        employee.data["days_vacation"],
+                        employee.data["total_days_ooo"],
                     ]
                 )
             writer.writerow(
@@ -121,6 +127,9 @@ class UnitExportView(UnitDetailView):
                     subunit["subunit_totals"]["profdev_expend"],
                     subunit["subunit_totals"]["admin_expend"],
                     subunit["subunit_totals"]["total_expend"],
+                    subunit["subunit_totals"]["days_away"],
+                    subunit["subunit_totals"]["days_vacation"],
+                    subunit["subunit_totals"]["total_days_ooo"],
                 ]
             )
         writer.writerow(
@@ -132,6 +141,9 @@ class UnitExportView(UnitDetailView):
                 context["report"]["unit_totals"]["profdev_expend"],
                 context["report"]["unit_totals"]["admin_expend"],
                 context["report"]["unit_totals"]["total_expend"],
+                context["report"]["unit_totals"]["days_away"],
+                context["report"]["unit_totals"]["days_vacation"],
+                context["report"]["unit_totals"]["total_days_ooo"],
             ]
         )
         return response
