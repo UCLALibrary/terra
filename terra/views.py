@@ -102,6 +102,7 @@ class UnitExportView(UnitDetailView):
             ]
         )
         for subunit in context["report"]["subunits"].values():
+            writer.writerow([])
             writer.writerow([subunit["subunit"]])
             for employee in subunit["employees"].values():
                 writer.writerow(
@@ -132,6 +133,8 @@ class UnitExportView(UnitDetailView):
                     subunit["subunit_totals"]["total_days_ooo"],
                 ]
             )
+        writer.writerow([])
+        writer.writerow([])
         writer.writerow(
             [
                 "Totals",
