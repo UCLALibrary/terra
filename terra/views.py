@@ -100,7 +100,6 @@ class UnitExportView(UnitDetailView):
         )
 
         for employee in context["report"]["subunits"][unit.id]["employees"].values():
-
             writer.writerow(
                 [
                     employee,
