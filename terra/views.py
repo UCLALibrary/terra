@@ -98,20 +98,31 @@ class UnitExportView(UnitDetailView):
                 "Total Expenditures",
             ]
         )
-
-        for employee in context["report"]["subunits"][unit.id]["employees"].values():
+        for subunit in context["report"]["subunits"].values():
+            writer.writerow([subunit["subunit"]])
+            for employee in subunit["employees"].values():
+                writer.writerow(
+                    [
+                        employee,
+                        employee.data["profdev_alloc"],
+                        employee.data["admin_alloc"],
+                        employee.data["total_alloc"],
+                        employee.data["profdev_expend"],
+                        employee.data["admin_expend"],
+                        employee.data["total_expend"],
+                    ]
+                )
             writer.writerow(
                 [
-                    employee,
-                    employee.data["profdev_alloc"],
-                    employee.data["admin_alloc"],
-                    employee.data["total_alloc"],
-                    employee.data["profdev_expend"],
-                    employee.data["admin_expend"],
-                    employee.data["total_expend"],
+                    "Subunit Total",
+                    subunit["subunit_totals"]["profdev_alloc"],
+                    subunit["subunit_totals"]["admin_alloc"],
+                    subunit["subunit_totals"]["total_alloc"],
+                    subunit["subunit_totals"]["profdev_expend"],
+                    subunit["subunit_totals"]["admin_expend"],
+                    subunit["subunit_totals"]["total_expend"],
                 ]
             )
-
         writer.writerow(
             [
                 "Totals",
