@@ -114,7 +114,7 @@ class UnitExportView(UnitDetailView):
                 )
             writer.writerow(
                 [
-                    "Subunit Total",
+                    "Subtotals",
                     subunit["subunit_totals"]["profdev_alloc"],
                     subunit["subunit_totals"]["admin_alloc"],
                     subunit["subunit_totals"]["total_alloc"],
