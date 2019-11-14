@@ -25,37 +25,52 @@
 
 {% block body %}
 <h1>Add or Edit Actual Expenses</h1>
-
+<br>
 <form method="POST" class="form">
 {% csrf_token %}
 {{ actualexpense_formset.management_form }}
+
+<div class="container-fluid">
+  <div class="row">
 {% for actualexpense_form in actualexpense_formset %}
+<br>
+<div class = "link-formset">  
+<div class="col">
+<div class="card">
 
-<h2></h2>
-<div class = link-formset>
-<div class =row>
-  {{actualexpense_form.id}}
-  {{ actualexpense_form|crispy}}
-  
-</div>
+<div class="card-body">
 
-
+        {{actualexpense_form.id}}
+        <table>
+          {{actualexpense_form.treq|as_crispy_field}}
+          {{actualexpense_form.type|as_crispy_field}}
+          {{actualexpense_form.rate|as_crispy_field}}
+          {{actualexpense_form.quantity|as_crispy_field}}
+          {{actualexpense_form.total|as_crispy_field}}
+          {{actualexpense_form.fund|as_crispy_field}}
+          {{actualexpense_form.DELETE|as_crispy_field}}
+      </table>
+      </div>
+    </div>
+  </div>
 </div>
 {% endfor %}
+</div>
+</div>
 
+<br>
+<br>
 <button type="submit" class="btn btn-primary">Save Expenses</button>
 <input type="hidden" name="next" value="{{next}}">
-
-</form>
      <script>
 
     $('.link-formset').formset({
         addText: 'Add Expense',
-        deleteText: '',
+        deleteText: ''
         
     });
     </script>
-
 </form>
-</div>
+
+
 {% endblock %}

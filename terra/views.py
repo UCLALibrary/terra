@@ -198,12 +198,12 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
     ActualExpense_FormSet = modelformset_factory(
-        ActualExpense, form=ActualExpenseForm, exclude=(), extra=2, can_delete=True
+        ActualExpense, form=ActualExpenseForm, exclude=(), extra=0, can_delete=True
     )
     template_name = "terra/actualexpense_form.html"
 
     def get_formset(self):
-        formset = self.ActualExpense_FormSet()
+        formset = self.ActualExpense_FormSet(initial=[{"treq": self.kwargs["treq_id"]}])
         formset.queryset = ActualExpense.objects.filter(treq=self.kwargs["treq_id"])
         return formset
 
