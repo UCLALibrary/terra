@@ -2,6 +2,8 @@
 
 {% load terra_extras %}
 
+{% load static from staticfiles %}
+
 {% block title %}{{treq.traveler}}{% endblock %}
 
 {% block supplemental_css %}
@@ -10,6 +12,10 @@
         padding-top: 6.5rem;
 }
 </style>
+{% endblock %}
+
+{% block early_js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -33,12 +39,12 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="approval-tab" data-toggle="tab" href="#approval" role="tab" aria-controls="approval" aria-selected="true">
+    <a class="nav-link active" id="approval-tab"  href="#approval" role="tab" aria-controls="approval" aria-selected="true">
         Approval &nbsp; {{treq.approved|check_or_cross|safe}}
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="funding-tab" data-toggle="tab" href="#funding" role="tab" aria-controls="funding" aria-selected="false">
+    <a class="nav-link" id="funding-tab"  href="#funding" role="tab" aria-controls="funding" aria-selected="false">
         Funding &nbsp; {{treq.approved|check_or_cross|safe}}
     </a>
   </li>
@@ -166,4 +172,12 @@
     </div>
   </div>
 </div>
+<script>
+    $('.nav-tabs a').click(function (e) {
+    // No e.preventDefault() here
+    $(this).tab('show');
+});
+</script>
+
+
 {% endblock %}

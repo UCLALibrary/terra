@@ -8,7 +8,7 @@ class ActualExpenseForm(forms.ModelForm):
     class Meta:
         model = ActualExpense
         fields = ("treq", "type", "rate", "quantity", "total", "fund")
-        # widgets={"treq": Input(attrs={'readonly':'readonly'})}
+        # widgets={"treq": Textarea(attrs={'hidden':'hidden'})}
 
 
 class BaseActualExpenseFormSet(forms.BaseModelFormSet):
