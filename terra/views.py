@@ -12,6 +12,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.forms import formset_factory
 from django.forms.models import modelformset_factory
+from django.forms.widgets import Textarea, Input
 
 from .models import TravelRequest, Unit, Fund, Employee, ActualExpense
 from .reports import unit_report, fund_report
@@ -198,7 +199,7 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
     ActualExpense_FormSet = modelformset_factory(
-        ActualExpense, form=ActualExpenseForm, exclude=(), extra=0, can_delete=True
+        ActualExpense, form=ActualExpenseForm, exclude=(), extra=1, can_delete=True
     )
     template_name = "terra/actualexpense_form.html"
 
