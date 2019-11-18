@@ -1,0 +1,38 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Add Travel Request{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block early_js %}
+
+{% endblock %}
+
+{% block body %}
+<h1>New Travel Request</h1>
+<br>
+<form method="POST" class="form">
+
+{% csrf_token %}
+{{form.id}}
+{{form.as_p}}
+</div>
+</div>
+<br>
+<br>
+<button type="submit" class="btn btn-success">Save Travel Request</button>
+<input type="hidden" name="next" value="{{next}}">
+
+
+{% endblock %}

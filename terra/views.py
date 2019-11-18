@@ -1,14 +1,19 @@
 import csv
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.shortcuts import render
+from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
+from django.forms.widgets import DateInput
 
 from .models import TravelRequest, Unit, Fund, Employee
 from .reports import unit_report, fund_report
 from .utils import current_fiscal_year_object, current_fiscal_year
+from .forms import TravelRequestForm
 
 
 @login_required
@@ -260,3 +265,33 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         else:
             funds = Fund.objects.filter(manager=self.request.user.employee)
         return funds.order_by("unit__name", "account", "cost_center", "fund")
+
+
+class TravelRequestCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
+    form = TravelRequestForm
+
+    template_name = "terra/travelrequest_form.html"
+
+    def get_form(self):
+        form = self.form
+        return form
+
+    def get(self, request, *args, **kwargs):
+        context = {"form": self.get_form()}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(self.request.POST)
+
+        # Checking the if the form is valid
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect(reverse("home"))
+
+        else:
+            context = {"form": self.get_form()}
+            return render(request, self.template_name, context)
+
+    def test_func(self):
+        return self.request.user.employee.has_full_report_access()

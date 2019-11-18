@@ -13,6 +13,7 @@ from terra.views import (
     FundDetailView,
     FundExportView,
     FundListView,
+    TravelRequestCreateView,
     home,
 )
 
@@ -99,6 +100,11 @@ urlpatterns = [
         "fund/",
         FundListView.as_view(template_name="terra/fund_list.html"),
         name="fund_list",
+    ),
+    path(
+        "new_travelrequest/",
+        TravelRequestCreateView.as_view(template_name="terra/travelrequest_form.html"),
+        name="travel_form",
     ),
     path("", home, name="home"),
 ]
