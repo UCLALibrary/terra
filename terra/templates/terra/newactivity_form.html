@@ -20,20 +20,18 @@
 {% endblock %}
 
 {% block body %}
-<h1>New Travel Request</h1>
+<h1>New Activity</h1>
 <br>
 <form method="POST" class="form">
-
 {% csrf_token %}
 {{form|crispy}}
 </form>
-
-
-<a class="btn btn-primary" href="{% url 'activity_form'%}">Add activity<span class="glyphicon glyphicon-pencil"></span></a>
-
-<button type="submit" class="btn btn-success">Save Travel Request</button>
+</div>
+</div>
+<br>
+<br>
+<button type="submit" class="btn btn-success">Save Activity</button>
 <input type="hidden" name="next" value="{{next}}">
-
 
 
 {% endblock %}

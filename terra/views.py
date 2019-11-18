@@ -13,7 +13,7 @@ from django.forms.widgets import DateInput
 from .models import TravelRequest, Unit, Fund, Employee
 from .reports import unit_report, fund_report
 from .utils import current_fiscal_year_object, current_fiscal_year
-from .forms import TravelRequestForm
+from .forms import TravelRequestForm, NewActivityForm, EstimatedExpenseForm
 
 
 @login_required
@@ -282,13 +282,35 @@ class TravelRequestCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def post(self, request, *args, **kwargs):
         form = self.form(self.request.POST)
-
-        # Checking the if the form is valid
         if form.is_valid():
             form.save()
-
             return HttpResponseRedirect(reverse("home"))
+        else:
+            context = {"form": self.get_form()}
+            return render(request, self.template_name, context)
 
+    def test_func(self):
+        return self.request.user.employee.has_full_report_access()
+
+
+class ActivityCreateView(LoginRequiredMixin, UserPassesTestMixin, View):
+    form = NewActivityForm
+
+    template_name = "terra/travelrequest_form.html"
+
+    def get_form(self):
+        newactivityform = self.form
+        return newactivityform
+
+    def get(self, request, *args, **kwargs):
+        context = {"form": self.get_form()}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(self.request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("home"))
         else:
             context = {"form": self.get_form()}
             return render(request, self.template_name, context)
