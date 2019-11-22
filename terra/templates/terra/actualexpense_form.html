@@ -32,20 +32,23 @@
 
 <div class="container-fluid">
   <div class="row">
-    {% for actualexpense_form in actualexpense_formset %}
-      <div class = "link-formset" >  
-        <div class="col">
+    {% for actualexpense_form in actualexpense_formset %} 
+        <div class="col-4">
           <div class="card">
             <div class="card-body">
               {{actualexpense_form.id}}
               <table>
-              {{actualexpense_form.as_table}}
+              {{actualexpense_form.treq|as_crispy_field}}
+              {{actualexpense_form.type|as_crispy_field}}
+              {{actualexpense_form.rate|as_crispy_field}}
+              {{actualexpense_form.quantity|as_crispy_field}}
+              {{actualexpense_form.total|as_crispy_field}}
+              {{actualexpense_form.fund|as_crispy_field}}
+              {{actualexpense_form.DELETE|as_crispy_field}}
               </table>
             </div>
           </div>
         </div>
-        <br>
-      </div>
     {% endfor %}
 </div>
 </div>
@@ -53,14 +56,6 @@
 <br>
 <button type="submit" class="btn btn-success">Save Expenses</button>
 <input type="hidden" name="next" value="{{next}}">
-     <script>
-
-    $('.link-formset').formset({
-        addText: '<button type="submit" class="btn btn-primary">Add Expenses</button>',
-        deleteText: ''
-        
-    });
-    </script>
 
 
 {% endblock %}

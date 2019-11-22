@@ -210,6 +210,8 @@ class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = {"actualexpense_formset": self.get_formset()}
+        # context["treq_name"] = self.kwargs["treq_id"]
+        # context["treq_details"] = ActualExpense.objects.filter(traveler__treq=self.kwargs["treq_id"])
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -218,11 +220,9 @@ class ActualExpenseCreate(LoginRequiredMixin, UserPassesTestMixin, View):
         # Checking the if the form is valid
         if actualexpense_formset.is_valid():
             actualexpense_formset.save()
-
             return HttpResponseRedirect(
                 reverse("treq_detail", kwargs={"pk": self.kwargs["treq_id"]})
             )
-
         else:
             context = {"actualexpense_formset": self.get_formset()}
             return render(request, self.template_name, context)
