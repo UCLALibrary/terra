@@ -109,7 +109,7 @@ class UnitExportView(UnitDetailView):
                 writer.writerow(
                     [
                         employee,
-                        employee.type,
+                        employee.get_type_display(),
                         employee.data["profdev_alloc"],
                         employee.data["admin_alloc"],
                         employee.data["total_alloc"],
@@ -224,7 +224,7 @@ class FundExportView(FundDetailView):
             writer.writerow(
                 [
                     f"{e.user.last_name}, {e.user.first_name}",
-                    e.type,
+                    e.get_type_display(),
                     e.profdev_alloc,
                     e.admin_alloc,
                     e.total_alloc,
