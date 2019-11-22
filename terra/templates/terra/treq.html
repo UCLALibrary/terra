@@ -15,8 +15,7 @@
 
 {% block body %}
 <h1><a href='/employee/{{treq.traveler.pk}}'>{{treq.traveler}}</a></h1>
-<h3>{{treq.traveler.get_type_display}}</h3>
-<h5>{{treq.traveler.unit}}</h5>
+<h3>{{treq.traveler.get_type_display}}, {{treq.traveler.unit}}</h3>
 <h2>
     Travel Request: {{treq.activity}}
     <small>
