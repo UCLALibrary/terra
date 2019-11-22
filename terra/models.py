@@ -131,9 +131,6 @@ class Employee(models.Model):
             traveler=self, return_date__lte=end, return_date__gte=start
         )
 
-    def display_employee_type(self):
-        return self.get_type_display()
-
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
