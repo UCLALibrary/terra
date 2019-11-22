@@ -331,3 +331,9 @@ def fund_report(fund, start_date=None, end_date=None):
     eids = get_fund_employee_list(fund, start_date, end_date)
     employee_data = get_individual_data_for_fund(eids, fund, start_date, end_date)
     return calculate_fund_totals(employee_data)
+
+
+def get_employee_types_and_employees(employee):
+    data = {"type": {t.id: t for t in employee.type.all()}}
+
+    return data

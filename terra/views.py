@@ -260,3 +260,26 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         else:
             funds = Fund.objects.filter(manager=self.request.user.employee)
         return funds.order_by("unit__name", "account", "cost_center", "fund")
+
+
+class EmployeeTypeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Employee
+    context_object_name = "employee"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def test_func(self):
+        if self.request.user.employee.has_full_report_access():
+            return True
+        # add Ginny/head librarian to approved
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # For now get current fiscal year
+        # Override this by query params when we add historic data
+        fy = current_fiscal_year_object()
+        context["employees"], context["totals"] = fund_report(
+            fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
+        return context

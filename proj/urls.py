@@ -13,6 +13,7 @@ from terra.views import (
     FundDetailView,
     FundExportView,
     FundListView,
+    EmployeeTypeDetailView,
     home,
 )
 
@@ -99,6 +100,11 @@ urlpatterns = [
         "fund/",
         FundListView.as_view(template_name="terra/fund_list.html"),
         name="fund_list",
+    ),
+    path(
+        "employee_type/",
+        EmployeeTypeDetailView.as_view(template_name="terra/employee_type.html"),
+        name="employee_type",
     ),
     path("", home, name="home"),
 ]
