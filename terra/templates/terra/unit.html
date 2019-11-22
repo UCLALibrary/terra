@@ -51,7 +51,7 @@
         <tbody>
             {% for eid, employee in subunit.employees.items %}
             <tr>
-                <td><a href="/employee/{{employee.pk}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
+                <td><a href="/employee/{{employee.pk}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a> {{employee.get_type_display}}</td>
                 <td class="text-right">{{employee.data.profdev_alloc|currency}}</td>
                 <td class="text-right">{{employee.data.admin_alloc|currency}}</td>
                 <td class="text-right">{{employee.data.total_alloc|currency}}</td>
