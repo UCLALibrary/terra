@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
 from .models import TravelRequest, Unit, Fund, Employee
-from .reports import unit_report, fund_report
+from .reports import unit_report, fund_report, get_employee_types_and_employees
 from .utils import current_fiscal_year_object, current_fiscal_year
 
 
@@ -275,11 +275,6 @@ class EmployeeTypeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # For now get current fiscal year
-        # Override this by query params when we add historic data
-        fy = current_fiscal_year_object()
-        context["employees"], context["totals"] = fund_report(
-            fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
-        )
-        context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
+
+        context["type"] = get_employee_types_and_employees(Employee)
         return context

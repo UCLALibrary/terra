@@ -102,7 +102,7 @@ urlpatterns = [
         name="fund_list",
     ),
     path(
-        "employee_type/",
+        "employee_type/<int:pk>",
         EmployeeTypeDetailView.as_view(template_name="terra/employee_type.html"),
         name="employee_type",
     ),
