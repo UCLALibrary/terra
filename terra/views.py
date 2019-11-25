@@ -90,6 +90,7 @@ class UnitExportView(UnitDetailView):
         writer.writerow(
             [
                 "Employee",
+                "Type",
                 "Prof Dev Approved",
                 "Admin Approved",
                 "Total Approved",
@@ -108,6 +109,7 @@ class UnitExportView(UnitDetailView):
                 writer.writerow(
                     [
                         employee,
+                        employee.get_type_display(),
                         employee.data["profdev_alloc"],
                         employee.data["admin_alloc"],
                         employee.data["total_alloc"],
@@ -122,6 +124,7 @@ class UnitExportView(UnitDetailView):
             writer.writerow(
                 [
                     "Subtotals",
+                    "",
                     subunit["subunit_totals"]["profdev_alloc"],
                     subunit["subunit_totals"]["admin_alloc"],
                     subunit["subunit_totals"]["total_alloc"],
@@ -138,6 +141,7 @@ class UnitExportView(UnitDetailView):
         writer.writerow(
             [
                 "Totals",
+                "",
                 context["report"]["unit_totals"]["profdev_alloc"],
                 context["report"]["unit_totals"]["admin_alloc"],
                 context["report"]["unit_totals"]["total_alloc"],
@@ -207,6 +211,7 @@ class FundExportView(FundDetailView):
         writer.writerow(
             [
                 "Employee",
+                "Type",
                 "Prof Dev Approved",
                 "Admin Approved",
                 "Total Approved",
@@ -219,6 +224,7 @@ class FundExportView(FundDetailView):
             writer.writerow(
                 [
                     f"{e.user.last_name}, {e.user.first_name}",
+                    e.get_type_display(),
                     e.profdev_alloc,
                     e.admin_alloc,
                     e.total_alloc,
@@ -230,6 +236,7 @@ class FundExportView(FundDetailView):
         writer.writerow(
             [
                 "Totals",
+                "",
                 totals["profdev_alloc"],
                 totals["admin_alloc"],
                 totals["total_alloc"],
