@@ -131,4 +131,7 @@ if not os.path.isdir(STATIC_ROOT):
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Email Configuration
+EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
+if os.getenv('DJANGO_RUN_ENV') != 'dev':
+    EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST')
