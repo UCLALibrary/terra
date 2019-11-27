@@ -2,12 +2,12 @@ import csv
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.generic.list import ListView
-from django.views.generic import DetailView
+from django.views.generic import View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund, Employee
-from .reports import unit_report, fund_report, get_employee_types_and_employees
+from .models import TravelRequest, Unit, Fund, Employee, EMPLOYEE_TYPES
+from .reports import unit_report, fund_report, merge_data_type
 from .utils import current_fiscal_year_object, current_fiscal_year
 
 
@@ -262,19 +262,31 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return funds.order_by("unit__name", "account", "cost_center", "fund")
 
 
-class EmployeeTypeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
     model = Employee
-    context_object_name = "employee"
+    context_object_name = "employees"
     login_url = "/accounts/login/"
     redirect_field_name = "next"
+    template_name = "terra/employee_type_list.html"
 
     def test_func(self):
-        if self.request.user.employee.has_full_report_access():
-            return True
-        # add Ginny/head librarian to approved
+        return self.request.user.employee.has_full_report_access()
+
+    def get_queryset(self):
+        employees = Employee.objects.all()
+        return employees.order_by("type", "unit__name")
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
-        context["type"] = get_employee_types_and_employees(Employee)
+        # For now get current fiscal year
+        # Override this by query params when we add historic data
+        fy = current_fiscal_year_object()
+        id_list = []
+        for employee in Employee.objects.all():
+            id_list.append(employee.id)
+        context["merge"] = merge_data_type(
+            employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
+        )
         return context
+        # add Ginny/head librarian to approved
