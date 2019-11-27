@@ -133,5 +133,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Email Configuration
 EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND')
+DEFAULT_FROM_EMAIL = 'terra@library.ucla.edu'
 if os.getenv('DJANGO_RUN_ENV') != 'dev':
     EMAIL_HOST = os.getenv('DJANGO_EMAIL_HOST')
