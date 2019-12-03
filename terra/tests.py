@@ -637,6 +637,7 @@ class TestFundListView(TestCase):
         self.assertTemplateUsed(response, "terra/fund_list.html")
 
 
+"""
 class EmployeeTypeReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
@@ -646,154 +647,112 @@ class EmployeeTypeReportsTestCase(TestCase):
         self.start_date = self.fy.start.date()
         self.end_date = self.fy.end.date()
 
-    def test_unit_totals(self):
-        class FakeUser:
-            def __init__(self, data):
-                self.data = data
 
-        data = [
-            FakeUser(
-                {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
-                    "name": "Ashton Prigge",
-                    "profdev_alloc": 10300,
-                    "profdev_expend": 7420,
-                    "total_alloc": 10300,
-                    "total_expend": 7420,
-                    "traveler__uid": "FAKE002",
-                    "uid": "FAKE002",
-                    "days_vacation": 5,
-                    "days_away": 0,
-                    "total_days_ooo": 5,
-                }
-            ),
-            FakeUser(
-                {
-                    "admin_alloc": 1050,
-                    "admin_expend": 0,
-                    "name": "Joshua Gomez",
-                    "profdev_alloc": 1750,
-                    "profdev_expend": 0,
-                    "total_alloc": 2800,
-                    "total_expend": 0,
-                    "traveler__uid": "FAKE003",
-                    "uid": "FAKE003",
-                    "days_vacation": 9,
-                    "days_away": 0,
-                    "total_days_ooo": 9,
-                }
-            ),
-            FakeUser(
-                {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
-                    "name": "Tinu Awopetu",
-                    "profdev_alloc": 8300,
-                    "profdev_expend": 7360,
-                    "total_alloc": 8300,
-                    "total_expend": 7360,
-                    "traveler__uid": "FAKE005",
-                    "uid": "FAKE005",
-                    "days_vacation": 0,
-                    "days_away": 0,
-                    "total_days_ooo": 0,
-                }
-            ),
-        ]
+    def test_type_report(self):
         expected = {
-            "admin_alloc": 1050,
-            "admin_expend": 0,
-            "days_away": 0,
-            "days_vacation": 14,
-            "profdev_alloc": 20350,
-            "profdev_expend": 14780,
-            "total_alloc": 21400,
-            "total_days_ooo": 14,
-            "total_expend": 14780,
-        }
-        actual = reports.unit_totals(data)
-        for key, expected_value in expected.items():
-            with self.subTest(key=key, value=expected_value):
-                self.assertEqual(actual[key], expected_value)
-
-    def test_unit_report(self):
-        expected = {
-            "subunits": {
-                2: {
-                    "subunit_totals": {
-                        "profdev_alloc": Decimal("7695"),
-                        "admin_alloc": Decimal("2350"),
-                        "total_alloc": Decimal("10045"),
-                        "profdev_expend": Decimal("3695"),
-                        "admin_expend": Decimal("0"),
-                        "total_expend": Decimal("3695"),
-                        "days_vacation": Decimal("14"),
-                        "days_away": Decimal("33"),
-                    }
-                },
-                1: {
-                    "subunit_totals": {
-                        "profdev_alloc": 0,
-                        "admin_alloc": 0,
-                        "total_alloc": 0,
-                        "profdev_expend": 0,
+            "type": {
+                "EXEC": {
+                    "employees": [
+                        {
+                            "id": 4,
+                            "profdev_alloc": ("0.00000"),
+                            "profdev_expend": ("0.00000"),
+                            "admin_alloc": ("0.00000"),
+                            "admin_expend": ("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 0,
+                            "total_alloc": ("0.00000"),
+                            "total_expend": ("0.00000"),
+                            "total_days_ooo": 0,
+                        }
+                    ],
+                    "totals": {
+                        "admin_alloc": 500.00,
                         "admin_expend": 0,
-                        "total_expend": 0,
-                        "days_vacation": 0,
                         "days_away": 0,
-                    }
-                },
-                4: {
-                    "subunit_totals": {
+                        "days_vacation": 0,
                         "profdev_alloc": 0,
-                        "admin_alloc": 0,
-                        "total_alloc": 0,
                         "profdev_expend": 0,
+                        "total_alloc": 100.00,
+                        "total_days_ooo": 0,
+                        "total_expend": 1500.00,
+                    },
+                },
+                "HEAD": {
+                    "employees": [
+                        {
+                            "id": 3,
+                            "profdev_alloc": ("2000.00000"),
+                            "profdev_expend": ("0.00000"),
+                            "admin_alloc": ("1050.00000"),
+                            "admin_expend": ("0.00000"),
+                            "days_vacation": 9,
+                            "days_away": 10,
+                            "total_alloc": ("3050.00000"),
+                            "total_expend": ("0.00000"),
+                            "total_days_ooo": 19,
+                        },
+                        {
+                            "id": 1,
+                            "profdev_alloc": ("0.00000"),
+                            "profdev_expend": ("0.00000"),
+                            "admin_alloc": ("1300.00000"),
+                            "admin_expend": ("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 3,
+                            "total_alloc": ("1300.00000"),
+                            "total_expend": ("0.00000"),
+                            "total_days_ooo": 3,
+                        },
+                        {
+                            "id": 6,
+                            "profdev_alloc": ("0.00000"),
+                            "profdev_expend": ("0.00000"),
+                            "admin_alloc": ("0.00000"),
+                            "admin_expend": ("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 0,
+                            "total_alloc": ("0.00000"),
+                            "total_expend": ("0.00000"),
+                            "total_days_ooo": 0,
+                        },
+                    ],
+                    "totals": {
+                        "admin_alloc": 500.00,
                         "admin_expend": 0,
-                        "total_expend": 0,
-                        "days_vacation": 0,
                         "days_away": 0,
-                    }
+                        "days_vacation": 0,
+                        "profdev_alloc": 0,
+                        "profdev_expend": 0,
+                        "total_alloc": 100.00,
+                        "total_days_ooo": 0,
+                        "total_expend": 1500.00,
+                    },
                 },
             },
-            "unit_totals": {
-                "admin_alloc": Decimal("2350"),
-                "admin_expend": Decimal("0"),
-                "profdev_alloc": Decimal("7695"),
-                "profdev_expend": Decimal("3695"),
-                "total_alloc": Decimal("10045"),
-                "total_expend": Decimal("3695"),
-                "days_vacation": Decimal("14"),
-                "days_away": Decimal("33"),
-            },
+            "all_type_total": {"admin_alloc": 500.00,
+                        "admin_expend": 0,
+                        "days_away": 0,
+                        "days_vacation": 0,
+                        "profdev_alloc": 0,
+                        "profdev_expend": 0,
+                        "total_alloc": 100.00,
+                        "total_days_ooo": 0,
+                        "total_expend": 1500.00,},
         }
-        actual = reports.unit_report(
-            Unit.objects.get(pk=1), start_date=self.start_date, end_date=self.end_date
+
+        actual = reports.merge_data_type(
+            employee_ids=[4,3,1,6], start_date=fy.start.date(), end_date=fy.end.date()
         )
-        for sid, subunit in expected["subunits"].items():
-            for key, value in subunit["subunit_totals"].items():
+        for i in expected['type'].items():     
+            self.assertEqual(
+                actual["type"].items(), expected['type'].items())
+
+        for total in expected['type']['total']:
+            self.assertEqual(actual['type']['total'],expected['type']['total'] )
+                    
+        for key, value in expected["type"]['all_type_total'].items():
+            
                 with self.subTest(key=key, value=value):
-                    self.assertEqual(
-                        actual["subunits"][sid]["subunit_totals"][key], value
-                    )
-        for key, value in expected["unit_totals"].items():
-            with self.subTest(key=key, value=value):
-                self.assertEqual(actual["unit_totals"][key], value)
-
-    def test_check_dates_disallows_backward_dates(self):
-        self.assertRaises(Exception, reports.check_dates, "2020-01-01", "2019-01-01")
-
-    def test_check_dates_disallows_awkward_dates(self):
-        self.assertRaises(Exception, reports.check_dates, None, "2019-01-01")
-        self.assertRaises(Exception, reports.check_dates, "2019-01-01", None)
-
-    def test_ooo_is_for_specified_fiscal_year_only(self):
-        data = reports.get_individual_data(
-            [5], start_date=self.start_date, end_date=self.end_date
-        )
-        self.assertEqual(data[0]["days_vacation"], 0)
-        data = reports.get_individual_data(
-            [5], start_date="2018-07-01", end_date="2019-06-30"
-        )
-        self.assertEqual(data[0]["days_vacation"], 5)
+                    self.assertEqual(actual[][key], value)
+"""

@@ -131,6 +131,10 @@ class Employee(models.Model):
             traveler=self, return_date__lte=end, return_date__gte=start
         )
 
+    @property
+    def sorted_unit_set(self):
+        return self.employee_set.order_by("unit")
+
 
 class Fund(models.Model):
     account = models.CharField(max_length=6)
