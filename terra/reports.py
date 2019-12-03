@@ -334,11 +334,17 @@ def fund_report(fund, start_date=None, end_date=None):
 
 
 def get_type_and_employees():
-    type_dict = {"EXEC": [], "HEAD": [], "LIBR": [], "SENR": [], "OTHR": []}
-    employees = Employee.objects.all()
+    type_dict = {
+        "Executive": [],
+        "Unit Head": [],
+        "Librarian": [],
+        "Sr. Exempt Staff": [],
+        "Other": [],
+    }
+    employees = Employee.objects.order_by("unit")
     for employee in employees:
-        if employee.type in type_dict:
-            type_dict[employee.type].append(employee)
+        if employee.get_type_display() in type_dict:
+            type_dict[employee.get_type_display()].append(employee)
 
     return type_dict
 
@@ -458,11 +464,11 @@ def merge_data_type(employee_ids, start_date, end_date):
     rows = get_individual_data_type(employee_ids, start_date, end_date)
     data = {
         "type": {
-            "EXEC": {"employees": [], "totals": {}},
-            "HEAD": {"employees": [], "totals": {}},
-            "LIBR": {"employees": [], "totals": {}},
-            "SENR": {"employees": [], "totals": {}},
-            "OTHR": {"employees": [], "totals": {}},
+            "Executive": {"employees": [], "totals": {}},
+            "Unit Head": {"employees": [], "totals": {}},
+            "Librarian": {"employees": [], "totals": {}},
+            "Sr. Exempt Staff": {"employees": [], "totals": {}},
+            "Other": {"employees": [], "totals": {}},
         },
         "all_type_total": {},
     }
@@ -471,7 +477,7 @@ def merge_data_type(employee_ids, start_date, end_date):
         for e in type_dict[employee_type]:
             try:
                 employee = rows.get(id=e.id)
-                employee["name"] = e.name
+                employee["name"] = e.__str__()
                 employee["unit"] = e.unit
                 employee["unit_manager"] = e.unit.manager
                 employee["admin_alloc"] += employee["admin_expend"]
@@ -500,7 +506,6 @@ def merge_data_type(employee_ids, start_date, end_date):
                 }
             data["type"][employee_type]["employees"].append(employee)
 
-    totals_dict = {}
     for employee_type in data["type"]:
         type_totals = {
             "admin_alloc": 0,
