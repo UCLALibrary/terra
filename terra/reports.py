@@ -338,8 +338,7 @@ def get_type_and_employees():
     employees = Employee.objects.all()
     for employee in employees:
         if employee.type in type_dict:
-            type_dict[employee.type].append(employee.id)
-            # add the employee.name
+            type_dict[employee.type].append(employee)
 
     return type_dict
 
@@ -454,14 +453,27 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
 
 
 def merge_data_type(employee_ids, start_date, end_date):
+
     type_dict = get_type_and_employees()
     rows = get_individual_data_type(employee_ids, start_date, end_date)
-    data = {"type": {"EXEC": [], "HEAD": [], "LIBR": [], "SENR": [], "OTHR": []}}
+    data = {
+        "type": {
+            "EXEC": {"employees": [], "totals": {}},
+            "HEAD": {"employees": [], "totals": {}},
+            "LIBR": {"employees": [], "totals": {}},
+            "SENR": {"employees": [], "totals": {}},
+            "OTHR": {"employees": [], "totals": {}},
+        },
+        "all_type_total": {},
+    }
 
     for employee_type in type_dict:
-        for employee in type_dict[employee_type]:
+        for e in type_dict[employee_type]:
             try:
-                employee = rows.get(id=int(employee))
+                employee = rows.get(id=e.id)
+                employee["name"] = e.name
+                employee["unit"] = e.unit
+                employee["unit_manager"] = e.unit.manager
                 employee["admin_alloc"] += employee["admin_expend"]
                 employee["profdev_alloc"] += employee["profdev_expend"]
                 employee["total_alloc"] = (
@@ -473,6 +485,7 @@ def merge_data_type(employee_ids, start_date, end_date):
                 employee["total_days_ooo"] = (
                     employee["days_away"] + employee["days_vacation"]
                 )
+
             except ObjectDoesNotExist:
                 employee = {
                     "admin_alloc": 0,
@@ -485,49 +498,35 @@ def merge_data_type(employee_ids, start_date, end_date):
                     "total_days_ooo": 0,
                     "total_expend": 0,
                 }
-            data["type"][employee_type].append(employee)
-    return data
+            data["type"][employee_type]["employees"].append(employee)
 
-    # get totals for each type within the data dict
-    # how to sum with different format of dictionary
-    # for each emplohyee in each type we want to sum each component
-    totals = {}
-    for employee_type in type_dict:
-        type_totals_dict = {
-            "profdev_alloc": sum(
-                e.data["type"][employee_type]["profdev_alloc"] for e in employee
-            ),
-            "admin_alloc": sum(
-                e.data["type"][employee_type]["admin_alloc"] for e in employee
-            ),
-            "total_alloc": sum(
-                e.data["type"][employee_type]["total_alloc"] for e in employee
-            ),
-            "profdev_expend": sum(
-                e.data["type"][employee_type]["profdev_expend"] for e in employee
-            ),
-            "admin_expend": sum(
-                e.data["type"][employee_type]["admin_expend"] for e in employee
-            ),
-            "total_expend": sum(
-                e.data["type"][employee_type]["total_expend"] for e in employee
-            ),
-            "days_vacation": sum(
-                e.data["type"][employee_type]["days_vacation"] for e in employee
-            ),
-            "days_away": sum(
-                e.data["type"][employee_type]["days_away"] for e in employee
-            ),
-            "total_days_ooo": sum(
-                e.data["type"][employee_type]["total_days_ooo"] for e in employee
-            ),
+    totals_dict = {}
+    for employee_type in data["type"]:
+        type_totals = {
+            "admin_alloc": 0,
+            "admin_expend": 0,
+            "days_away": 0,
+            "days_vacation": 0,
+            "profdev_alloc": 0,
+            "profdev_expend": 0,
+            "total_alloc": 0,
+            "total_days_ooo": 0,
+            "total_expend": 0,
         }
-        totals[employee_type] = type_totals_dict
-    return totals
+        # add a totals dictionary for each employee type
+        for employee in data["type"][employee_type]["employees"]:
+            type_totals["admin_alloc"] += employee["admin_alloc"]
+            type_totals["admin_expend"] += employee["admin_expend"]
+            type_totals["days_away"] += employee["days_away"]
+            type_totals["days_vacation"] += employee["days_vacation"]
+            type_totals["profdev_alloc"] += employee["profdev_alloc"]
+            type_totals["profdev_expend"] += employee["profdev_expend"]
+            type_totals["total_alloc"] += employee["total_alloc"]
+            type_totals["total_days_ooo"] += employee["total_days_ooo"]
+            type_totals["total_expend"] += employee["total_expend"]
+        data["type"][employee_type]["totals"] = type_totals
 
-
-def calculate_totals(data):
-    data["type_totals"] = {
+    complete_total = {
         "admin_alloc": 0,
         "admin_expend": 0,
         "days_away": 0,
@@ -538,15 +537,17 @@ def calculate_totals(data):
         "total_days_ooo": 0,
         "total_expend": 0,
     }
+
     for t in data["type"]:
-        t["subunit_totals"] = type_totals(subunit["employees"].values())
-        for key in data["type_totals"].keys():
-            data["type_totals"][key] += subunit["subunit_totals"][key]
+        complete_total["admin_alloc"] += data["type"][t]["totals"]["admin_alloc"]
+        complete_total["admin_expend"] += data["type"][t]["totals"]["admin_expend"]
+        complete_total["days_away"] += data["type"][t]["totals"]["days_away"]
+        complete_total["days_vacation"] += data["type"][t]["totals"]["days_vacation"]
+        complete_total["profdev_alloc"] += data["type"][t]["totals"]["profdev_alloc"]
+        complete_total["profdev_expend"] += data["type"][t]["totals"]["profdev_expend"]
+        complete_total["total_alloc"] += data["type"][t]["totals"]["total_alloc"]
+        complete_total["total_days_ooo"] += data["type"][t]["totals"]["total_days_ooo"]
+        complete_total["total_expend"] += data["type"][t]["totals"]["total_expend"]
+    data["all_type_total"] = complete_total
+
     return data
-
-
-def type_report(unit, start_date=None, end_date=None):
-    data = get_subunits_and_employees(unit)
-    rows = get_individual_data([e.id for e in unit.all_employees()])
-    data = merge_data(rows, data)
-    return calculate_totals(data)

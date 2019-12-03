@@ -272,10 +272,7 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.employee.has_full_report_access()
-
-    def get_queryset(self):
-        employees = Employee.objects.all()
-        return employees.order_by("type", "unit__name")
+        # Add ginny--new
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -289,4 +286,84 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
         return context
-        # add Ginny/head librarian to approved
+
+
+class EmployeeTypeExportView(EmployeeTypeListView):
+    def render_to_response(self, context, **response_kwargs):
+        fy = context.get("fiscalyear", "").replace(" ", "")
+        response = HttpResponse(content_type="text/csv")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="Employee_Type_FY{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Unit",
+                "Unit Manager",
+                "Employee",
+                "Prof Dev Approved",
+                "Admin Approved",
+                "Total Approved",
+                "Prof Dev Expenditures",
+                "Admin Expenditures",
+                "Total Expenditures",
+                "Working Days Out",
+                "Vacation Days Out",
+                "Total Days Out",
+            ]
+        )
+        for key, value in context["merge"]["type"].items():
+            writer.writerow([])
+            writer.writerow([key])
+            for employee in value["employees"]:
+                writer.writerow(
+                    [
+                        employee["unit"],
+                        employee["unit_manager"],
+                        employee["name"],
+                        employee["profdev_alloc"],
+                        employee["admin_alloc"],
+                        employee["total_alloc"],
+                        employee["profdev_expend"],
+                        employee["admin_expend"],
+                        employee["total_expend"],
+                        employee["days_away"],
+                        employee["days_vacation"],
+                        employee["total_days_ooo"],
+                    ]
+                )
+            writer.writerow(
+                [
+                    "Subtotals",
+                    "",
+                    "",
+                    value["totals"]["profdev_alloc"],
+                    value["totals"]["admin_alloc"],
+                    value["totals"]["total_alloc"],
+                    value["totals"]["profdev_expend"],
+                    value["totals"]["admin_expend"],
+                    value["totals"]["total_expend"],
+                    value["totals"]["days_away"],
+                    value["totals"]["days_vacation"],
+                    value["totals"]["total_days_ooo"],
+                ]
+            )
+        writer.writerow([])
+        writer.writerow([])
+        writer.writerow(
+            [
+                "Totals",
+                "",
+                "",
+                context["merge"]["all_type_total"]["profdev_alloc"],
+                context["merge"]["all_type_total"]["admin_alloc"],
+                context["merge"]["all_type_total"]["total_alloc"],
+                context["merge"]["all_type_total"]["profdev_expend"],
+                context["merge"]["all_type_total"]["admin_expend"],
+                context["merge"]["all_type_total"]["total_expend"],
+                context["merge"]["all_type_total"]["days_away"],
+                context["merge"]["all_type_total"]["days_vacation"],
+                context["merge"]["all_type_total"]["total_days_ooo"],
+            ]
+        )
+        return response
