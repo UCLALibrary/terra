@@ -848,8 +848,8 @@ class EmployeeTypeReportsTestCase(TestCase):
             start_date=date(2019, 7, 1),
             end_date=date(2020, 6, 30),
         )
-        i = expected["type"].items()
-        item = actual["type"].items()
+        i = expected["type"].keys()
+        item = actual["type"].keys()
         self.assertEqual(i, item)
 
     def test_type_report_denies_anonymous(self):
