@@ -648,27 +648,22 @@ class EmployeeTypeReportsTestCase(TestCase):
 
     def test_get_type_and_employees(self):
 
-        type_dict = {
-            "Executive": [],
-            "Unit Head": [],
-            "Librarian": [],
-            "Sr. Exempt Staff": [],
-            "Other": [],
-        }
-        employees = Employee.objects.get(pk=2)
-        for employee in employees:
-            if employee.get_type_display() in type_dict:
-                type_dict[employee.get_type_display()].append(employee.id)
+        actual = get_type_and_employees()
 
         expected = {
-            "Executive": [],
-            "Unit Head": [],
-            "Librarian": [2],
-            "Sr. Exempt Staff": [],
+            "Executive": ["<Employee 4: Steel, Virginia>"],
+            "Unit Head": [
+                "<Employee 1: Grappone, Todd>",
+                "<Employee 6: Wang, Doris>",
+                "<Employee 3: Gomez, Joshua>",
+            ],
+            "Librarian": ["<Employee 2: Prigge, Ashton>"],
+            "Sr. Exempt Staff": ["<Employee 5: Awopetu, Tinu>"],
             "Other": [],
         }
-        for employee in expected:
-            self.assertTrue(employee in type_dict)
+
+        for employee in expected.values():
+            self.assertTrue(employee in type_dict.values())
 
     def test_type_report(self):
         expected = {
