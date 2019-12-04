@@ -861,8 +861,8 @@ class EmployeeTypeReportsTestCase(TestCase):
             expected["all_type_total"].values(), actual["all_type_total"].values()
         )
         self.assertEqual(
-            expected["type"]["Head"]["totals"].values(),
-            actual["type"]["Head"]["totals"].values(),
+            expected["type"]["Unit Head"]["totals"].values(),
+            actual["type"]["Unit Head"]["totals"].values(),
         )
 
     def test_type_report_denies_anonymous(self):
