@@ -248,7 +248,7 @@ class TestEmpoyeeDetailView(TestCase):
         self.client.login(username="vsteel", password="Staples50141")
         response = self.client.get("/employee/1/")
         self.assertEqual(response.status_code, 200)
-        self.client.login(username="aprigge", password="Staples50141")
+        self.client.login(username="tawopetu", password="Staples50141")
         response = self.client.get("/employee/3/")
         self.assertEqual(response.status_code, 403)
         response = self.client.get("/employee/2/")
@@ -660,8 +660,8 @@ class EmployeeTypeReportsTestCase(TestCase):
             "Other": [],
         }
         actual = reports.get_type_and_employees()
-        for employee in expected.values():
-            self.assertTrue(employee in actual.values())
+        for employee in expected:
+            self.assertTrue(employee in actual)
 
     def test_type_report(self):
         expected = {
