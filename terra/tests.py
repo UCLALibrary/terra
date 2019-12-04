@@ -646,6 +646,30 @@ class EmployeeTypeReportsTestCase(TestCase):
         self.start_date = self.fy.start.date()
         self.end_date = self.fy.end.date()
 
+    def test_get_type_and_employees(self):
+
+        type_dict = {
+            "Executive": [],
+            "Unit Head": [],
+            "Librarian": [],
+            "Sr. Exempt Staff": [],
+            "Other": [],
+        }
+        employees = Employee.objects.get(pk=2)
+        for employee in employees:
+            if employee.get_type_display() in type_dict:
+                type_dict[employee.get_type_display()].append(employee)
+
+        expected = {
+            "Executive": [],
+            "Unit Head": [],
+            "Librarian": [],
+            "Sr. Exempt Staff": [],
+            "Other": [],
+        }
+        for employee in expected:
+            self.assertTrue(employee in type_dict)
+
     def test_type_report(self):
         expected = {
             "type": {
@@ -748,7 +772,9 @@ class EmployeeTypeReportsTestCase(TestCase):
         )
 
         self.assertEqual(actual["type"].items(), expected["type"].items())
-        self.assertEqual(actual["type"]["total"], expected["type"]["total"])
+
+        for t in actual["type"]:
+            self.assertEqual(actual["type"][t]["total"], expected["type"][t]["total"])
 
         for total in expected["type"]["total"]:
             for total in actual["type"]["total"]:
