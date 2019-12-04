@@ -659,7 +659,7 @@ class EmployeeTypeReportsTestCase(TestCase):
             "Sr. Exempt Staff": ["<Employee 5: Awopetu, Tinu>"],
             "Other": [],
         }
-        actual = get_type_and_employees()
+        actual = reports.get_type_and_employees()
         for employee in expected.values():
             self.assertTrue(employee in type_dict.values())
 
