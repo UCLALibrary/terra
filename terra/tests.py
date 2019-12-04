@@ -854,13 +854,10 @@ class EmployeeTypeReportsTestCase(TestCase):
         self.assertEqual(
             expected["all_type_total"].values(), actual["all_type_total"].values()
         )
-
-        for e_type, employees in expected["type"].items():
-            for key, value in employees["subunit_totals"].items():
-                with self.subTest(key=key, value=value):
-                    self.assertEqual(
-                        actual["subunits"][sid]["subunit_totals"][key], value
-                    )
+        self.assertEqual(
+            expected["type"]["Executive"]["totals"],
+            actual["type"]["Executive"]["totals"],
+        )
 
     def test_type_report_denies_anonymous(self):
         response = self.client.get("/employee_type_list/", follow=True)
