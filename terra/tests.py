@@ -648,7 +648,6 @@ class EmployeeTypeReportsTestCase(TestCase):
 
     def test_get_type_and_employees(self):
 
-        actual = get_type_and_employees()
         expected = {
             "Executive": ["<Employee 4: Steel, Virginia>"],
             "Unit Head": [
@@ -660,7 +659,7 @@ class EmployeeTypeReportsTestCase(TestCase):
             "Sr. Exempt Staff": ["<Employee 5: Awopetu, Tinu>"],
             "Other": [],
         }
-
+        actual = get_type_and_employees()
         for employee in expected.values():
             self.assertTrue(employee in type_dict.values())
 
@@ -759,22 +758,18 @@ class EmployeeTypeReportsTestCase(TestCase):
             },
         }
 
-        fy = current_fiscal_year_object()
+        fy = current_fiscal_year()
         actual = reports.merge_data_type(
             employee_ids=[4, 3, 1, 6],
             start_date=fy.start.date(),
             end_date=fy.end.date(),
         )
-
         self.assertEqual(actual["type"].items(), expected["type"].items())
-
         for t in actual["type"]:
             self.assertEqual(actual["type"][t]["total"], expected["type"][t]["total"])
-
         for total in expected["type"]["total"]:
             for total in actual["type"]["total"]:
                 self.assertEqual(total, total)
-
         for i in expected["type"].items():
             for i in actual["type"].items():
                 self.assertEqual(i, i)
