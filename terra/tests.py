@@ -848,12 +848,12 @@ class EmployeeTypeReportsTestCase(TestCase):
             start_date=date(2019, 7, 1),
             end_date=date(2020, 6, 30),
         )
-        self.assertEqual(actual["type"].items(), expected["type"].items())
         for t in actual["type"]:
-            self.assertEqual(actual["type"][t]["total"], expected["type"][t]["total"])
+            self.assertEqual(actual["type"][t], expected["type"][t])
         for total in expected["type"]["total"]:
             for total in actual["type"]["total"]:
                 self.assertEqual(total, total)
+
         for i in expected["type"].items():
             for i in actual["type"].items():
                 self.assertEqual(i, i)
