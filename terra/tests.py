@@ -746,11 +746,17 @@ class EmployeeTypeReportsTestCase(TestCase):
             start_date=fy.start.date(),
             end_date=fy.end.date(),
         )
-        for i in expected["type"].items():
-            self.assertEqual(actual["type"].items(), expected["type"].items())
+
+        self.assertEqual(actual["type"].items(), expected["type"].items())
+        self.assertEqual(actual["type"]["total"], expected["type"]["total"])
 
         for total in expected["type"]["total"]:
-            self.assertEqual(actual["type"]["total"], expected["type"]["total"])
+            for total in actual["type"]["total"]:
+                self.assertEqual(total, total)
+
+        for i in expected["type"].items():
+            for i in actual["type"].items():
+                self.assertEqual(i, i)
 
 
 # test type totals, all_type_total, value for an individual
