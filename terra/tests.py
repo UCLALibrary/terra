@@ -314,7 +314,7 @@ class TestTreqDetailView(TestCase):
     def test_treq_detail_denies_anonymous(self):
         response = self.client.get("/treq/1", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/", status_code=301
+            response, "/accounts/login/?next=/treq/1/", status_code=301
         )
 
     def test_treq_detail_allows_full_access(self):
@@ -666,7 +666,7 @@ class EmployeeTypeReportsTestCase(TestCase):
     def test_type_report(self):
         expected = {
             "type": {
-                "EXEC": {
+                "Executive": {
                     "employees": [
                         {
                             "id": 4,
@@ -693,7 +693,7 @@ class EmployeeTypeReportsTestCase(TestCase):
                         "total_expend": 0,
                     },
                 },
-                "HEAD": {
+                "Unit Head": {
                     "employees": [
                         {
                             "id": 3,
