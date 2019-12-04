@@ -75,7 +75,7 @@ class ModelsTestCase(TestCase):
     def test_employee_has_full_report_access(self):
         emp = Employee.objects.get(user=User.objects.get(username="doriswang"))
         self.assertTrue(emp.has_full_report_access())
-        emp = Employee.objects.get(user=User.objects.get(username="aprigge"))
+        emp = Employee.objects.get(user=User.objects.get(username="tawopetu"))
         self.assertFalse(emp.has_full_report_access())
         emp.user.groups.add(1)
         self.assertTrue(emp.has_full_report_access())
@@ -325,7 +325,7 @@ class TestTreqDetailView(TestCase):
 
     def test_treq_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/treq/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/treq.html")
 
