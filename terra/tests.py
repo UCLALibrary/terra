@@ -848,15 +848,12 @@ class EmployeeTypeReportsTestCase(TestCase):
             start_date=date(2019, 7, 1),
             end_date=date(2020, 6, 30),
         )
-        for t in actual["type"]:
+        for t in actual["type"].keys():
             self.assertEqual(actual["type"][t], expected["type"][t])
-        for total in expected["type"]["total"]:
-            for total in actual["type"]["total"]:
-                self.assertEqual(total, total)
 
-        for i in expected["type"].items():
-            for i in actual["type"].items():
-                self.assertEqual(i, i)
+        i = expected["type"].items()
+        item = actual["type"].items()
+        self.assertEqual(i, item)
 
     def test_type_report_denies_anonymous(self):
         response = self.client.get("/employee_type_list/", follow=True)
