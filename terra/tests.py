@@ -649,7 +649,6 @@ class EmployeeTypeReportsTestCase(TestCase):
     def test_get_type_and_employees(self):
 
         actual = get_type_and_employees()
-
         expected = {
             "Executive": ["<Employee 4: Steel, Virginia>"],
             "Unit Head": [
@@ -760,6 +759,7 @@ class EmployeeTypeReportsTestCase(TestCase):
             },
         }
 
+        fy = current_fiscal_year_object()
         actual = reports.merge_data_type(
             employee_ids=[4, 3, 1, 6],
             start_date=fy.start.date(),
@@ -779,7 +779,20 @@ class EmployeeTypeReportsTestCase(TestCase):
             for i in actual["type"].items():
                 self.assertEqual(i, i)
 
+    def test_type_report_denies_anonymous(self):
+        response = self.client.get("/employee_type_list/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/employee_type_list/", status_code=302
+        )
 
-# test type totals, all_type_total, value for an individual
-# the types that are in the dictionary
-#
+    def test_type_report_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/employee_type_list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee_type_list.html")
+
+    def test_type_report_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/employee_type_list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee_type_list.html")
