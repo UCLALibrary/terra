@@ -851,7 +851,7 @@ class EmployeeTypeReportsTestCase(TestCase):
 
         self.assertEqual(expected["type"].keys(), actual["type"].keys())
         self.assertEqual(
-            expected["type"][" Unit Head"]["employees"],
+            expected["type"]["Unit Head"]["employees"],
             actual["type"]["Unit Head"]["employees"],
         )
 
