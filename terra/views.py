@@ -271,8 +271,10 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "terra/employee_type_list.html"
 
     def test_func(self):
-        return self.request.user.employee.has_full_report_access()
-        # Add ginny--new
+        return (
+            self.request.user.employee.has_full_report_access()
+            or self.request.user.employee.is_UL()
+        )
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

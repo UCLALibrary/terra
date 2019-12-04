@@ -658,12 +658,12 @@ class EmployeeTypeReportsTestCase(TestCase):
         employees = Employee.objects.get(pk=2)
         for employee in employees:
             if employee.get_type_display() in type_dict:
-                type_dict[employee.get_type_display()].append(employee)
+                type_dict[employee.get_type_display()].append(employee.id)
 
         expected = {
             "Executive": [],
             "Unit Head": [],
-            "Librarian": [],
+            "Librarian": [2],
             "Sr. Exempt Staff": [],
             "Other": [],
         }

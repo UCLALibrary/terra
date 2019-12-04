@@ -104,6 +104,10 @@ class Employee(models.Model):
             self.user.is_superuser or self.user.groups.filter(name="LBS Staff").exists()
         )
 
+    def is_UL(self):
+        if self.type == "EXEC":
+            return True
+
     def is_unit_manager(self):
         return self.managed_units.count() > 0
 
