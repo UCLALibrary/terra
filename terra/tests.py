@@ -661,7 +661,7 @@ class EmployeeTypeReportsTestCase(TestCase):
         }
         actual = reports.get_type_and_employees()
         for employee in expected.values():
-            self.assertTrue(employee in type_dict.values())
+            self.assertTrue(employee in actual.values())
 
     def test_type_report(self):
         expected = {
