@@ -757,12 +757,10 @@ class EmployeeTypeReportsTestCase(TestCase):
                 "total_expend": 0,
             },
         }
-
-        fy = current_fiscal_year()
         actual = reports.merge_data_type(
             employee_ids=[4, 3, 1, 6],
-            start_date=fy.start.date(),
-            end_date=fy.end.date(),
+            start_date=date(2019, 7, 1),
+            end_date=date(2020, 6, 30),
         )
         self.assertEqual(actual["type"].items(), expected["type"].items())
         for t in actual["type"]:
