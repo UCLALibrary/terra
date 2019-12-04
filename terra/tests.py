@@ -637,7 +637,6 @@ class TestFundListView(TestCase):
         self.assertTemplateUsed(response, "terra/fund_list.html")
 
 
-"""
 class EmployeeTypeReportsTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
@@ -646,7 +645,6 @@ class EmployeeTypeReportsTestCase(TestCase):
         self.fy = FiscalYear(2020)
         self.start_date = self.fy.start.date()
         self.end_date = self.fy.end.date()
-
 
     def test_type_report(self):
         expected = {
@@ -667,15 +665,15 @@ class EmployeeTypeReportsTestCase(TestCase):
                         }
                     ],
                     "totals": {
-                        "admin_alloc": 500.00,
+                        "admin_alloc": 0,
                         "admin_expend": 0,
                         "days_away": 0,
                         "days_vacation": 0,
                         "profdev_alloc": 0,
                         "profdev_expend": 0,
-                        "total_alloc": 100.00,
+                        "total_alloc": 0,
                         "total_days_ooo": 0,
-                        "total_expend": 1500.00,
+                        "total_expend": 0,
                     },
                 },
                 "HEAD": {
@@ -718,41 +716,43 @@ class EmployeeTypeReportsTestCase(TestCase):
                         },
                     ],
                     "totals": {
-                        "admin_alloc": 500.00,
+                        "admin_alloc": 2350.00,
                         "admin_expend": 0,
-                        "days_away": 0,
-                        "days_vacation": 0,
-                        "profdev_alloc": 0,
+                        "days_away": 13,
+                        "days_vacation": 9,
+                        "profdev_alloc": 2000.00,
                         "profdev_expend": 0,
-                        "total_alloc": 100.00,
-                        "total_days_ooo": 0,
-                        "total_expend": 1500.00,
+                        "total_alloc": 0,
+                        "total_days_ooo": 22,
+                        "total_expend": 0,
                     },
                 },
             },
-            "all_type_total": {"admin_alloc": 500.00,
-                        "admin_expend": 0,
-                        "days_away": 0,
-                        "days_vacation": 0,
-                        "profdev_alloc": 0,
-                        "profdev_expend": 0,
-                        "total_alloc": 100.00,
-                        "total_days_ooo": 0,
-                        "total_expend": 1500.00,},
+            "all_type_total": {
+                "admin_alloc": 2350.00,
+                "admin_expend": 0,
+                "days_away": 13,
+                "days_vacation": 9,
+                "profdev_alloc": 2000.00,
+                "profdev_expend": 0,
+                "total_alloc": 0,
+                "total_days_ooo": 22,
+                "total_expend": 0,
+            },
         }
 
         actual = reports.merge_data_type(
-            employee_ids=[4,3,1,6], start_date=fy.start.date(), end_date=fy.end.date()
+            employee_ids=[4, 3, 1, 6],
+            start_date=fy.start.date(),
+            end_date=fy.end.date(),
         )
-        for i in expected['type'].items():     
-            self.assertEqual(
-                actual["type"].items(), expected['type'].items())
+        for i in expected["type"].items():
+            self.assertEqual(actual["type"].items(), expected["type"].items())
 
-        for total in expected['type']['total']:
-            self.assertEqual(actual['type']['total'],expected['type']['total'] )
-                    
-        for key, value in expected["type"]['all_type_total'].items():
-            
-                with self.subTest(key=key, value=value):
-                    self.assertEqual(actual[][key], value)
-"""
+        for total in expected["type"]["total"]:
+            self.assertEqual(actual["type"]["total"], expected["type"]["total"])
+
+
+# test type totals, all_type_total, value for an individual
+# the types that are in the dictionary
+#
