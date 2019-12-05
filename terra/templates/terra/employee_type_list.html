@@ -1,0 +1,135 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Employee Type Report{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <h1>Fiscal Year {{fiscalyear}}</h1>
+            <h2>Employee Type Report</h2>
+            <br>
+        </div>
+        <div class="col text-right">
+            <a href="/employee_type_list/export" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
+    </div>
+{% for key, value in merge.type.items %}
+    <table class="table">
+        <h3>{{key}}</h3>
+        <thead class="thead-light">
+            <tr>
+                <th colspan="3" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
+                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
+            </tr>
+            <tr>
+                <th scope="col">Unit</th>
+                 <th scope="col">Unit Manager</th>
+                <th scope="col">Employee</th>  
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vacation</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+{% for employee in value.employees %}
+            <tr>
+                <td>{{employee.unit}}</td>
+                <td>{{employee.unit_manager}}</td>
+                <td><a href="/employee/{{employee.id}}/">{{employee.name}}</a></td>
+                <td class="text-right">{{employee.profdev_alloc|currency}}</td>
+                <td class="text-right">{{employee.admin_alloc|currency}}</td>
+                <td class="text-right">{{employee.total_alloc|currency}}</td>
+                <td class="text-right">{{employee.profdev_expend|currency}}</td>
+                <td class="text-right">{{employee.admin_expend|currency}}</td>
+                <td class="text-right">{{employee.total_expend|currency}}</td>
+                <td class="text-right">{{employee.days_away}}</td>
+                <td class="text-right">{{employee.days_vacation}}</td>
+                <td class="text-right">{{employee.total_days_ooo}}</td>
+            </tr>
+{% endfor %}
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Subtotals</th>
+                <th></th>
+                <th></th>
+                <th class="text-right">{{value.totals.profdev_alloc|currency}}</th>
+                <th class="text-right">{{value.totals.admin_alloc|currency}}</th>
+                <th class="text-right">{{value.totals.total_alloc|currency}}</th>
+                <th class="text-right">{{value.totals.profdev_expend|currency}}</th>
+                <th class="text-right">{{value.totals.admin_expend|currency}}</th>
+                <th class="text-right">{{value.totals.total_expend|currency}}</th>
+                <th class="text-right">{{value.totals.days_away}}</th>
+                <th class="text-right">{{value.totals.days_vacation}}</th>
+                <th class="text-right">{{value.totals.total_days_ooo}}</th>
+            </tr>
+        </tfoot>
+    </table>
+{% endfor %}
+<h3>Library Totals</h3>
+<table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th colspan="3" scope="colgroup"></th>
+                <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
+                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
+            </tr>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Prof. Dev.</th>
+                <th scope="col" class="text-right">Admin.</th>
+                <th scope="col" class="text-right">Total</th>
+                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right">Vacation</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+        </thead>
+ <tfoot>
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th></th>
+                <th class="text-right">{{merge.all_type_total.profdev_alloc|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.admin_alloc|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.total_alloc|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.profdev_expend|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.admin_expend|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.total_expend|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.days_away}}</th>
+                <th class="text-right">{{merge.all_type_total.days_vacation}}</th>
+                <th class="text-right">{{merge.all_type_total.total_days_ooo}}</th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}
+
+

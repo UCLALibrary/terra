@@ -75,7 +75,7 @@ class ModelsTestCase(TestCase):
     def test_employee_has_full_report_access(self):
         emp = Employee.objects.get(user=User.objects.get(username="doriswang"))
         self.assertTrue(emp.has_full_report_access())
-        emp = Employee.objects.get(user=User.objects.get(username="aprigge"))
+        emp = Employee.objects.get(user=User.objects.get(username="tawopetu"))
         self.assertFalse(emp.has_full_report_access())
         emp.user.groups.add(1)
         self.assertTrue(emp.has_full_report_access())
@@ -248,10 +248,10 @@ class TestEmpoyeeDetailView(TestCase):
         self.client.login(username="vsteel", password="Staples50141")
         response = self.client.get("/employee/1/")
         self.assertEqual(response.status_code, 200)
-        self.client.login(username="aprigge", password="Staples50141")
+        self.client.login(username="tawopetu", password="Staples50141")
         response = self.client.get("/employee/3/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/employee/2/")
+        response = self.client.get("/employee/5/")
         self.assertEqual(response.status_code, 200)
 
     def test_employee_detail_allows_full_access(self):
@@ -314,7 +314,7 @@ class TestTreqDetailView(TestCase):
     def test_treq_detail_denies_anonymous(self):
         response = self.client.get("/treq/1", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/", status_code=301
+            response, "/accounts/login/?next=/treq/1/", status_code=301
         )
 
     def test_treq_detail_allows_full_access(self):
@@ -325,7 +325,7 @@ class TestTreqDetailView(TestCase):
 
     def test_treq_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/treq/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/treq.html")
 
@@ -635,3 +635,251 @@ class TestFundListView(TestCase):
         response = self.client.get("/fund/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund_list.html")
+
+
+class EmployeeTypeReportsTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def setUp(self):
+        self.fy = FiscalYear(2020)
+        self.start_date = self.fy.start.date()
+        self.end_date = self.fy.end.date()
+
+    def test_get_type_and_employees(self):
+
+        expected = {
+            "Executive": ["<Employee 4: Steel, Virginia>"],
+            "Unit Head": [
+                "<Employee 1: Grappone, Todd>",
+                "<Employee 6: Wang, Doris>",
+                "<Employee 3: Gomez, Joshua>",
+            ],
+            "Librarian": ["<Employee 2: Prigge, Ashton>"],
+            "Sr. Exempt Staff": ["<Employee 5: Awopetu, Tinu>"],
+            "Other": [],
+        }
+        actual = reports.get_type_and_employees()
+        for employee in expected:
+            self.assertTrue(employee in actual)
+
+    def test_type_report(self):
+        expected = {
+            "type": {
+                "Executive": {
+                    "employees": [
+                        {
+                            "id": 4,
+                            "profdev_alloc": Decimal("0.00000"),
+                            "profdev_expend": Decimal("0.00000"),
+                            "admin_alloc": Decimal("0.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 0,
+                            "name": "Steel, Virginia",
+                            "unit": "<Unit 1: Library>",
+                            "unit_manager": "<Employee 4: Steel, Virginia>",
+                            "total_alloc": Decimal("0.00000"),
+                            "total_expend": Decimal("0.00000"),
+                            "total_days_ooo": 0,
+                        }
+                    ],
+                    "totals": {
+                        "admin_alloc": Decimal("0.00000"),
+                        "admin_expend": Decimal("0.00000"),
+                        "days_away": 0,
+                        "days_vacation": 0,
+                        "profdev_alloc": Decimal("0.00000"),
+                        "profdev_expend": Decimal("0.00000"),
+                        "total_alloc": Decimal("0.00000"),
+                        "total_days_ooo": 0,
+                        "total_expend": Decimal("0.00000"),
+                    },
+                },
+                "Unit Head": {
+                    "employees": [
+                        {
+                            "id": 1,
+                            "profdev_alloc": Decimal("0.00000"),
+                            "profdev_expend": Decimal("0.00000"),
+                            "admin_alloc": Decimal("1300.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 3,
+                            "name": "Grappone, Todd",
+                            "unit": "<Unit 2: DIIT>",
+                            "unit_manager": "<Employee 1: Grappone, Todd>",
+                            "total_alloc": Decimal("1300.00000"),
+                            "total_expend": Decimal("0.00000"),
+                            "total_days_ooo": 3,
+                        },
+                        {
+                            "id": 6,
+                            "profdev_alloc": Decimal("0.00000"),
+                            "profdev_expend": Decimal("0.00000"),
+                            "admin_alloc": Decimal("0.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 0,
+                            "name": "Wang, Doris",
+                            "unit": "<Unit 4: Library Business Services>",
+                            "unit_manager": "<Employee 6: Wang, Doris>",
+                            "total_alloc": Decimal("0.00000"),
+                            "total_expend": Decimal("0.00000"),
+                            "total_days_ooo": 0,
+                        },
+                        {
+                            "id": 3,
+                            "profdev_alloc": Decimal("2000.00000"),
+                            "profdev_expend": Decimal("0.00000"),
+                            "admin_alloc": Decimal("1050.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 9,
+                            "days_away": 10,
+                            "name": "Gomez, Joshua",
+                            "unit": "<Unit 3: Software Development & Library Systems>",
+                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "total_alloc": Decimal("3050.00000"),
+                            "total_expend": Decimal("0.00000"),
+                            "total_days_ooo": 19,
+                        },
+                    ],
+                    "totals": {
+                        "admin_alloc": Decimal("2350.00000"),
+                        "admin_expend": Decimal("0.00000"),
+                        "days_away": 13,
+                        "days_vacation": 9,
+                        "profdev_alloc": Decimal("2000.00000"),
+                        "profdev_expend": Decimal("0.00000"),
+                        "total_alloc": Decimal("4350.00000"),
+                        "total_days_ooo": 22,
+                        "total_expend": Decimal("0.00000"),
+                    },
+                },
+                "Librarian": {
+                    "employees": [
+                        {
+                            "id": 2,
+                            "profdev_alloc": Decimal("3855.00000"),
+                            "profdev_expend": Decimal("1855.00000"),
+                            "admin_alloc": Decimal("0.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 5,
+                            "days_away": 15,
+                            "name": "Prigge, Ashton",
+                            "unit": "<Unit 3: Software Development & Library Systems>",
+                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "total_alloc": Decimal("3855.00000"),
+                            "total_expend": Decimal("1855.00000"),
+                            "total_days_ooo": 20,
+                        }
+                    ],
+                    "totals": {
+                        "admin_alloc": Decimal("0.00000"),
+                        "admin_expend": Decimal("0.00000"),
+                        "days_away": 15,
+                        "days_vacation": 5,
+                        "profdev_alloc": Decimal("3855.00000"),
+                        "profdev_expend": Decimal("1855.00000"),
+                        "total_alloc": Decimal("3855.00000"),
+                        "total_days_ooo": 20,
+                        "total_expend": Decimal("1855.00000"),
+                    },
+                },
+                "Sr. Exempt Staff": {
+                    "employees": [
+                        {
+                            "id": 5,
+                            "profdev_alloc": Decimal("1840.00000"),
+                            "profdev_expend": Decimal("1840.00000"),
+                            "admin_alloc": Decimal("0.00000"),
+                            "admin_expend": Decimal("0.00000"),
+                            "days_vacation": 0,
+                            "days_away": 5,
+                            "name": "Awopetu, Tinu",
+                            "unit": "<Unit 3: Software Development & Library Systems>",
+                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "total_alloc": Decimal("1840.00000"),
+                            "total_expend": Decimal("1840.00000"),
+                            "total_days_ooo": 5,
+                        }
+                    ],
+                    "totals": {
+                        "admin_alloc": Decimal("0.00000"),
+                        "admin_expend": Decimal("0.00000"),
+                        "days_away": 5,
+                        "days_vacation": 0,
+                        "profdev_alloc": Decimal("1840.00000"),
+                        "profdev_expend": Decimal("1840.00000"),
+                        "total_alloc": Decimal("1840.00000"),
+                        "total_days_ooo": 5,
+                        "total_expend": Decimal("1840.00000"),
+                    },
+                },
+                "Other": {
+                    "employees": [],
+                    "totals": {
+                        "admin_alloc": 0,
+                        "admin_expend": 0,
+                        "days_away": 0,
+                        "days_vacation": 0,
+                        "profdev_alloc": 0,
+                        "profdev_expend": 0,
+                        "total_alloc": 0,
+                        "total_days_ooo": 0,
+                        "total_expend": 0,
+                    },
+                },
+            },
+            "all_type_total": {
+                "admin_alloc": Decimal("2350.00000"),
+                "admin_expend": Decimal("0.00000"),
+                "days_away": 33,
+                "days_vacation": 14,
+                "profdev_alloc": Decimal("7695.00000"),
+                "profdev_expend": Decimal("3695.00000"),
+                "total_alloc": Decimal("10045.00000"),
+                "total_days_ooo": 47,
+                "total_expend": Decimal("3695.00000"),
+            },
+        }
+        actual = reports.merge_data_type(
+            employee_ids=[4, 1, 6, 3, 2, 5],
+            start_date=date(2019, 7, 1),
+            end_date=date(2020, 6, 30),
+        )
+
+        self.assertEqual(expected["type"].keys(), actual["type"].keys())
+        self.assertEqual(
+            expected["type"]["Unit Head"]["employees"],
+            actual["type"]["Unit Head"]["employees"],
+        )
+
+        for key, value in expected["type"]:
+            self.assertEqual(expected["type"][key], actual["type"][key])
+
+        self.assertEqual(
+            expected["all_type_total"].values(), actual["all_type_total"].values()
+        )
+        self.assertEqual(
+            expected["type"]["Unit Head"]["totals"].values(),
+            actual["type"]["Unit Head"]["totals"].values(),
+        )
+
+    def test_type_report_denies_anonymous(self):
+        response = self.client.get("/employee_type_list/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/employee_type_list/", status_code=302
+        )
+
+    def test_type_report_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/employee_type_list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee_type_list.html")
+
+    def test_type_report_loads(self):
+        self.client.login(username="vsteel", password="Staples50141")
+        response = self.client.get("/employee_type_list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/employee_type_list.html")

@@ -104,6 +104,10 @@ class Employee(models.Model):
             self.user.is_superuser or self.user.groups.filter(name="LBS Staff").exists()
         )
 
+    def is_UL(self):
+        if self.type == "EXEC":
+            return True
+
     def is_unit_manager(self):
         return self.managed_units.count() > 0
 
@@ -130,6 +134,10 @@ class Employee(models.Model):
         return TravelRequest.objects.filter(
             traveler=self, return_date__lte=end, return_date__gte=start
         )
+
+    @property
+    def sorted_unit_set(self):
+        return self.employee_set.order_by("unit")
 
 
 class Fund(models.Model):

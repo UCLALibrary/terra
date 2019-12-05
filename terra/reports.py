@@ -12,7 +12,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay
 
-from .models import TravelRequest, Employee, Approval, ActualExpense
+from .models import TravelRequest, Employee, Approval, ActualExpense, EMPLOYEE_TYPES
 from .utils import fiscal_year_bookends
 
 
@@ -331,3 +331,228 @@ def fund_report(fund, start_date=None, end_date=None):
     eids = get_fund_employee_list(fund, start_date, end_date)
     employee_data = get_individual_data_for_fund(eids, fund, start_date, end_date)
     return calculate_fund_totals(employee_data)
+
+
+def get_type_and_employees():
+    type_dict = {
+        "Executive": [],
+        "Unit Head": [],
+        "Librarian": [],
+        "Sr. Exempt Staff": [],
+        "Other": [],
+    }
+    employees = Employee.objects.order_by("unit")
+    for employee in employees:
+        if employee.get_type_display() in type_dict:
+            type_dict[employee.get_type_display()].append(employee)
+
+    return type_dict
+
+
+def get_individual_data_type(employee_ids, start_date=None, end_date=None):
+
+    # 4 subqueries plugged into the final query
+
+    profdev_alloc = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(profdev_alloc=Sum("approval__amount"))
+
+    profdev_expend = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        administrative=False,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(profdev_expend=Sum("actualexpense__total"))
+
+    admin_alloc = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=False,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(admin_alloc=Sum("approval__amount"))
+
+    admin_expend = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        administrative=True,
+        closed=True,
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(admin_expend=Sum("actualexpense__total"))
+
+    days_vacation = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(days_vacation=Sum("vacation__duration"))
+
+    days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler_id")
+        .annotate(days_away=Sum("days_ooo"))
+    )
+
+    # final query
+    rows = (
+        Employee.objects.filter(pk__in=employee_ids)
+        .annotate(
+            profdev_alloc=Coalesce(
+                Subquery(
+                    profdev_alloc.values("profdev_alloc")[:1],
+                    output_field=DecimalField(),
+                ),
+                Value(0),
+            ),
+            profdev_expend=Coalesce(
+                Subquery(
+                    profdev_expend.values("profdev_expend")[:1],
+                    output_field=DecimalField(),
+                ),
+                Value(0),
+            ),
+            admin_alloc=Coalesce(
+                Subquery(
+                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
+                ),
+                Value(0),
+            ),
+            admin_expend=Coalesce(
+                Subquery(
+                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
+                ),
+                Value(0),
+            ),
+            days_vacation=Coalesce(
+                Subquery(
+                    days_vacation.values("days_vacation")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
+            days_away=Coalesce(
+                Subquery(
+                    days_away.values("days_away")[:1], output_field=IntegerField()
+                ),
+                Value(0),
+            ),
+        )
+        .values(
+            "id",
+            "profdev_alloc",
+            "profdev_expend",
+            "admin_alloc",
+            "admin_expend",
+            "days_vacation",
+            "days_away",
+        )
+    )
+    return rows
+
+
+def merge_data_type(employee_ids, start_date, end_date):
+
+    type_dict = get_type_and_employees()
+    rows = get_individual_data_type(employee_ids, start_date, end_date)
+    data = {
+        "type": {
+            "Executive": {"employees": [], "totals": {}},
+            "Unit Head": {"employees": [], "totals": {}},
+            "Librarian": {"employees": [], "totals": {}},
+            "Sr. Exempt Staff": {"employees": [], "totals": {}},
+            "Other": {"employees": [], "totals": {}},
+        },
+        "all_type_total": {},
+    }
+
+    for employee_type in type_dict:
+        for e in type_dict[employee_type]:
+            try:
+                employee = rows.get(id=e.id)
+                employee["name"] = e.__str__()
+                employee["unit"] = e.unit
+                employee["unit_manager"] = e.unit.manager
+                employee["admin_alloc"] += employee["admin_expend"]
+                employee["profdev_alloc"] += employee["profdev_expend"]
+                employee["total_alloc"] = (
+                    employee["admin_alloc"] + employee["profdev_alloc"]
+                )
+                employee["total_expend"] = (
+                    employee["admin_expend"] + employee["profdev_expend"]
+                )
+                employee["total_days_ooo"] = (
+                    employee["days_away"] + employee["days_vacation"]
+                )
+
+            except ObjectDoesNotExist:
+                employee = {
+                    "admin_alloc": 0,
+                    "admin_expend": 0,
+                    "days_away": 0,
+                    "days_vacation": 0,
+                    "profdev_alloc": 0,
+                    "profdev_expend": 0,
+                    "total_alloc": 0,
+                    "total_days_ooo": 0,
+                    "total_expend": 0,
+                }
+            data["type"][employee_type]["employees"].append(employee)
+
+    for employee_type in data["type"]:
+        type_totals = {
+            "admin_alloc": 0,
+            "admin_expend": 0,
+            "days_away": 0,
+            "days_vacation": 0,
+            "profdev_alloc": 0,
+            "profdev_expend": 0,
+            "total_alloc": 0,
+            "total_days_ooo": 0,
+            "total_expend": 0,
+        }
+        # add a totals dictionary for each employee type
+        for employee in data["type"][employee_type]["employees"]:
+            type_totals["admin_alloc"] += employee["admin_alloc"]
+            type_totals["admin_expend"] += employee["admin_expend"]
+            type_totals["days_away"] += employee["days_away"]
+            type_totals["days_vacation"] += employee["days_vacation"]
+            type_totals["profdev_alloc"] += employee["profdev_alloc"]
+            type_totals["profdev_expend"] += employee["profdev_expend"]
+            type_totals["total_alloc"] += employee["total_alloc"]
+            type_totals["total_days_ooo"] += employee["total_days_ooo"]
+            type_totals["total_expend"] += employee["total_expend"]
+        data["type"][employee_type]["totals"] = type_totals
+
+    complete_total = {
+        "admin_alloc": 0,
+        "admin_expend": 0,
+        "days_away": 0,
+        "days_vacation": 0,
+        "profdev_alloc": 0,
+        "profdev_expend": 0,
+        "total_alloc": 0,
+        "total_days_ooo": 0,
+        "total_expend": 0,
+    }
+
+    for t in data["type"]:
+        complete_total["admin_alloc"] += data["type"][t]["totals"]["admin_alloc"]
+        complete_total["admin_expend"] += data["type"][t]["totals"]["admin_expend"]
+        complete_total["days_away"] += data["type"][t]["totals"]["days_away"]
+        complete_total["days_vacation"] += data["type"][t]["totals"]["days_vacation"]
+        complete_total["profdev_alloc"] += data["type"][t]["totals"]["profdev_alloc"]
+        complete_total["profdev_expend"] += data["type"][t]["totals"]["profdev_expend"]
+        complete_total["total_alloc"] += data["type"][t]["totals"]["total_alloc"]
+        complete_total["total_days_ooo"] += data["type"][t]["totals"]["total_days_ooo"]
+        complete_total["total_expend"] += data["type"][t]["totals"]["total_expend"]
+    data["all_type_total"] = complete_total
+
+    return data

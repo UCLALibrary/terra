@@ -1,0 +1,20 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Employee Type Report{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+{{data.type}}
+
+{% endblock %}
+
