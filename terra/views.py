@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
 from .models import TravelRequest, Unit, Fund, Employee, EMPLOYEE_TYPES
-from .reports import unit_report, fund_report, merge_data_type
+from .reports import unit_report, fund_report, merge_data_type, get_type_and_employees
 from .utils import current_fiscal_year_object, current_fiscal_year
 
 
@@ -287,6 +287,7 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         context["merge"] = merge_data_type(
             employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
+        context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         return context
 
 
