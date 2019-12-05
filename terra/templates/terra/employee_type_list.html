@@ -16,15 +16,14 @@
 {% block body %}
     <div class="row">
         <div class="col">
-            <h1>Employee Type Report</h1>
-            <h2>Fiscal Year Placeholder</h2>
+            <h1>Fiscal Year {{fiscalyear}}</h1>
+            <h2>Employee Type Report</h2>
             <br>
         </div>
         <div class="col text-right">
             <a href="/employee_type_list/export" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
         </div>
     </div>
-
 {% for key, value in merge.type.items %}
     <table class="table">
         <h3>{{key}}</h3>
