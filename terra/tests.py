@@ -677,8 +677,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 0,
                             "days_away": 0,
                             "name": "Steel, Virginia",
-                            "unit": "<Unit 1: Library>",
-                            "unit_manager": "<Employee 4: Steel, Virginia>",
+                            "unit": "Library",
+                            "unit_manager": "Steel, Virginia",
                             "total_alloc": Decimal("0.00000"),
                             "total_expend": Decimal("0.00000"),
                             "total_days_ooo": 0,
@@ -707,8 +707,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 0,
                             "days_away": 3,
                             "name": "Grappone, Todd",
-                            "unit": "<Unit 2: DIIT>",
-                            "unit_manager": "<Employee 1: Grappone, Todd>",
+                            "unit": "DIIT",
+                            "unit_manager": "Grappone, Todd",
                             "total_alloc": Decimal("1300.00000"),
                             "total_expend": Decimal("0.00000"),
                             "total_days_ooo": 3,
@@ -722,8 +722,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 0,
                             "days_away": 0,
                             "name": "Wang, Doris",
-                            "unit": "<Unit 4: Library Business Services>",
-                            "unit_manager": "<Employee 6: Wang, Doris>",
+                            "unit": "Library Business Services",
+                            "unit_manager": "Wang, Doris",
                             "total_alloc": Decimal("0.00000"),
                             "total_expend": Decimal("0.00000"),
                             "total_days_ooo": 0,
@@ -737,8 +737,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 9,
                             "days_away": 10,
                             "name": "Gomez, Joshua",
-                            "unit": "<Unit 3: Software Development & Library Systems>",
-                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "unit": "Software Development & Library Systems",
+                            "unit_manager": "Gomez, Joshua",
                             "total_alloc": Decimal("3050.00000"),
                             "total_expend": Decimal("0.00000"),
                             "total_days_ooo": 19,
@@ -767,8 +767,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 5,
                             "days_away": 15,
                             "name": "Prigge, Ashton",
-                            "unit": "<Unit 3: Software Development & Library Systems>",
-                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "unit": "Software Development & Library Systems",
+                            "unit_manager": "Gomez, Joshua",
                             "total_alloc": Decimal("3855.00000"),
                             "total_expend": Decimal("1855.00000"),
                             "total_days_ooo": 20,
@@ -797,8 +797,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "days_vacation": 0,
                             "days_away": 5,
                             "name": "Awopetu, Tinu",
-                            "unit": "<Unit 3: Software Development & Library Systems>",
-                            "unit_manager": "<Employee 3: Gomez, Joshua>",
+                            "unit": "Software Development & Library Systems",
+                            "unit_manager": "Gomez, Joshua",
                             "total_alloc": Decimal("1840.00000"),
                             "total_expend": Decimal("1840.00000"),
                             "total_days_ooo": 5,
@@ -850,21 +850,16 @@ class EmployeeTypeReportsTestCase(TestCase):
         )
 
         self.assertEqual(expected["type"].keys(), actual["type"].keys())
-        self.assertEqual(
-            expected["type"]["Unit Head"]["employees"],
-            actual["type"]["Unit Head"]["employees"],
-        )
-
-        for key, value in expected["type"]:
-            self.assertEqual(expected["type"][key], actual["type"][key])
-
-        self.assertEqual(
-            expected["all_type_total"].values(), actual["all_type_total"].values()
-        )
-        self.assertEqual(
-            expected["type"]["Unit Head"]["totals"].values(),
-            actual["type"]["Unit Head"]["totals"].values(),
-        )
+        self.assertEqual(expected["all_type_total"], actual["all_type_total"])
+        for employee_type in expected["type"].keys():
+            self.assertEqual(
+                expected["type"][employee_type]["totals"],
+                actual["type"][employee_type]["totals"],
+            )
+            self.assertEqual(
+                expected["type"][employee_type]["employees"],
+                actual["type"][employee_type]["employees"],
+            )
 
     def test_type_report_denies_anonymous(self):
         response = self.client.get("/employee_type_list/", follow=True)
