@@ -185,8 +185,6 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         if self.request.user.employee.has_full_report_access():
             return True
-        fund = self.get_object()
-        return self.request.user.employee in fund.super_managers()
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -256,10 +254,7 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     redirect_field_name = "next"
 
     def test_func(self):
-        return (
-            self.request.user.employee.has_full_report_access()
-            or self.request.user.employee.is_fund_manager()
-        )
+        return self.request.user.employee.has_full_report_access()
 
     def get_queryset(self):
         if self.request.user.employee.has_full_report_access():

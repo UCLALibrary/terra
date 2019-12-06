@@ -615,8 +615,13 @@ class TestFundDetailView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
 
+    def test_fund_denies_non_lbs(self):
+        self.client.login(username="tawopetu", password="Staples50141")
+        response = self.client.get("/fund/1/")
+        self.assertEqual(response.status_code, 403)
+
     def test_fund_detail_loads(self):
-        self.client.login(username="vsteel", password="Staples50141")
+        self.client.login(username="aprigge", password="Staples50141")
         response = self.client.get("/fund/1/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")

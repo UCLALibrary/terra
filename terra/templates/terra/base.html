@@ -45,7 +45,7 @@
             <a class="nav-link" href="/unit/">Unit Reports</a>
           </li>
           {% endif %}
-          {% if request.user.employee.is_fund_manager or request.user.employee.has_full_report_access %}
+          {% if request.user.employee.has_full_report_access %}
           <li class="nav-item">
             <a class="nav-link" href="/fund/">FAU Reports</a>
           </li>
