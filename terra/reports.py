@@ -478,8 +478,8 @@ def merge_data_type(employee_ids, start_date, end_date):
             try:
                 employee = rows.get(id=e.id)
                 employee["name"] = e.__str__()
-                employee["unit"] = e.unit
-                employee["unit_manager"] = e.unit.manager
+                employee["unit"] = e.unit.__str__()
+                employee["unit_manager"] = e.unit.manager.__str__()
                 employee["admin_alloc"] += employee["admin_expend"]
                 employee["profdev_alloc"] += employee["profdev_expend"]
                 employee["total_alloc"] = (
