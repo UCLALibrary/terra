@@ -61,7 +61,9 @@
             {% if request.user.is_authenticated %}
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.username}}</a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                  {% if request.user.employee.has_full_report_access %}
                     <a class="dropdown-item" href="/admin/">Admin</a>
+                    {% endif %}
                     <a class="dropdown-item" href="/accounts/password_change">Change Password</a>
                     <hr>
                     <a class="dropdown-item" href="/accounts/logout">Logout</a>
