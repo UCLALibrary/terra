@@ -924,7 +924,7 @@
     "departure_date": "2019-09-08",
     "return_date": "2019-09-14",
     "days_ooo": 5,
-    "closed": false,
+    "closed": true,
     "administrative": false,
     "justification": "",
     "approved_by": null,
@@ -1653,6 +1653,18 @@
     "rate": null,
     "quantity": null,
     "total": "330.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 14,
+  "fields": {
+    "treq": 4,
+    "type": "CON",
+    "rate": null,
+    "quantity": null,
+    "total": "1500.00000",
     "fund": 1
   }
 }
