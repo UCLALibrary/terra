@@ -50,7 +50,7 @@
             <a class="nav-link" href="/fund/">FAU Reports</a>
           </li>
           {% endif %}
-          {% if request.user.employee.has_full_report_access or request.user.employee.is_UL  %}
+          {% if request.user.employee.has_full_report_access %}
           <li class="nav-item">
             <a class="nav-link" href="/employee_type_list/">Employee Type Report</a>
           </li>
