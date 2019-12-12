@@ -112,5 +112,5 @@ urlpatterns = [
         EmployeeTypeExportView.as_view(),
         name="employee_type_csv",
     ),
-    path("home/", home, name="home"),
+    path("", home, name="home"),
 ]

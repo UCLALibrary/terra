@@ -136,4 +136,4 @@ if os.getenv("DJANGO_RUN_ENV") != "dev":
     EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST")
 
 # login redirect
-LOGIN_REDIRECT_URL = "/home/"
+LOGIN_REDIRECT_URL = "/"
