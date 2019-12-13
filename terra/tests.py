@@ -892,10 +892,10 @@ class ReportTestCase(TestCase):
     def test_individual_data(self):
         expected = {
             "id": 2,
-            "profdev_alloc": Decimal("500.00000"),
-            "profdev_expend": Decimal("12220.00000"),
-            "admin_alloc": Decimal("3500.00000"),
-            "admin_expend": Decimal("0.00000"),
+            "profdev_alloc": Decimal("3500.00000"),
+            "profdev_expend": Decimal("4000.00000"),
+            "admin_alloc": Decimal("0.00000"),
+            "admin_expend": Decimal("8220.00000"),
             "days_vacation": 0,
             "days_away": 25,
         }
