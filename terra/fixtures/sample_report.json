@@ -1,0 +1,1180 @@
+[
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 2,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 2,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 2,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 2,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 3,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 3,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 3,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 3,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 4,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 4,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 4,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 4,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 5,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 5,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 5,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 5,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 6,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 6,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 6,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 6,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add activity",
+    "content_type": 7,
+    "codename": "add_activity"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change activity",
+    "content_type": 7,
+    "codename": "change_activity"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete activity",
+    "content_type": 7,
+    "codename": "delete_activity"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view activity",
+    "content_type": 7,
+    "codename": "view_activity"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add approval",
+    "content_type": 8,
+    "codename": "add_approval"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change approval",
+    "content_type": 8,
+    "codename": "change_approval"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete approval",
+    "content_type": 8,
+    "codename": "delete_approval"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view approval",
+    "content_type": 8,
+    "codename": "view_approval"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add employee",
+    "content_type": 9,
+    "codename": "add_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change employee",
+    "content_type": 9,
+    "codename": "change_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete employee",
+    "content_type": 9,
+    "codename": "delete_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view employee",
+    "content_type": 9,
+    "codename": "view_employee"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add fund",
+    "content_type": 10,
+    "codename": "add_fund"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change fund",
+    "content_type": 10,
+    "codename": "change_fund"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete fund",
+    "content_type": 10,
+    "codename": "delete_fund"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view fund",
+    "content_type": 10,
+    "codename": "view_fund"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add travel request",
+    "content_type": 11,
+    "codename": "add_travelrequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change travel request",
+    "content_type": 11,
+    "codename": "change_travelrequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete travel request",
+    "content_type": 11,
+    "codename": "delete_travelrequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view travel request",
+    "content_type": 11,
+    "codename": "view_travelrequest"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can add vacation",
+    "content_type": 12,
+    "codename": "add_vacation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can change vacation",
+    "content_type": 12,
+    "codename": "change_vacation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can delete vacation",
+    "content_type": 12,
+    "codename": "delete_vacation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view vacation",
+    "content_type": 12,
+    "codename": "view_vacation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add unit",
+    "content_type": 13,
+    "codename": "add_unit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can change unit",
+    "content_type": 13,
+    "codename": "change_unit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can delete unit",
+    "content_type": 13,
+    "codename": "delete_unit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can view unit",
+    "content_type": 13,
+    "codename": "view_unit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add estimated expense",
+    "content_type": 14,
+    "codename": "add_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change estimated expense",
+    "content_type": 14,
+    "codename": "change_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete estimated expense",
+    "content_type": 14,
+    "codename": "delete_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view estimated expense",
+    "content_type": 14,
+    "codename": "view_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add actual expense",
+    "content_type": 15,
+    "codename": "add_actualexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change actual expense",
+    "content_type": 15,
+    "codename": "change_actualexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete actual expense",
+    "content_type": 15,
+    "codename": "delete_actualexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view actual expense",
+    "content_type": 15,
+    "codename": "view_actualexpense"
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "LBS Staff",
+    "permissions": [
+      13,
+      14,
+      15,
+      16,
+      45,
+      46,
+      47,
+      48,
+      57,
+      58,
+      59,
+      60,
+      49,
+      50,
+      51,
+      52,
+      29,
+      30,
+      31,
+      32,
+      53,
+      54,
+      55,
+      56,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      25,
+      26,
+      27,
+      28,
+      41,
+      42,
+      43,
+      44
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$NMbC1SqQBI7A$uAKk6/6b9RteJdN7z6bUcZN/ZVhe2kRqMoqvS1fRUj0=",
+    "last_login": "2019-09-27T14:53:48.640Z",
+    "is_superuser": true,
+    "username": "joshuagomez",
+    "first_name": "Joshua",
+    "last_name": "Gomez",
+    "email": "joshuago78@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-13T22:59:03Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$lze2IRK5REOf$vD3EobiBBGOorhQR+HUW0yzT/7SOynR6n4xxRk1LNk0=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "tgrappone",
+    "first_name": "Todd",
+    "last_name": "Grappone",
+    "email": "tgrappone@library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:21:24Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$uZEL9naPqn67$hlgkqVV0DjM5nY/5Jy2qXGu4+yj277vK6PY72PcFIVY=",
+    "last_login": "2019-09-02T04:21:02.658Z",
+    "is_superuser": true,
+    "username": "aprigge",
+    "first_name": "Ashton",
+    "last_name": "Prigge",
+    "email": "aprigge@library.ucla.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:23:29Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$facETWBUJjYJ$URkIbGwPgJTz6prw4JVf0SSILwTM9I3wkosaDtQPunk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "vsteel",
+    "first_name": "Virginia",
+    "last_name": "Steel",
+    "email": "vsteel@library.library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-08-14T02:26:46Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$dhdmYBI1duvC$qBWXFWfIhYhY7/Sye4uLNbtFdLT3lgCtGgPKVVccj3Q=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "tawopetu",
+    "first_name": "Tinu",
+    "last_name": "Awopetu",
+    "email": "tinuola@library.ucla.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2019-09-01T15:44:42Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$1KegWw2vRLcR$LOOI86ivTpeWXwWOV2omAm4BSAOEaJZFjupK2ChGuhw=",
+    "last_login": "2019-09-06T20:55:57.899Z",
+    "is_superuser": false,
+    "username": "doriswang",
+    "first_name": "Doris",
+    "last_name": "Wang",
+    "email": "doris@library.ucla.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-08-13T22:59:03Z",
+    "groups": [1],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$N5K7qTDiHZPC$MIGAQzg4XBmhlWPy3+7Zt+9InmWTDLxdzpncRtxE02Q=",
+    "last_login": "2019-09-24T00:46:29.505Z",
+    "is_superuser": true,
+    "username": "ack",
+    "first_name": "",
+    "last_name": "",
+    "email": "a@b.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-09-24T00:46:19.396Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "terra.unit",
+  "pk": 1,
+  "fields": {
+    "name": "Library",
+    "type": "1",
+    "manager": 1,
+    "parent_unit": null
+  }
+},
+{
+  "model": "terra.unit",
+  "pk": 2,
+  "fields": {
+    "name": "DIIT",
+    "type": "2",
+    "manager": 1,
+    "parent_unit": 1
+  }
+},
+{
+  "model": "terra.unit",
+  "pk": 3,
+  "fields": {
+    "name": "Software Development & Library Systems",
+    "type": "3",
+    "manager": 1,
+    "parent_unit": 2
+  }
+},
+{
+  "model": "terra.unit",
+  "pk": 4,
+  "fields": {
+    "name": "Library Business Services",
+    "type": "3",
+    "manager": 1,
+    "parent_unit": 1
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "phone": "",
+    "unit": 3,
+    "active": true,
+    "uid": "FAKE001",
+    "supervisor": null,
+    "type": "HEAD",
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
+  }
+},
+{
+  "model": "terra.employee",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "phone": "",
+    "unit": 3,
+    "active": true,
+    "uid": "FAKE002",
+    "supervisor": 1,
+    "type": "LIBR",
+    "extra_allocation": "0.00000",
+    "allocation_expire_date": null
+  }
+},
+
+{
+  "model": "terra.fund",
+  "pk": 2,
+  "fields": {
+    "account": "605000",
+    "cost_center": "LD",
+    "fund": "18084",
+    "manager": 1
+  }
+},
+{
+  "model": "terra.fund",
+  "pk": 1,
+  "fields": {
+    "account": "605000",
+    "cost_center": "AD",
+    "fund": "18084",
+    "manager": 1
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 9,
+  "fields": {
+    "traveler": 2,
+    "activity": 2,
+    "departure_date": "2019-10-05",
+    "return_date": "2019-10-18",
+    "days_ooo": 3,
+    "closed": true,
+    "administrative": false,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 10,
+  "fields": {
+    "traveler": 2,
+    "activity": 1,
+    "departure_date": "2019-07-05",
+    "return_date": "2019-07-18",
+    "days_ooo": 5,
+    "closed": true,
+    "administrative": false,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 11,
+  "fields": {
+    "traveler": 2,
+    "activity": 5,
+    "departure_date": "2019-08-05",
+    "return_date": "2019-08-18",
+    "days_ooo": 5,
+    "closed": false,
+    "administrative": true,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 12,
+  "fields": {
+    "traveler": 2,
+    "activity": 3,
+    "departure_date": "2019-12-05",
+    "return_date": "2019-12-18",
+    "days_ooo": 5,
+    "closed": false,
+    "administrative": false,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 13,
+  "fields": {
+    "traveler": 2,
+    "activity": 5,
+    "departure_date": "2019-08-05",
+    "return_date": "2019-08-18",
+    "days_ooo": 5,
+    "closed": true,
+    "administrative": false,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+{
+  "model": "terra.travelrequest",
+  "pk": 14,
+  "fields": {
+    "traveler": 2,
+    "activity": 1,
+    "departure_date": "2019-08-02",
+    "return_date": "2019-08-04",
+    "days_ooo": 2,
+    "closed": true,
+    "administrative": true,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
+
+
+{
+  "model": "terra.activity",
+  "pk": 1,
+  "fields": {
+    "name": "Code4lib 2020",
+    "url": "http://2020.code4lib.org",
+    "description": "A conference for library technologists",
+    "start": "2020-02-10",
+    "end": "2020-02-14",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "country": "USA"
+  }
+},
+{
+  "model": "terra.activity",
+  "pk": 2,
+  "fields": {
+    "name": "DLF",
+    "url": "",
+    "description": "",
+    "start": "2019-09-16",
+    "end": "2019-09-20",
+    "city": "Tallahassee",
+    "state": "FL",
+    "country": "USA"
+  }
+},
+{
+  "model": "terra.activity",
+  "pk": 3,
+  "fields": {
+    "name": "CNI Fall Meeting",
+    "url": "",
+    "description": "",
+    "start": "2019-12-09",
+    "end": "2019-09-10",
+    "city": "Washington",
+    "state": "DC",
+    "country": "USA"
+  }
+},
+{
+  "model": "terra.activity",
+  "pk": 4,
+  "fields": {
+    "name": "Summer Con",
+    "url": "",
+    "description": "",
+    "start": "2019-07-15",
+    "end": "2019-07-19",
+    "city": "Los Angeles",
+    "state": "CA",
+    "country": "USA"
+  }
+},
+{
+  "model": "terra.activity",
+  "pk": 5,
+  "fields": {
+    "name": "Smashing Conf 2019",
+    "url": "",
+    "description": "",
+    "start": "2019-05-06",
+    "end": "2019-05-10",
+    "city": "Toronto",
+    "state": "Ontario",
+    "country": "Canada"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 5,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 9,
+    "fund": 1,
+    "amount": "3500.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 6,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 10,
+    "fund": 1,
+    "amount": "3500.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 7,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 11,
+    "fund": 1,
+    "amount": "3500.00000"
+  }
+},
+{
+  "model": "terra.approval",
+  "pk": 8,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 12,
+    "fund": 1,
+    "amount": "500.00000"
+  }
+},
+
+{
+  "model": "terra.estimatedexpense",
+  "pk": 30,
+  "fields": {
+    "treq": 10,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 31,
+  "fields": {
+    "treq": 11,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 32,
+  "fields": {
+    "treq": 12,
+    "type": "CON",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 33,
+  "fields": {
+    "treq": 12,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+
+{
+  "model": "terra.actualexpense",
+  "pk": 10,
+  "fields": {
+    "treq": 9,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 6,
+    "total": "1200.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 11,
+  "fields": {
+    "treq": 9,
+    "type": "AIR",
+    "rate": null,
+    "quantity": null,
+    "total": "500.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 12,
+  "fields": {
+    "treq": 9,
+    "type": "CON",
+    "rate": null,
+    "quantity": null,
+    "total": "1200.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 13,
+  "fields": {
+    "treq": 9,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "330.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 14,
+  "fields": {
+    "treq": 10,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "330.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 15,
+  "fields": {
+    "treq": 10,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "330.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 16,
+  "fields": {
+    "treq": 10,
+    "type": "EAT",
+    "rate": null,
+    "quantity": null,
+    "total": "330.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 17,
+  "fields": {
+    "treq": 9,
+    "type": "OTH",
+    "rate": null,
+    "quantity": null,
+    "total": "4000.00000",
+    "fund": 1
+  }
+},
+{
+  "model": "terra.actualexpense",
+  "pk": 19,
+  "fields": {
+    "treq": 13,
+    "type": "OTH",
+    "rate": null,
+    "quantity": null,
+    "total": "4000.00000",
+    "fund": 1
+  }
+}
+]

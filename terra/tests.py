@@ -883,3 +883,27 @@ class EmployeeTypeReportsTestCase(TestCase):
         response = self.client.get("/employee_type_list/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
+
+
+class ReportTestCase(TestCase):
+
+    fixtures = ["sample_report.json"]
+
+    def test_individual_data(self):
+        expected = {
+            "id": 2,
+            "profdev_alloc": Decimal("500.00000"),
+            "profdev_expend": Decimal("12220.00000"),
+            "admin_alloc": Decimal("3500.00000"),
+            "admin_expend": Decimal("0.00000"),
+            "days_vacation": 0,
+            "days_away": 25,
+        }
+        employee_ids = [2]
+        start_date = date(2019, 7, 1)
+        end_date = date(2020, 6, 30)
+        actual = reports.get_individual_data(employee_ids, start_date, end_date)
+        for x in actual:
+            for key, value in x.items():
+                with self.subTest(key=key, value=value):
+                    self.assertEqual(x[key], expected[key])
