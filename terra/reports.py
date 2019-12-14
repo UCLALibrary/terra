@@ -47,37 +47,57 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
 
-    profdev_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(profdev_alloc=Sum("approval__amount"))
+    profdev_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_alloc=Sum("approval__amount"))
+        .values("profdev_alloc")
+    )
 
-    profdev_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(profdev_expend=Sum("actualexpense__total"))
+    profdev_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_expend=Sum("actualexpense__total"))
+        .values("profdev_expend")
+    )
 
-    admin_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(admin_alloc=Sum("approval__amount"))
+    admin_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_alloc=Sum("approval__amount"))
+        .values("approval__amount")
+    )
 
-    admin_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(admin_expend=Sum("actualexpense__total"))
+    admin_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_expend=Sum("actualexpense__total"))
+        .values("admin_expend")
+    )
 
     days_vacation = TravelRequest.objects.filter(
         traveler=OuterRef("pk"),
@@ -96,34 +116,21 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     )
 
     # final query
+
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_alloc=Coalesce(
-                Subquery(
-                    profdev_alloc.values("profdev_alloc")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+                Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
             ),
             profdev_expend=Coalesce(
-                Subquery(
-                    profdev_expend.values("profdev_expend")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+                Subquery(profdev_expend, output_field=DecimalField()), Value(0)
             ),
             admin_alloc=Coalesce(
-                Subquery(
-                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+                Subquery(admin_alloc, output_field=DecimalField()), Value(0)
             ),
             admin_expend=Coalesce(
-                Subquery(
-                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+                Subquery(admin_expend, output_field=DecimalField()), Value(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
@@ -238,67 +245,77 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     start_date, end_date = check_dates(start_date, end_date)
 
     # 4 subqueries plugged into the final query
-    profdev_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(profdev_alloc=Sum("approval__amount", filter=Q(approval__fund=fund)))
-
-    profdev_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(
-        profdev_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+    profdev_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_alloc=Sum("approval__amount", filter=Q(approval__fund=fund)))
+        .values("profdev_alloc")
     )
 
-    admin_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(admin_alloc=Sum("approval__amount"), filter=Q(approval__fund=fund))
+    profdev_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(
+            profdev_expend=Sum(
+                "actualexpense__total", filter=Q(actualexpense__fund=fund)
+            )
+        )
+        .values("profdev_expend")
+    )
 
-    admin_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(
-        admin_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+    admin_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_alloc=Sum("approval__amount"), filter=Q(approval__fund=fund))
+        .values("admin_alloc")
+    )
+
+    admin_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(
+            admin_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+        )
+        .values("admin_expend")
     )
 
     # final query
     rows = Employee.objects.filter(pk__in=employee_ids).annotate(
         profdev_alloc=Coalesce(
-            Subquery(
-                profdev_alloc.values("profdev_alloc")[:1], output_field=DecimalField()
-            ),
-            Value(0),
+            Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
         ),
         profdev_expend=Coalesce(
-            Subquery(
-                profdev_expend.values("profdev_expend")[:1], output_field=DecimalField()
-            ),
-            Value(0),
+            Subquery(profdev_expend, output_field=DecimalField()), Value(0)
         ),
         admin_alloc=Coalesce(
-            Subquery(
-                admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
-            ),
-            Value(0),
+            Subquery(admin_alloc, output_field=DecimalField()), Value(0)
         ),
         admin_expend=Coalesce(
-            Subquery(
-                admin_expend.values("admin_expend")[:1], output_field=DecimalField()
-            ),
-            Value(0),
+            Subquery(admin_expend, output_field=DecimalField()), Value(0)
         ),
     )
     return rows
@@ -353,37 +370,57 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
 
     # 4 subqueries plugged into the final query
 
-    profdev_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(profdev_alloc=Sum("approval__amount"))
+    profdev_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_alloc=Sum("approval__amount"))
+        .values("profdev_alloc")
+    )
 
-    profdev_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=False,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(profdev_expend=Sum("actualexpense__total"))
+    profdev_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_expend=Sum("actualexpense__total"))
+        .values("profdev_expend")
+    )
 
-    admin_alloc = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=False,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(admin_alloc=Sum("approval__amount"))
+    admin_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_alloc=Sum("approval__amount"))
+        .values("admin_alloc")
+    )
 
-    admin_expend = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        administrative=True,
-        closed=True,
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(admin_expend=Sum("actualexpense__total"))
+    admin_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_expend=Sum("actualexpense__total"))
+        .values("admin_expend")
+    )
 
     days_vacation = TravelRequest.objects.filter(
         traveler=OuterRef("pk"),
@@ -406,30 +443,16 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_alloc=Coalesce(
-                Subquery(
-                    profdev_alloc.values("profdev_alloc")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+                Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
             ),
             profdev_expend=Coalesce(
-                Subquery(
-                    profdev_expend.values("profdev_expend")[:1],
-                    output_field=DecimalField(),
-                ),
-                Value(0),
+                Subquery(profdev_expend, output_field=DecimalField()), Value(0)
             ),
             admin_alloc=Coalesce(
-                Subquery(
-                    admin_alloc.values("admin_alloc")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+                Subquery(admin_alloc, output_field=DecimalField()), Value(0)
             ),
             admin_expend=Coalesce(
-                Subquery(
-                    admin_expend.values("admin_expend")[:1], output_field=DecimalField()
-                ),
-                Value(0),
+                Subquery(admin_expend, output_field=DecimalField()), Value(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
