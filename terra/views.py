@@ -7,7 +7,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
 from .models import TravelRequest, Unit, Fund, Employee, EMPLOYEE_TYPES
-from .reports import unit_report, fund_report, merge_data_type, get_type_and_employees
+from .reports import (
+    unit_report,
+    fund_report,
+    merge_data_type,
+    get_type_and_employees,
+    employee_total_report,
+)
 from .utils import current_fiscal_year_object, current_fiscal_year
 
 
@@ -35,6 +41,13 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["fiscal_year"] = current_fiscal_year()
+        fy = current_fiscal_year_object()
+        id_list = []
+        for employee in Employee.objects.all():
+            id_list.append(employee.id)
+        context["report"] = employee_total_report(
+            employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
+        )
         return context
 
 

@@ -579,3 +579,168 @@ def merge_data_type(employee_ids, start_date, end_date):
     data["all_type_total"] = complete_total
 
     return data
+
+
+def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
+    start_date, end_date = check_dates(start_date, end_date)
+    # 4 subqueries plugged into the final query
+
+    total_estimatedexpense = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(total_estimatedexpense=Sum("estimatedexpense__total"))
+        .values("total_estimatedexpense")
+    )
+
+    profdev_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_alloc=Sum("approval__amount"))
+        .values("profdev_alloc")
+    )
+
+    profdev_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_expend=Sum("actualexpense__total"))
+        .values("profdev_expend")
+    )
+
+    admin_alloc = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_alloc=Sum("approval__amount"))
+        .values("approval__amount")
+    )
+
+    admin_expend = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            closed=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_expend=Sum("actualexpense__total"))
+        .values("admin_expend")
+    )
+
+    days_vacation = TravelRequest.objects.filter(
+        traveler=OuterRef("pk"),
+        departure_date__gte=start_date,
+        return_date__lte=end_date,
+    ).annotate(days_vacation=Sum("vacation__duration"))
+
+    days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler_id")
+        .annotate(days_away=Sum("days_ooo"))
+    )
+
+    # final query
+
+    rows = (
+        Employee.objects.filter(pk__in=employee_ids)
+        .annotate(
+            total_estimatedexpense=Coalesce(
+                Subquery(total_estimatedexpense, output_field=DecimalField()), Value(0)
+            ),
+            profdev_alloc=Coalesce(
+                Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
+            ),
+            profdev_expend=Coalesce(
+                Subquery(profdev_expend, output_field=DecimalField()), Value(0)
+            ),
+            admin_alloc=Coalesce(
+                Subquery(admin_alloc, output_field=DecimalField()), Value(0)
+            ),
+            admin_expend=Coalesce(
+                Subquery(admin_expend, output_field=DecimalField()), Value(0)
+            ),
+            days_vacation=Coalesce(
+                Subquery(
+                    days_vacation.values("days_vacation")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
+            days_away=Coalesce(
+                Subquery(
+                    days_away.values("days_away")[:1], output_field=IntegerField()
+                ),
+                Value(0),
+            ),
+        )
+        .values(
+            "id",
+            "total_estimatedexpense",
+            "profdev_alloc",
+            "profdev_expend",
+            "admin_alloc",
+            "admin_expend",
+            "days_vacation",
+            "days_away",
+        )
+    )
+    return rows
+
+
+def employee_total_report(employee_ids, start_date, end_date):
+    employee_totals = {}
+    rows = get_individual_data_employee(employee_ids, start_date, end_date)
+    for e in employee_ids:
+        try:
+            employee = rows.get(id=e)
+            employee["total_alloc"] = (
+                employee["admin_alloc"] + employee["profdev_alloc"]
+            )
+            employee["total_expend"] = (
+                employee["admin_expend"] + employee["profdev_expend"]
+            )
+            employee["total_days_ooo"] = (
+                employee["days_away"] + employee["days_vacation"]
+            )
+
+        except ObjectDoesNotExist:
+            employee = {
+                "admin_alloc": 0,
+                "admin_expend": 0,
+                "days_away": 0,
+                "days_vacation": 0,
+                "total_estimatedexpense": 0,
+                "profdev_alloc": 0,
+                "profdev_expend": 0,
+                "total_alloc": 0,
+                "total_days_ooo": 0,
+                "total_expend": 0,
+            }
+        employee_totals[e] = employee
+
+    return employee_totals

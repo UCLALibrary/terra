@@ -907,3 +907,31 @@ class ReportTestCase(TestCase):
             for key, value in x.items():
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
+
+
+class EmployeeSubtotalTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_subtotal(self):
+        expected = {
+            "id": 2,
+            "admin_alloc": Decimal("0.0000"),
+            "admin_expend": Decimal("0.0000"),
+            "days_away": 15,
+            "days_vacation": 5,
+            "total_estimatedexpense": Decimal("6075.0000"),
+            "profdev_alloc": Decimal("2000.0000"),
+            "profdev_expend": Decimal("1855.0000"),
+            "total_alloc": 0,
+            "total_days_ooo": 20,
+            "total_expend": Decimal("0.0000"),
+        }
+        employee_ids = [2]
+        start_date = date(2019, 7, 1)
+        end_date = date(2020, 6, 30)
+        actual = reports.get_individual_data(employee_ids, start_date, end_date)
+        for x in actual:
+            for key, value in x.items():
+                with self.subTest(key=key, value=value):
+                    self.assertEqual(x[key], expected[key])
