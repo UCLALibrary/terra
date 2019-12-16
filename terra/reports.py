@@ -718,6 +718,8 @@ def employee_total_report(employee_ids, start_date, end_date):
     for e in employee_ids:
         try:
             employee = rows.get(id=e)
+            employee["admin_alloc"] += employee["admin_expend"]
+            employee["profdev_alloc"] += employee["profdev_expend"]
             employee["total_alloc"] = (
                 employee["admin_alloc"] + employee["profdev_alloc"]
             )
