@@ -894,10 +894,10 @@ class ReportTestCase(TestCase):
             "id": 2,
             "profdev_alloc": Decimal("3500.00000"),
             "profdev_expend": Decimal("4000.00000"),
-            "admin_alloc": Decimal("0.00000"),
+            "admin_alloc": Decimal("1000.00000"),
             "admin_expend": Decimal("8220.00000"),
             "days_vacation": 0,
-            "days_away": 25,
+            "days_away": 27,
         }
         employee_ids = [2]
         start_date = date(2019, 7, 1)

@@ -908,7 +908,23 @@
   }
 },
 
-
+{
+  "model": "terra.travelrequest",
+  "pk": 15,
+  "fields": {
+    "traveler": 2,
+    "activity": 2,
+    "departure_date": "2019-08-02",
+    "return_date": "2019-08-04",
+    "days_ooo": 2,
+    "closed": false,
+    "administrative": true,
+    "justification": "",
+    "approved_by": 1,
+    "approved_on": "2019-03-01",
+    "international_approved_on": "2019-04-01"
+  }
+},
 {
   "model": "terra.activity",
   "pk": 1,
@@ -1023,6 +1039,17 @@
     "amount": "500.00000"
   }
 },
+{
+  "model": "terra.approval",
+  "pk": 9,
+  "fields": {
+    "approved_on": "2019-09-27T14:58:25.385Z",
+    "approved_by": 1,
+    "treq": 15,
+    "fund": 1,
+    "amount": "1000.00000"
+  }
+},
 
 {
   "model": "terra.estimatedexpense",
@@ -1062,6 +1089,17 @@
   "pk": 33,
   "fields": {
     "treq": 12,
+    "type": "LDG",
+    "rate": "200.00000",
+    "quantity": 5,
+    "total": "1000.00000"
+  }
+},
+{
+  "model": "terra.estimatedexpense",
+  "pk": 34,
+  "fields": {
+    "treq": 15,
     "type": "LDG",
     "rate": "200.00000",
     "quantity": 5,
