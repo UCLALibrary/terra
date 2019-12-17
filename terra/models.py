@@ -22,6 +22,7 @@ EXPENSE_TYPES = (
 )
 
 EMPLOYEE_TYPES = (
+    ("ULBR", "University Librarian"),
     ("EXEC", "Executive"),
     ("HEAD", "Unit Head"),
     ("LIBR", "Librarian"),
@@ -105,7 +106,7 @@ class Employee(models.Model):
         )
 
     def is_UL(self):
-        if self.type == "EXEC":
+        if self.type == "ULBR":
             return True
 
     def is_unit_manager(self):
