@@ -83,7 +83,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         )
         .values("traveler__pk")
         .annotate(admin_alloc=Sum("approval__amount"))
-        .values("approval__amount")
+        .values("admin_alloc")
     )
 
     admin_expend = (
