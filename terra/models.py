@@ -240,8 +240,7 @@ class TravelRequest(models.Model):
         return sum([v.vacation_days() for v in self.vacation_set.all()])
 
     def total_days_out(self):
-        vacation_days = sum([v.vacation_days() for v in self.vacation_set.all()])
-        total_days = vacation_days + self.days_ooo
+        total_days = self.vacation_days() + self.days_ooo
         return total_days
 
 

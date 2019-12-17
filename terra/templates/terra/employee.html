@@ -37,7 +37,7 @@
         </thead>
         <tbody>
     {% for treq in employee.travelrequest_set.all %}
-    {% if treq.in_fiscal_year %}
+        {% if treq.in_fiscal_year %}
             <tr>
                 <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
@@ -52,7 +52,7 @@
                 <td>{{treq.vacation_days}}</td>
                 <td>{{treq.total_days_out}}</td>
             </tr>
-    {% endif %}
+        {% endif %}
     {% endfor %}
         </tbody>
         {% for employee_id, totals in report.items %}
@@ -73,7 +73,7 @@
                 <th>{{totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
-        {% endif %}
+            {% endif %}
         {% endfor %}
     </table>
 
