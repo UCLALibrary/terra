@@ -352,6 +352,7 @@ def fund_report(fund, start_date=None, end_date=None):
 
 def get_type_and_employees():
     type_dict = {
+        "University Librarian": [],
         "Executive": [],
         "Unit Head": [],
         "Librarian": [],
@@ -487,6 +488,7 @@ def merge_data_type(employee_ids, start_date, end_date):
     rows = get_individual_data_type(employee_ids, start_date, end_date)
     data = {
         "type": {
+            "University Librarian": {"employees": [], "totals": {}},
             "Executive": {"employees": [], "totals": {}},
             "Unit Head": {"employees": [], "totals": {}},
             "Librarian": {"employees": [], "totals": {}},

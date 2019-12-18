@@ -809,7 +809,7 @@
     "active": true,
     "uid": "FAKE004",
     "supervisor": null,
-    "type": "EXEC",
+    "type": "ULBR",
     "extra_allocation": "0.00000",
     "allocation_expire_date": null
   }

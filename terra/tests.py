@@ -654,7 +654,8 @@ class EmployeeTypeReportsTestCase(TestCase):
     def test_get_type_and_employees(self):
 
         expected = {
-            "Executive": ["<Employee 4: Steel, Virginia>"],
+            "University Librarian": ["<Employee 4: Steel, Virginia>"],
+            "Executive": [],
             "Unit Head": [
                 "<Employee 1: Grappone, Todd>",
                 "<Employee 6: Wang, Doris>",
@@ -671,7 +672,7 @@ class EmployeeTypeReportsTestCase(TestCase):
     def test_type_report(self):
         expected = {
             "type": {
-                "Executive": {
+                "University Librarian": {
                     "employees": [
                         {
                             "id": 4,
@@ -689,6 +690,20 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "total_days_ooo": 0,
                         }
                     ],
+                    "totals": {
+                        "admin_alloc": Decimal("0.00000"),
+                        "admin_expend": Decimal("0.00000"),
+                        "days_away": 0,
+                        "days_vacation": 0,
+                        "profdev_alloc": Decimal("0.00000"),
+                        "profdev_expend": Decimal("0.00000"),
+                        "total_alloc": Decimal("0.00000"),
+                        "total_days_ooo": 0,
+                        "total_expend": Decimal("0.00000"),
+                    },
+                },
+                "Executive": {
+                    "employees": [],
                     "totals": {
                         "admin_alloc": Decimal("0.00000"),
                         "admin_expend": Decimal("0.00000"),
@@ -878,7 +893,12 @@ class EmployeeTypeReportsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
 
-    def test_type_report_loads(self):
+    def test_type_report_denies_non_UL(self):
+        self.client.login(username="tgrappone", password="Staples50141")
+        response = self.client.get("/employee_type_list/")
+        self.assertEqual(response.status_code, 403)
+
+    def test_type_report_allows_UL(self):
         self.client.login(username="vsteel", password="Staples50141")
         response = self.client.get("/employee_type_list/")
         self.assertEqual(response.status_code, 200)
