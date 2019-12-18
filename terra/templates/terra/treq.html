@@ -35,12 +35,12 @@
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="approval-tab" data-toggle="tab" href="#approval" role="tab" aria-controls="approval" aria-selected="true">
-        Approval &nbsp; {{treq.approved|check_or_cross|safe}}
+        Approval &nbsp;
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="funding-tab" data-toggle="tab" href="#funding" role="tab" aria-controls="funding" aria-selected="false">
-        Funding &nbsp; {{treq.approved|check_or_cross|safe}}
+        Funding &nbsp;
     </a>
   </li>
 </ul>
@@ -68,9 +68,7 @@
         </div>
         <div class="col">
             <dt>Admin</dt>
-            <dd>{{treq.administrative|check_or_cross|safe}}</dd>
-            <dt>Approved</dt>
-            <dd>{{treq.approved|check_or_cross|safe}}</dd>            
+            <dd>{{treq.administrative|check_or_cross|safe}}</dd>            
             <dt>Approved By</dt>
             <dd>{{treq.approved_by}}</dd>
             <dt>Approved On</dt>
