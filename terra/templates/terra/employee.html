@@ -24,7 +24,6 @@
                 <th scope="col">Activity</th>
                 <th scope="col">Dates</th>
                 <th scope="col">Admin</th>
-                <th scope="col">Funded</th>
                 <th scope="col">Closed</th>
                 <th scope="col">Estimated Expenses</th>
                 <th scope="col">Approved Funds</th>
@@ -39,7 +38,6 @@
                 <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                 <td>{{treq.administrative|check_or_cross|safe}}</td>
-                <td>{{treq.funded|check_or_cross|safe}}</td>
                 <td>{{treq.closed|check_or_cross|safe}}</td>
                 <td>{{treq.estimated_expenses|currency}}</td>
                 <td>{{treq.approved_funds|currency}}</td>
@@ -54,7 +52,6 @@
         <tfoot>
             <tr>
                 <th>Totals</th>
-                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
