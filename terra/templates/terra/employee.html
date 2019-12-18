@@ -30,9 +30,7 @@
                 <th scope="col">Estimated Expenses</th>
                 <th scope="col">Approved Funds</th>
                 <th scope="col">Actual Expenses</th>
-                <th scope="col">Days Out Working</th>
-                <th scope="col">Days Out Vacation</th>
-                <th scope="col">Days Out Total</th>    
+                <th scope="col">Days Out Working</th>   
             </tr>
         </thead>
         <tbody>
@@ -49,8 +47,6 @@
                 <td>{{treq.approved_funds|currency}}</td>
                 <td>{{treq.actual_expenses|currency}}</td>
                 <td>{{treq.days_ooo}}</td>
-                <td>{{treq.vacation_days}}</td>
-                <td>{{treq.total_days_out}}</td>
             </tr>
         {% endif %}
     {% endfor %}
@@ -69,8 +65,6 @@
                 <th>{{totals.total_alloc|currency}}</th>
                 <th>{{totals.total_expend|currency}}</th>
                 <th>{{totals.days_away}}</th>
-                <th>{{totals.days_vacation}}</th>
-                <th>{{totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
             {% endif %}

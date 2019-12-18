@@ -33,7 +33,7 @@
                 <th colspan="2" scope="colgroup"></th>
                 <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
                 <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
-                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
+                <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
                 <th scope="col">Employee</th>
@@ -45,8 +45,6 @@
                 <th scope="col" class="text-right">Admin.</th>
                 <th scope="col" class="text-right">Total</th>
                 <th scope="col" class="text-right">Working</th>
-                <th scope="col" class="text-right">Vacation</th>
-                <th scope="col" class="text-right">Total</th>
             </tr>
         </thead>
         <tbody>
@@ -61,8 +59,6 @@
                 <td class="text-right">{{employee.data.admin_expend|currency}}</td>
                 <td class="text-right">{{employee.data.total_expend|currency}}</td>
                 <td class="text-right">{{employee.data.days_away}}</td>
-                <td class="text-right">{{employee.data.days_vacation}}</td>
-                <td class="text-right">{{employee.data.total_days_ooo}}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -77,8 +73,6 @@
                 <th class="text-right">{{subunit.subunit_totals.admin_expend|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.total_expend|currency}}</th>
                 <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
-                <th class="text-right">{{subunit.subunit_totals.days_vacation}}</th>
-                <th class="text-right">{{subunit.subunit_totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
     </table>
@@ -93,7 +87,7 @@
                 <th colspan="2" scope="colgroup"></th>
                 <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
                 <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
-                <th colspan="3" scope="colgroup" class="text-center">Days Out</th>
+                <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
                 <th scope="col"></th>
@@ -105,8 +99,6 @@
                 <th scope="col" class="text-right">Admin.</th>
                 <th scope="col" class="text-right">Total</th>
                 <th scope="col" class="text-right">Working</th>
-                <th scope="col" class="text-right">Vacation</th>
-                <th scope="col" class="text-right">Total</th>
             </tr>
         </thead>
         <tfoot>
@@ -120,8 +112,6 @@
                 <th class="text-right">{{report.unit_totals.admin_expend|currency}}</th>
                 <th class="text-right">{{report.unit_totals.total_expend|currency}}</th>
                 <th class="text-right">{{report.unit_totals.days_away}}</th>
-                <th class="text-right">{{report.unit_totals.days_vacation}}</th>
-                <th class="text-right">{{report.unit_totals.total_days_ooo}}</th>
             </tr>
         </tfoot>
     </table>
