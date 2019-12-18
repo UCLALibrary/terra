@@ -31,11 +31,13 @@
                 <th scope="col">Approved Funds</th>
                 <th scope="col">Actual Expenses</th>
                 <th scope="col">Days Out Working</th>
-                <th scope="col">Days Out Vacation</th>   
+                <th scope="col">Days Out Vacation</th>
+                <th scope="col">Days Out Total</th>    
             </tr>
         </thead>
         <tbody>
     {% for treq in employee.travelrequest_set.all %}
+        {% if treq.in_fiscal_year %}
             <tr>
                 <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
@@ -48,9 +50,31 @@
                 <td>{{treq.actual_expenses|currency}}</td>
                 <td>{{treq.days_ooo}}</td>
                 <td>{{treq.vacation_days}}</td>
+                <td>{{treq.total_days_out}}</td>
             </tr>
+        {% endif %}
     {% endfor %}
         </tbody>
+        {% for employee_id, totals in report.items %}
+            {% if employee_id == employee.id %}
+        <tfoot>
+            <tr>
+                <th>Totals</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>{{totals.total_estimatedexpense|currency}}</th>
+                <th>{{totals.total_alloc|currency}}</th>
+                <th>{{totals.total_expend|currency}}</th>
+                <th>{{totals.days_away}}</th>
+                <th>{{totals.days_vacation}}</th>
+                <th>{{totals.total_days_ooo}}</th>
+            </tr>
+        </tfoot>
+            {% endif %}
+        {% endfor %}
     </table>
 
 {% endblock %}
