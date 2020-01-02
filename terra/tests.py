@@ -219,11 +219,11 @@ class TemplateTagsTestCase(TestCase):
     def test_check_or_cross(self):
         self.assertEqual(
             check_or_cross(True),
-            '<span class="badge badge-pill badge-success">&#10004;</span>',
+            '<span class="badge badge-pill badge-success">YES</span>',
         )
         self.assertEqual(
             check_or_cross(False),
-            '<span class="badge badge-pill badge-danger">&times;</span>',
+            '<span class="badge badge-pill badge-danger">NO</span>',
         )
 
     def test_currency(self):
