@@ -19,7 +19,7 @@
     <h2>FY {{fiscal_year}} Travel Requests</h2>
     <br>
     <table class="table">
-        <h3>Prof Dev</h3>
+        <h3>Professional Development</h3>
         <thead class="thead-light">
             <tr>
                 <th scope="col">Activity</th>
@@ -51,7 +51,7 @@
     </table>
     <br>
     <table class="table">
-        <h3>Admin</h3>
+        <h3>Administrative</h3>
             <thead class="thead-light">
                 <tr>
                   <th scope="col">Activity</th>
@@ -62,7 +62,7 @@
                   <th scope="col">Actual Expenses</th>
                   <th scope="col">Days Out Working</th>   
                 </tr>
-        </thead>
+            </thead>
         <tbody>
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
