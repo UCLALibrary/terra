@@ -15,14 +15,14 @@
 {% block body %}
     <h1>{{employee}}</h1>
     <h3>{{employee.get_type_display}}, {{employee.unit}}</h3>
-    <br/>
+    <br>
     <h2>FY {{fiscal_year}} Travel Requests</h2>
+    <br>
     <table class="table">
         <thead class="thead-light">
             <tr>
                 <th scope="col">Activity</th>
                 <th scope="col">Dates</th>
-                <th scope="col">Admin</th>
                 <th scope="col">Closed</th>
                 <th scope="col">Estimated Expenses</th>
                 <th scope="col">Approved Funds</th>
@@ -31,35 +31,60 @@
             </tr>
         </thead>
         <tbody>
-    {% for treq in employee.travelrequest_set.all %}
-        {% if treq.in_fiscal_year %}
             <tr>
-                <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
-                <td>{{treq.departure_date}} - {{treq.return_date}}</td>
-                <td>{{treq.administrative|check_or_cross|safe}}</td>
-                <td>{{treq.closed|check_or_cross|safe}}</td>
-                <td>{{treq.estimated_expenses|currency}}</td>
-                <td>{{treq.approved_funds|currency}}</td>
-                <td>{{treq.actual_expenses|currency}}</td>
-                <td>{{treq.days_ooo}}</td>
+                <th id="par" colspan="7" scope="colgroup">Professional Development</th>
             </tr>
-        {% endif %}
-    {% endfor %}
+            {% for treq in employee.travelrequest_set.all %}
+                {% if treq.in_fiscal_year %}
+                    {% if treq.administrative == False %}
+                        <tr>
+                            <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
+                            <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                            <td>{{treq.closed|check_or_cross|safe}}</td>
+                            <td>{{treq.estimated_expenses|currency}}</td>
+                            <td>{{treq.approved_funds|currency}}</td>
+                            <td>{{treq.actual_expenses|currency}}</td>
+                            <td>{{treq.days_ooo}}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <tr><th colspan="7" scope="colgroup"><br></th></tr>
+            <tr>
+                <th id="par" colspan="7" scope="colgroup">Administrative</th>
+            </tr>
+            {% for treq in employee.travelrequest_set.all %}
+                {% if treq.in_fiscal_year %}
+                    {% if treq.administrative == True %}
+                        <tr>
+                            <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
+                            <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                            <td>{{treq.closed|check_or_cross|safe}}</td>
+                            <td>{{treq.estimated_expenses|currency}}</td>
+                            <td>{{treq.approved_funds|currency}}</td>
+                            <td>{{treq.actual_expenses|currency}}</td>
+                            <td>{{treq.days_ooo}}</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
         </tbody>
+        
         {% for employee_id, totals in report.items %}
             {% if employee_id == employee.id %}
-        <tfoot>
-            <tr>
-                <th>Totals</th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>{{totals.total_estimatedexpense|currency}}</th>
-                <th>{{totals.total_alloc|currency}}</th>
-                <th>{{totals.total_expend|currency}}</th>
-                <th>{{totals.days_away}}</th>
-            </tr>
-        </tfoot>
+
+                <tfoot>
+                    <tr><th colspan="7" scope="colgroup"><br></th></tr>
+                    <tr>
+                        <th>Totals</th>
+                        <th></th>
+                        <th></th>
+                        <th>{{totals.total_estimatedexpense|currency}}</th>
+                        <th>{{totals.total_alloc|currency}}</th>
+                        <th>{{totals.total_expend|currency}}</th>
+                        <th>{{totals.days_away}}</th>
+                    </tr>
+                </tfoot>
             {% endif %}
         {% endfor %}
     </table>
