@@ -31,7 +31,9 @@
             </tr>
         </thead>
         <tbody>
-            <th colspan="7" scope="colgroup">Professional Development</th>
+            <tr>
+                <th id="par" colspan="7" scope="colgroup">Professional Development</th>
+            </tr>
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
                     {% if treq.administrative == False %}
@@ -47,7 +49,9 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            <th colspan="7" scope="colgroup">Administrative</th>
+            <tr>
+                <th id="par" colspan="7" scope="colgroup">Administrative</th>
+            </tr>
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
                     {% if treq.administrative == True %}
