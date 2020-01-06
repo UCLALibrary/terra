@@ -51,15 +51,15 @@
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
                     {% if treq.administrative == True %}
-                            <tr>
-                                <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
-                                <td>{{treq.departure_date}} - {{treq.return_date}}</td>
-                                <td>{{treq.closed|check_or_cross|safe}}</td>
-                                <td>{{treq.estimated_expenses|currency}}</td>
-                                <td>{{treq.approved_funds|currency}}</td>
-                                <td>{{treq.actual_expenses|currency}}</td>
-                                <td>{{treq.days_ooo}}</td>
-                            </tr>
+                        <tr>
+                            <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
+                            <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                            <td>{{treq.closed|check_or_cross|safe}}</td>
+                            <td>{{treq.estimated_expenses|currency}}</td>
+                            <td>{{treq.approved_funds|currency}}</td>
+                            <td>{{treq.actual_expenses|currency}}</td>
+                            <td>{{treq.days_ooo}}</td>
+                        </tr>
                     {% endif %}
                 {% endif %}
             {% endfor %}
