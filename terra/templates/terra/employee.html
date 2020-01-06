@@ -49,6 +49,7 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
+            <tr><th colspan="7" scope="colgroup"><br></th></tr>
             <tr>
                 <th id="par" colspan="7" scope="colgroup">Administrative</th>
             </tr>
@@ -68,9 +69,12 @@
                 {% endif %}
             {% endfor %}
         </tbody>
+        
         {% for employee_id, totals in report.items %}
             {% if employee_id == employee.id %}
+
                 <tfoot>
+                    <tr><th colspan="7" scope="colgroup"><br></th></tr>
                     <tr>
                         <th>Totals</th>
                         <th></th>
