@@ -44,8 +44,13 @@
                             <td>{{treq.actual_expenses|currency}}</td>
                             <td>{{treq.days_ooo}}</td>
                         </tr>
-                    {% elif treq.administrative == True %}
-                        <th id="par" colspan="7" scope="colgroup">Administrative</th>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <th id="par" colspan="7" scope="colgroup">Administrative</th>
+            {% for treq in employee.travelrequest_set.all %}
+                {% if treq.in_fiscal_year %}
+                    {% if treq.administrative == True %}
                             <tr>
                                 <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                                 <td>{{treq.departure_date}} - {{treq.return_date}}</td>
