@@ -58,6 +58,7 @@ class EstimatedExpenseInline(admin.TabularInline):
 class ActualExpenseInline(admin.TabularInline):
     model = ActualExpense
     extra = 1
+    autocomplete_fields = ["fund"]
 
 
 @admin.register(Unit)
