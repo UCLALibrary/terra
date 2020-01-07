@@ -235,9 +235,6 @@ class TravelRequest(models.Model):
             total = 0
         return total
 
-    def approved_total(self):
-        return utils.format_currency(self.total_funding())
-
     in_fiscal_year.boolean = True
 
     def vacation_days(self):
@@ -246,6 +243,9 @@ class TravelRequest(models.Model):
     def total_days_out(self):
         total_days = self.vacation_days() + self.days_ooo
         return total_days
+
+    def approved_total(self):
+        return utils.format_currency(self.total_funding())
 
 
 class Vacation(models.Model):
