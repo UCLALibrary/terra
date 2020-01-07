@@ -180,12 +180,12 @@ class OrgChartExportView(UnitDetailView):
             "Content-Disposition"
         ] = f'attachment; filename="TERRA_Organization_Chart.csv"'
         writer = csv.writer(response)
-        writer.writerow(["Employee", "Subunit", "Employee Type"])
+        writer.writerow(["Employee"])
         for subunit in context["report"]["subunits"].values():
             writer.writerow([])
             writer.writerow([subunit["subunit"]])
             for employee in subunit["employees"].values():
-                writer.writerow([employee, employee.unit, employee.get_type_display()])
+                writer.writerow([employee])
         return response
 
 
