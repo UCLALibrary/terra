@@ -72,7 +72,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     )
     list_display_links = ("uid", "name")
     list_filter = ("active", "type")
-    search_fields = ["user__last_name", "user__first_name", "unit__name", "type"]
+    search_fields = ["user__last_name", "user__first_name", "unit__name"]
     autocomplete_fields = ["supervisor", "unit", "user"]
 
 
