@@ -169,6 +169,26 @@ class UnitExportView(UnitDetailView):
         return response
 
 
+class OrgChartExportView(UnitDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        unit = context.get("unit")
+        team = unit.all_employees()
+        fy = context.get("fiscalyear", "").replace(" ", "")
+        totals = context.get("totals")
+        response = HttpResponse(content_type="text/csv")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="TERRA_Organization_Chart.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["Employee", "Unit", "Type"])
+        for subunit in context["report"]["subunits"].values():
+            writer.writerow([])
+            writer.writerow([subunit["subunit"]])
+            for employee in subunit["employees"].values():
+                writer.writerow([employee, employee.unit, employee.get_type_display()])
+        return response
+
+
 class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     model = Unit

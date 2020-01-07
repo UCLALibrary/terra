@@ -10,6 +10,7 @@ from terra.views import (
     UnitExportView,
     TreqDetailView,
     UnitListView,
+    OrgChartExportView,
     FundDetailView,
     FundExportView,
     FundListView,
@@ -86,6 +87,7 @@ urlpatterns = [
         name="unit_detail",
     ),
     path("unit/<int:pk>/export/", UnitExportView.as_view(), name="unit_csv"),
+    path("unit/<int:pk>/export_chart/", OrgChartExportView.as_view(), name="org_csv"),
     path(
         "unit/",
         UnitListView.as_view(template_name="terra/unit_list.html"),
