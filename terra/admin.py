@@ -74,6 +74,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = (
         "uid",
         "name",
+        "type",
         "unit",
         "supervisor",
         "extra_allocation",
@@ -81,7 +82,7 @@ class EmployeeAdmin(admin.ModelAdmin):
         "active",
     )
     list_display_links = ("uid", "name")
-    list_filter = ("active",)
+    list_filter = ("active", "type")
     search_fields = ["user__last_name", "user__first_name", "unit__name"]
     autocomplete_fields = ["supervisor", "unit", "user"]
 
@@ -116,6 +117,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
     ]
     autocomplete_fields = ["activity", "approved_by", "traveler"]
     inlines = (EstimatedExpenseInline, ApprovalInline, ActualExpenseInline)
+
 
 
 @admin.register(Activity)
