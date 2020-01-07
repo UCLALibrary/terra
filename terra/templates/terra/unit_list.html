@@ -14,11 +14,15 @@
 {% endblock %}
 
 {% block body %}
-<h1>Unit Reports</h1>
-<br/>
- <div class="col text-right">
-    <a href="/unit/1/export_chart/" class="btn btn-primary" role="button" aria-pressed="true">Download Org Chart CSV</a>
+<div class="row">
+	<div class="col">
+		<h1>Unit Reports</h1>
+	</div>
+ 	<div class="col text-right">
+    	<a href="/unit/1/export_chart/" class="btn btn-primary" role="button" aria-pressed="true">Download Org Chart CSV</a>
+	</div>
 </div>
+<br/>
 <div class="col-7">
 	<div class="list-group">
 	{% for unit in units %}
