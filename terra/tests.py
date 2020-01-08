@@ -16,7 +16,7 @@ from .models import (
     TravelRequest,
     Vacation,
     Activity,
-    Approval,
+    Funding,
     EstimatedExpense,
     ActualExpense,
 )
@@ -119,10 +119,10 @@ class ModelsTestCase(TestCase):
         self.assertEqual(str(activity), "Code4lib 2020")
         self.assertEqual(repr(activity), "<Activity 1: Code4lib 2020>")
 
-    def test_approval(self):
-        approval = Approval.objects.get(pk=1)
-        self.assertEqual(repr(approval), "<Approval 1: Code4lib 2020 Prigge, Ashton>")
-        self.assertEqual(str(approval), "<Approval 1: Code4lib 2020 Prigge, Ashton>")
+    def test_funding(self):
+        funding = Funding.objects.get(pk=1)
+        self.assertEqual(repr(funding), "<Funding 1: Code4lib 2020 Prigge, Ashton>")
+        self.assertEqual(str(funding), "<Funding 1: Code4lib 2020 Prigge, Ashton>")
 
     def test_estimated_expense(self):
         estexp = EstimatedExpense.objects.get(pk=1)
@@ -173,7 +173,7 @@ class ModelsTestCase(TestCase):
     def test_treq_funded(self):
         treq = TravelRequest.objects.get(pk=2)
         self.assertEqual(treq.funded(), True)
-        a = Approval.objects.get(pk=3)
+        a = Funding.objects.get(pk=3)
         a.delete()
         self.assertEqual(treq.funded(), False)
 

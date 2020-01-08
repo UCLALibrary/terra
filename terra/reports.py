@@ -12,7 +12,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay
 
-from .models import TravelRequest, Employee, Approval, ActualExpense, EMPLOYEE_TYPES
+from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
 from .utils import fiscal_year_bookends
 
 
@@ -56,7 +56,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("approval__amount"))
+        .annotate(profdev_alloc=Sum("funding__amount"))
         .values("profdev_alloc")
     )
 
@@ -82,7 +82,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_alloc=Sum("approval__amount"))
+        .annotate(admin_alloc=Sum("funding__amount"))
         .values("admin_alloc")
     )
 
@@ -232,7 +232,7 @@ def unit_report(unit, start_date=None, end_date=None):
 
 def get_fund_employee_list(fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
-    rows = Approval.objects.filter(
+    rows = Funding.objects.filter(
         fund=fund, treq__return_date__gte=start_date, treq__return_date__lte=end_date
     ).values(eid=F("treq__traveler"))
     rows2 = ActualExpense.objects.filter(
@@ -254,7 +254,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("approval__amount", filter=Q(approval__fund=fund)))
+        .annotate(profdev_alloc=Sum("funding__amount", filter=Q(funding__fund=fund)))
         .values("profdev_alloc")
     )
 
@@ -284,7 +284,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_alloc=Sum("approval__amount"), filter=Q(approval__fund=fund))
+        .annotate(admin_alloc=Sum("funding__amount"), filter=Q(funding__fund=fund))
         .values("admin_alloc")
     )
 
@@ -380,7 +380,7 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("approval__amount"))
+        .annotate(profdev_alloc=Sum("funding__amount"))
         .values("profdev_alloc")
     )
 
@@ -406,7 +406,7 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_alloc=Sum("approval__amount"))
+        .annotate(admin_alloc=Sum("funding__amount"))
         .values("admin_alloc")
     )
 
@@ -607,7 +607,7 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("approval__amount"))
+        .annotate(profdev_alloc=Sum("funding__amount"))
         .values("profdev_alloc")
     )
 
@@ -633,7 +633,7 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_alloc=Sum("approval__amount"))
+        .annotate(admin_alloc=Sum("funding__amount"))
         .values("admin_alloc")
     )
 

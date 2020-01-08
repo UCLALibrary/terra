@@ -8,7 +8,7 @@ from .models import (
     Activity,
     Vacation,
     Fund,
-    Approval,
+    Funding,
     EstimatedExpense,
     ActualExpense,
 )
@@ -43,11 +43,11 @@ class UserAdmin(UserAdmin):
     )
 
 
-# Inline class to support ManyToMany with Approval and TravelRequest
-class ApprovalInline(admin.TabularInline):
-    model = Approval
+# Inline class to support ManyToMany with Funding and TravelRequest
+class FundingInline(admin.TabularInline):
+    model = Funding
     extra = 1
-    autocomplete_fields = ["approved_by", "fund"]
+    autocomplete_fields = ["funded_by", "fund"]
 
 
 @admin.register(Unit)
@@ -104,7 +104,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "activity__name",
     ]
     autocomplete_fields = ["activity", "approved_by", "traveler"]
-    inlines = (ApprovalInline,)
+    inlines = (FundingInline,)
 
 
 @admin.register(Activity)
@@ -148,16 +148,16 @@ class FundAdmin(admin.ModelAdmin):
     autocomplete_fields = ["manager"]
 
 
-@admin.register(Approval)
-class ApprovalAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "approved_by", "approved_on", "fund", "amount")
-    list_filter = (("approved_on", custom_titled_filter("approval date")),)
+@admin.register(Funding)
+class FundingAdmin(admin.ModelAdmin):
+    list_display = ("id", "treq", "funded_by", "funded_on", "fund", "amount")
+    list_filter = (("funded_on", custom_titled_filter("funding date")),)
     search_fields = [
         "treq__traveler__user__last_name",
         "treq__traveler__user__first_name",
         "treq__activity__name",
     ]
-    autocomplete_fields = ["approved_by", "fund", "treq"]
+    autocomplete_fields = ["funded_by", "fund", "treq"]
 
 
 @admin.register(EstimatedExpense)

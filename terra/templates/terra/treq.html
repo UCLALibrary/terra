@@ -66,7 +66,7 @@
         </div>
         <div class="col">
             <dt>Admin</dt>
-            <dd>{{treq.administrative|check_or_cross|safe}}</dd>            
+            <dd>{{treq.administrative|check_or_cross|safe}}</dd>
             <dt>Approved By</dt>
             <dd>{{treq.approved_by}}</dd>
             <dt>Approved On</dt>
@@ -101,8 +101,8 @@
                     <tr>
                         <th>Total</th>
                         <td>{{treq.estimated_expenses|currency}}</td>
-                    </tr> 
-                </tfoot> 
+                    </tr>
+                </tfoot>
             </table>
             {% if treq.closed %}
             <br>
@@ -126,8 +126,8 @@
                     <tr>
                         <th>Total</th>
                         <td>{{treq.actual_expenses|currency}}</td>
-                    </tr> 
-                </tfoot> 
+                    </tr>
+                </tfoot>
             </table>
             {% endif %}
         </div>
@@ -143,12 +143,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for approval in treq.approval_set.all %}
+                    {% for funding in treq.funding_set.all %}
                     <tr>
-                        <td>{{approval.fund}}</td>
-                        <td>{{approval.approved_by}}</td>
-                        <td>{{approval.approved_on}}</td>
-                        <td>{{approval.amount|currency}}</td>
+                        <td>{{funding.fund}}</td>
+                        <td>{{funding.funded_by}}</td>
+                        <td>{{funding.funded_on}}</td>
+                        <td>{{funding.amount|currency}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -158,9 +158,9 @@
                         <th></th>
                         <th></th>
                         <td>{{treq.total_funding|currency}}</td>
-                    </tr> 
-                </tfoot> 
-            </table>  
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
   </div>

@@ -173,7 +173,7 @@ class TravelRequest(models.Model):
     closed = models.BooleanField(default=False)
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
-    funds = models.ManyToManyField("Fund", through="Approval")
+    funds = models.ManyToManyField("Fund", through="Funding")
     approved_by = models.ForeignKey(
         "Employee",
         on_delete=models.PROTECT,
@@ -224,13 +224,13 @@ class TravelRequest(models.Model):
         return utils.format_currency(self.actual_expenses())
 
     def approved_funds(self):
-        return sum([a.amount for a in self.approval_set.all()])
+        return sum([a.amount for a in self.funding_set.all()])
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
 
     def total_funding(self):
-        total = self.approval_set.aggregate(Sum("amount"))["amount__sum"]
+        total = self.funding_set.aggregate(Sum("amount"))["amount__sum"]
         if total is None:
             total = 0
         return total
@@ -290,19 +290,22 @@ class Activity(models.Model):
         return self.country == "USA"
 
 
-class Approval(models.Model):
-    approved_on = models.DateTimeField(auto_now_add=True)
-    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
+class Funding(models.Model):
+    funded_on = models.DateTimeField(auto_now_add=True)
+    funded_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
     treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
     note = models.TextField(blank=True)
 
+    class Meta:
+        verbose_name_plural = "Funding"
+
     def __str__(self):
         return str(repr(self))
 
     def __repr__(self):
-        return "<Approval {}: {} {}>".format(
+        return "<Funding {}: {} {}>".format(
             self.id, self.treq.activity.name, self.treq.traveler
         )
 

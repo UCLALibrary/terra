@@ -255,36 +255,36 @@
   "model": "auth.permission",
   "pk": 29,
   "fields": {
-    "name": "Can add approval",
+    "name": "Can add funding",
     "content_type": 8,
-    "codename": "add_approval"
+    "codename": "add_funding"
   }
 },
 {
   "model": "auth.permission",
   "pk": 30,
   "fields": {
-    "name": "Can change approval",
+    "name": "Can change funding",
     "content_type": 8,
-    "codename": "change_approval"
+    "codename": "change_funding"
   }
 },
 {
   "model": "auth.permission",
   "pk": 31,
   "fields": {
-    "name": "Can delete approval",
+    "name": "Can delete funding",
     "content_type": 8,
-    "codename": "delete_approval"
+    "codename": "delete_funding"
   }
 },
 {
   "model": "auth.permission",
   "pk": 32,
   "fields": {
-    "name": "Can view approval",
+    "name": "Can view funding",
     "content_type": 8,
-    "codename": "view_approval"
+    "codename": "view_funding"
   }
 },
 {
