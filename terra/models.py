@@ -224,13 +224,13 @@ class TravelRequest(models.Model):
         return utils.format_currency(self.actual_expenses())
 
     def approved_funds(self):
-        return sum([a.amount for a in self.approval_set.all()])
+        return sum([a.amount for a in self.funding_set.all()])
 
     def in_fiscal_year(self, fiscal_year=None):
         return utils.in_fiscal_year(self.return_date, fiscal_year)
 
     def total_funding(self):
-        total = self.approval_set.aggregate(Sum("amount"))["amount__sum"]
+        total = self.funding_set.aggregate(Sum("amount"))["amount__sum"]
         if total is None:
             total = 0
         return total
