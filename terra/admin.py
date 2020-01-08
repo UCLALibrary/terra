@@ -50,6 +50,17 @@ class FundingInline(admin.TabularInline):
     autocomplete_fields = ["funded_by", "fund"]
 
 
+class EstimatedExpenseInline(admin.TabularInline):
+    model = EstimatedExpense
+    extra = 1
+
+
+class ActualExpenseInline(admin.TabularInline):
+    model = ActualExpense
+    extra = 1
+    autocomplete_fields = ["fund"]
+
+
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ("name", "manager", "employee_count", "parent_unit")
@@ -76,6 +87,35 @@ class EmployeeAdmin(admin.ModelAdmin):
     autocomplete_fields = ["supervisor", "unit", "user"]
 
 
+# Functions to rename travelrequest list columns
+def days_ooo(obj):
+    return obj.days_ooo
+
+
+days_ooo.short_description = "Days Out"
+
+
+def allocations_total(obj):
+    return obj.allocations_total()
+
+
+allocations_total.short_description = "Estimated Expenses"
+
+
+def approved_total(obj):
+    return obj.approved_total()
+
+
+approved_total.short_description = "Funding"
+
+
+def expenditures_total(obj):
+    return obj.expenditures_total()
+
+
+expenditures_total.short_description = "Actual Expenses"
+
+
 @admin.register(TravelRequest)
 class TravelRequestAdmin(admin.ModelAdmin):
     list_display = (
@@ -83,13 +123,14 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "traveler",
         "activity",
         "departure_date",
-        "days_ooo",
+        days_ooo,
         "administrative",
         "approved",
         "funded",
         "closed",
-        "allocations_total",
-        "expenditures_total",
+        allocations_total,
+        approved_total,
+        expenditures_total,
     )
     list_filter = (
         ("departure_date", custom_titled_filter("departure date")),
@@ -104,7 +145,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "activity__name",
     ]
     autocomplete_fields = ["activity", "approved_by", "traveler"]
-    inlines = (FundingInline,)
+    inlines = (EstimatedExpenseInline, FundingInline, ActualExpenseInline)
 
 
 @admin.register(Activity)
