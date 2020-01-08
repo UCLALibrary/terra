@@ -99,7 +99,7 @@ def allocations_total(obj):
     return obj.allocations_total()
 
 
-allocations_total.short_description = "Estimated Expenses"
+allocations_total.short_description = "Estimated"
 
 
 def approved_total(obj):
@@ -113,7 +113,7 @@ def expenditures_total(obj):
     return obj.expenditures_total()
 
 
-expenditures_total.short_description = "Actual Expenses"
+expenditures_total.short_description = "Actual"
 
 
 @admin.register(TravelRequest)
