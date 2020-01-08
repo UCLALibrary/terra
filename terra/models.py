@@ -298,6 +298,9 @@ class Funding(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=5)
     note = models.TextField(blank=True)
 
+    class Meta:
+        verbose_name_plural = "Funding"
+
     def __str__(self):
         return str(repr(self))
 

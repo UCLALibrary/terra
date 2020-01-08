@@ -146,8 +146,8 @@
                     {% for funding in treq.funding_set.all %}
                     <tr>
                         <td>{{funding.fund}}</td>
-                        <td>{{funding.approved_by}}</td>
-                        <td>{{funding.approved_on}}</td>
+                        <td>{{funding.funded_by}}</td>
+                        <td>{{funding.funded_on}}</td>
                         <td>{{funding.amount|currency}}</td>
                     </tr>
                     {% endfor %}
