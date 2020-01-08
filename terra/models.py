@@ -244,6 +244,9 @@ class TravelRequest(models.Model):
         total_days = self.vacation_days() + self.days_ooo
         return total_days
 
+    def approved_total(self):
+        return utils.format_currency(self.total_funding())
+
 
 class Vacation(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
