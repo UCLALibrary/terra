@@ -173,7 +173,7 @@ class TravelRequest(models.Model):
     closed = models.BooleanField(default=False)
     administrative = models.BooleanField(default=False)
     justification = models.TextField(blank=True)
-    funds = models.ManyToManyField("Fund", through="Approval")
+    funds = models.ManyToManyField("Fund", through="Funding")
     approved_by = models.ForeignKey(
         "Employee",
         on_delete=models.PROTECT,
@@ -290,7 +290,7 @@ class Activity(models.Model):
         return self.country == "USA"
 
 
-class Approval(models.Model):
+class Funding(models.Model):
     approved_on = models.DateTimeField(auto_now_add=True)
     approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
     treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
