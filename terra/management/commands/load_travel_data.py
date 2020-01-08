@@ -73,7 +73,7 @@ def load_data(self, travel_file):
             # Funding
             # start_date was changed from "naive" to "aware" above, to avoid warnings, but doesn't matter since Funding.funded_on is an automatic timestamp.....
             if amount_approved != "":
-                approval = _get_funding(start_date, unit_head, treq, fund, amount_approved)
+                funding = _get_funding(start_date, unit_head, treq, fund, amount_approved)
 
             # Expenses: Create only if data present, not blank
             if amount_approved != "":
@@ -117,8 +117,8 @@ def _get_treq(employee, activity, start_date, end_date, workdays):
     treq, created = TravelRequest.objects.get_or_create(traveler=employee, activity=activity, departure_date=start_date, return_date=end_date, days_ooo=workdays)
     return treq
 
-def _get_funding(approval_date, funded_by, treq, fund, amount_approved):
-    funding, created = Funding.objects.get_or_create(funded_on=approval_date, funded_by=funded_by, treq=treq, fund=fund, amount=amount_approved)
+def _get_funding(funding_date, funded_by, treq, fund, amount_approved):
+    funding, created = Funding.objects.get_or_create(funded_on=funding_date, funded_by=funded_by, treq=treq, fund=fund, amount=amount_approved)
     return funding
 
 def _get_actual_expense(treq, amount, fund):
