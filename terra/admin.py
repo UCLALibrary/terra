@@ -47,7 +47,7 @@ class UserAdmin(UserAdmin):
 class FundingInline(admin.TabularInline):
     model = Funding
     extra = 1
-    autocomplete_fields = ["approved_by", "fund"]
+    autocomplete_fields = ["funded_by", "fund"]
 
 
 @admin.register(Unit)
@@ -150,14 +150,14 @@ class FundAdmin(admin.ModelAdmin):
 
 @admin.register(Funding)
 class FundingAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "approved_by", "approved_on", "fund", "amount")
-    list_filter = (("approved_on", custom_titled_filter("approval date")),)
+    list_display = ("id", "treq", "funded_by", "funded_on", "fund", "amount")
+    list_filter = (("funded_on", custom_titled_filter("approval date")),)
     search_fields = [
         "treq__traveler__user__last_name",
         "treq__traveler__user__first_name",
         "treq__activity__name",
     ]
-    autocomplete_fields = ["approved_by", "fund", "treq"]
+    autocomplete_fields = ["funded_by", "fund", "treq"]
 
 
 @admin.register(EstimatedExpense)

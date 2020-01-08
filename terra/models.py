@@ -291,8 +291,8 @@ class Activity(models.Model):
 
 
 class Funding(models.Model):
-    approved_on = models.DateTimeField(auto_now_add=True)
-    approved_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
+    funded_on = models.DateTimeField(auto_now_add=True)
+    funded_by = models.ForeignKey("Employee", on_delete=models.PROTECT)
     treq = models.ForeignKey("TravelRequest", on_delete=models.PROTECT)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=5)
@@ -302,7 +302,7 @@ class Funding(models.Model):
         return str(repr(self))
 
     def __repr__(self):
-        return "<Approval {}: {} {}>".format(
+        return "<Funding {}: {} {}>".format(
             self.id, self.treq.activity.name, self.treq.traveler
         )
 
