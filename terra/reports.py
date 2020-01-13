@@ -47,56 +47,52 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
 
-    profdev_alloc = (
+    profdev_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=False,
-            closed=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("funding__amount"))
-        .values("profdev_alloc")
+        .annotate(profdev_requested=Sum("funding__amount"))
+        .values("profdev_requested")
     )
 
-    profdev_expend = (
+    profdev_spent = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
-            administrative=False,
-            closed=True,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
+            administrative=False
         )
         .values("traveler__pk")
-        .annotate(profdev_expend=Sum("actualexpense__total"))
-        .values("profdev_expend")
+        .annotate(profdev_spent=Sum("actualexpense__total", 
+            filter=Q(actualexpense__date_paid__lte=end_date) & Q(actualexpense__date_paid__gte=start_date)
+            ))
+        .values("profdev_spent")
     )
 
-    admin_alloc = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=True,
-            closed=False,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
-        .values("traveler__pk")
-        .annotate(admin_alloc=Sum("funding__amount"))
-        .values("admin_alloc")
-    )
-
-    admin_expend = (
+    admin_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=True,
-            closed=True,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_expend=Sum("actualexpense__total"))
-        .values("admin_expend")
+        .annotate(admin_requested=Sum("funding__amount"))
+        .values("admin_requested")
+    )
+
+    admin_spent = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True
+        )
+        .values("traveler__pk")
+        .annotate(admin_spent=Sum("actualexpense__total", 
+            filter=Q(actualexpense__date_paid__lte=end_date) & Q(actualexpense__date_paid__gte=start_date)
+            ))
+        .values("admin_spent")
     )
 
     days_vacation = TravelRequest.objects.filter(
@@ -120,17 +116,17 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
-            profdev_alloc=Coalesce(
-                Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
+            profdev_requested=Coalesce(
+                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
             ),
-            profdev_expend=Coalesce(
-                Subquery(profdev_expend, output_field=DecimalField()), Value(0)
+            profdev_spent=Coalesce(
+                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
             ),
-            admin_alloc=Coalesce(
-                Subquery(admin_alloc, output_field=DecimalField()), Value(0)
+            admin_requested=Coalesce(
+                Subquery(admin_requested, output_field=DecimalField()), Value(0)
             ),
-            admin_expend=Coalesce(
-                Subquery(admin_expend, output_field=DecimalField()), Value(0)
+            admin_spent=Coalesce(
+                Subquery(admin_spent, output_field=DecimalField()), Value(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
@@ -148,10 +144,10 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         )
         .values(
             "id",
-            "profdev_alloc",
-            "profdev_expend",
-            "admin_alloc",
-            "admin_expend",
+            "profdev_requested",
+            "profdev_spent",
+            "admin_requested",
+            "admin_spent",
             "days_vacation",
             "days_away",
         )
@@ -164,40 +160,40 @@ def merge_data(rows, data):
         for employee in subunit["employees"].values():
             try:
                 employee.data = rows.get(id=employee.id)
-                employee.data["admin_alloc"] += employee.data["admin_expend"]
-                employee.data["profdev_alloc"] += employee.data["profdev_expend"]
-                employee.data["total_alloc"] = (
-                    employee.data["admin_alloc"] + employee.data["profdev_alloc"]
+                employee.data["admin_requested"]
+                employee.data["profdev_requested"]
+                employee.data["total_requested"] = (
+                    employee.data["admin_requested"] + employee.data["profdev_requested"]
                 )
-                employee.data["total_expend"] = (
-                    employee.data["admin_expend"] + employee.data["profdev_expend"]
+                employee.data["total_spent"] = (
+                    employee.data["admin_spent"] + employee.data["profdev_spent"]
                 )
                 employee.data["total_days_ooo"] = (
                     employee.data["days_away"] + employee.data["days_vacation"]
                 )
             except ObjectDoesNotExist:
                 employee.data = {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
+                    "admin_requested": 0,
+                    "admin_spent": 0,
                     "days_away": 0,
                     "days_vacation": 0,
-                    "profdev_alloc": 0,
-                    "profdev_expend": 0,
-                    "total_alloc": 0,
+                    "profdev_requested": 0,
+                    "profdev_spent": 0,
+                    "total_requested": 0,
                     "total_days_ooo": 0,
-                    "total_expend": 0,
+                    "total_spent": 0,
                 }
     return data
 
 
 def unit_totals(employees):
     return {
-        "profdev_alloc": sum(e.data["profdev_alloc"] for e in employees),
-        "admin_alloc": sum(e.data["admin_alloc"] for e in employees),
-        "total_alloc": sum(e.data["total_alloc"] for e in employees),
-        "profdev_expend": sum(e.data["profdev_expend"] for e in employees),
-        "admin_expend": sum(e.data["admin_expend"] for e in employees),
-        "total_expend": sum(e.data["total_expend"] for e in employees),
+        "profdev_requested": sum(e.data["profdev_requested"] for e in employees),
+        "admin_requested": sum(e.data["admin_requested"] for e in employees),
+        "total_requested": sum(e.data["total_requested"] for e in employees),
+        "profdev_spent": sum(e.data["profdev_spent"] for e in employees),
+        "admin_spent": sum(e.data["admin_spent"] for e in employees),
+        "total_spent": sum(e.data["total_spent"] for e in employees),
         "days_vacation": sum(e.data["days_vacation"] for e in employees),
         "days_away": sum(e.data["days_away"] for e in employees),
         "total_days_ooo": sum(e.data["total_days_ooo"] for e in employees),
@@ -206,15 +202,15 @@ def unit_totals(employees):
 
 def calculate_totals(data):
     data["unit_totals"] = {
-        "admin_alloc": 0,
-        "admin_expend": 0,
+        "admin_requested": 0,
+        "admin_spent": 0,
         "days_away": 0,
         "days_vacation": 0,
-        "profdev_alloc": 0,
-        "profdev_expend": 0,
-        "total_alloc": 0,
+        "profdev_requested": 0,
+        "profdev_spent": 0,
+        "total_requested": 0,
         "total_days_ooo": 0,
-        "total_expend": 0,
+        "total_spent": 0,
     }
     for subunit in data["subunits"].values():
         subunit["subunit_totals"] = unit_totals(subunit["employees"].values())

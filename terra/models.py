@@ -339,6 +339,7 @@ class ActualExpense(models.Model):
     quantity = models.IntegerField(null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=5)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
+    date_paid = models.DateField()
 
     def __str__(self):
         return str(repr(self))

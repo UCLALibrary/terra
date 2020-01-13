@@ -31,19 +31,24 @@
         <thead class="thead-light">
             <tr>
                 <th colspan="2" scope="colgroup"></th>
-                <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
-                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
+                <th colspan="2" scope="colgroup" class="text-center">Administrative</th>
+                <th colspan="2" scope="colgroup" class="text-center">Totals</th>
                 <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
                 <th scope="col">Employee</th>
                 <th scope="col">Type</th>
-                <th scope="col" class="text-right">Prof. Dev.</th>
-                <th scope="col" class="text-right">Admin.</th>
-                <th scope="col" class="text-right">Total</th>
-                <th scope="col" class="text-right">Prof. Dev.</th>
-                <th scope="col" class="text-right">Admin.</th>
-                <th scope="col" class="text-right">Total</th>
+
+                <th scope="col" class="text-right">Amount Requested</th>
+                <th scope="col" class="text-right">Amount Spent</th>
+                
+                <th scope="col" class="text-right">Amount Requested</th>
+                <th scope="col" class="text-right">Amount Spent</th>
+
+                <th scope="col" class="text-right">Total Requested</th>
+                <th scope="col" class="text-right">Total Spent</th>
+
                 <th scope="col" class="text-right">Working</th>
             </tr>
         </thead>
@@ -52,12 +57,16 @@
             <tr>
                 <td><a href="/employee/{{employee.pk}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
                 <td> {{employee.get_type_display}}</td>
-                <td class="text-right">{{employee.data.profdev_alloc|currency}}</td>
-                <td class="text-right">{{employee.data.admin_alloc|currency}}</td>
-                <td class="text-right">{{employee.data.total_alloc|currency}}</td>
-                <td class="text-right">{{employee.data.profdev_expend|currency}}</td>
-                <td class="text-right">{{employee.data.admin_expend|currency}}</td>
-                <td class="text-right">{{employee.data.total_expend|currency}}</td>
+
+                <td class="text-right">{{employee.data.profdev_requested|currency}}</td>
+                <td class="text-right">{{employee.data.profdev_spent|currency}}</td>
+                
+                <td class="text-right">{{employee.data.admin_requested|currency}}</td>
+                <td class="text-right">{{employee.data.admin_spent|currency}}</td>
+                
+                <td class="text-right">{{employee.data.total_requested|currency}}</td>
+                <td class="text-right">{{employee.data.total_spent|currency}}</td>
+
                 <td class="text-right">{{employee.data.days_away}}</td>
             </tr>
             {% endfor %}
@@ -66,12 +75,16 @@
             <tr>
                 <th>Subtotals</th>
                 <th></th>
-                <th class="text-right">{{subunit.subunit_totals.profdev_alloc|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.admin_alloc|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.total_alloc|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.profdev_expend|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.admin_expend|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.total_expend|currency}}</th>
+
+                <th class="text-right">{{subunit.subunit_totals.profdev_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.profdev_spent|currency}}</th>
+                
+                <th class="text-right">{{subunit.subunit_totals.admin_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.admin_spent|currency}}</th>
+                
+                <th class="text-right">{{subunit.subunit_totals.total_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_spent|currency}}</th>
+                
                 <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
             </tr>
         </tfoot>
@@ -85,19 +98,24 @@
         <thead class="thead-light">
             <tr>
                 <th colspan="2" scope="colgroup"></th>
-                <th colspan="3" scope="colgroup" class="text-center">Approved Funding</th>
-                <th colspan="3" scope="colgroup" class="text-center">Expenditures</th>
+                <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
+                <th colspan="2" scope="colgroup" class="text-center">Administrative</th>
+                <th colspan="2" scope="colgroup" class="text-center">Totals</th>
                 <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
             </tr>
             <tr>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col" class="text-right">Prof. Dev.</th>
-                <th scope="col" class="text-right">Admin.</th>
-                <th scope="col" class="text-right">Total</th>
-                <th scope="col" class="text-right">Prof. Dev.</th>
-                <th scope="col" class="text-right">Admin.</th>
-                <th scope="col" class="text-right">Total</th>
+                <th scope="col">Employee</th>
+                <th scope="col">Type</th>
+
+                <th scope="col" class="text-right">Amount Requested</th>
+                <th scope="col" class="text-right">Amount Spent</th>
+                
+                <th scope="col" class="text-right">Amount Requested</th>
+                <th scope="col" class="text-right">Amount Spent</th>
+
+                <th scope="col" class="text-right">Total Requested</th>
+                <th scope="col" class="text-right">Total Spent</th>
+
                 <th scope="col" class="text-right">Working</th>
             </tr>
         </thead>
@@ -105,13 +123,18 @@
             <tr>
                 <th>Totals</th>
                 <th></th>
-                <th class="text-right">{{report.unit_totals.profdev_alloc|currency}}</th>
-                <th class="text-right">{{report.unit_totals.admin_alloc|currency}}</th>
-                <th class="text-right">{{report.unit_totals.total_alloc|currency}}</th>
-                <th class="text-right">{{report.unit_totals.profdev_expend|currency}}</th>
-                <th class="text-right">{{report.unit_totals.admin_expend|currency}}</th>
-                <th class="text-right">{{report.unit_totals.total_expend|currency}}</th>
-                <th class="text-right">{{report.unit_totals.days_away}}</th>
+                <th></th>
+
+                <th class="text-right">{{subunit.subunit_totals.profdev_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.profdev_spent|currency}}</th>
+                
+                <th class="text-right">{{subunit.subunit_totals.admin_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.admin_spent|currency}}</th>
+                
+                <th class="text-right">{{subunit.subunit_totals.total_requested|currency}}</th>
+                <th class="text-right">{{subunit.subunit_totals.total_spent|currency}}</th>
+                
+                <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
             </tr>
         </tfoot>
     </table>
