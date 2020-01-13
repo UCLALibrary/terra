@@ -40,6 +40,4 @@ TEST_RETVAL=$?
 ${DOCKER_COMPOSE_TRAVIS} exec django coveralls
 
 # Exit with the return value from the tests
-# Force an error for testing...
-TEST_RETVAL=1 
 exit ${TEST_RETVAL}
