@@ -33,6 +33,13 @@ fi
 
 # Run the tests
 ${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
+# Capture return value from tests, or it'll be lost when the next command runs
+TEST_RETVAL=$?
 
-# Send the test report to coveralls.io
+# Send the test report to coveralls.io regardless of tests passing?
 ${DOCKER_COMPOSE_TRAVIS} exec django coveralls
+
+# Exit with the return value from the tests
+# Force an error for testing...
+TEST_RETVAL=1 
+exit ${TEST_RETVAL}
