@@ -414,13 +414,13 @@ class UnitReportsTestCase(TestCase):
         data = [
             FakeUser(
                 {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
+                    "admin_requested": 0,
+                    "admin_spent": 0,
                     "name": "Ashton Prigge",
-                    "profdev_alloc": 10300,
-                    "profdev_expend": 7420,
-                    "total_alloc": 10300,
-                    "total_expend": 7420,
+                    "profdev_requested": 10300,
+                    "profdev_spent": 7420,
+                    "total_requested": 10300,
+                    "total_spent": 7420,
                     "traveler__uid": "FAKE002",
                     "uid": "FAKE002",
                     "days_vacation": 5,
@@ -430,13 +430,13 @@ class UnitReportsTestCase(TestCase):
             ),
             FakeUser(
                 {
-                    "admin_alloc": 1050,
-                    "admin_expend": 0,
+                    "admin_requested": 1050,
+                    "admin_spent": 0,
                     "name": "Joshua Gomez",
-                    "profdev_alloc": 1750,
-                    "profdev_expend": 0,
-                    "total_alloc": 2800,
-                    "total_expend": 0,
+                    "profdev_requested": 1750,
+                    "profdev_spent": 0,
+                    "total_requested": 2800,
+                    "total_spent": 0,
                     "traveler__uid": "FAKE003",
                     "uid": "FAKE003",
                     "days_vacation": 9,
@@ -446,13 +446,13 @@ class UnitReportsTestCase(TestCase):
             ),
             FakeUser(
                 {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
+                    "admin_requested": 0,
+                    "admin_spent": 0,
                     "name": "Tinu Awopetu",
-                    "profdev_alloc": 8300,
-                    "profdev_expend": 7360,
-                    "total_alloc": 8300,
-                    "total_expend": 7360,
+                    "profdev_requested": 8300,
+                    "profdev_spent": 7360,
+                    "total_requested": 8300,
+                    "total_spent": 7360,
                     "traveler__uid": "FAKE005",
                     "uid": "FAKE005",
                     "days_vacation": 0,
@@ -462,15 +462,15 @@ class UnitReportsTestCase(TestCase):
             ),
         ]
         expected = {
-            "admin_alloc": 1050,
-            "admin_expend": 0,
+            "admin_requested": 1050,
+            "admin_spent": 0,
             "days_away": 0,
             "days_vacation": 14,
-            "profdev_alloc": 20350,
-            "profdev_expend": 14780,
-            "total_alloc": 21400,
+            "profdev_requested": 20350,
+            "profdev_spent": 14780,
+            "total_requested": 21400,
             "total_days_ooo": 14,
-            "total_expend": 14780,
+            "total_spent": 14780,
         }
         actual = reports.unit_totals(data)
         for key, expected_value in expected.items():
@@ -482,48 +482,48 @@ class UnitReportsTestCase(TestCase):
             "subunits": {
                 2: {
                     "subunit_totals": {
-                        "profdev_alloc": Decimal("7695"),
-                        "admin_alloc": Decimal("2350"),
-                        "total_alloc": Decimal("10045"),
-                        "profdev_expend": Decimal("3695"),
-                        "admin_expend": Decimal("0"),
-                        "total_expend": Decimal("3695"),
+                        "profdev_requested": Decimal("4000"),
+                        "admin_requested": Decimal("2350"),
+                        "total_requested": Decimal("6350"),
+                        "profdev_spent": Decimal("3695"),
+                        "admin_spent": Decimal("0"),
+                        "total_spent": Decimal("3695"),
                         "days_vacation": Decimal("14"),
                         "days_away": Decimal("33"),
                     }
                 },
                 1: {
                     "subunit_totals": {
-                        "profdev_alloc": 0,
-                        "admin_alloc": 0,
-                        "total_alloc": 0,
-                        "profdev_expend": 0,
-                        "admin_expend": 0,
-                        "total_expend": 0,
+                        "profdev_requested": 0,
+                        "admin_requested": 0,
+                        "total_requested": 0,
+                        "profdev_spent": 0,
+                        "admin_spent": 0,
+                        "total_spent": 0,
                         "days_vacation": 0,
                         "days_away": 0,
                     }
                 },
                 4: {
                     "subunit_totals": {
-                        "profdev_alloc": 0,
-                        "admin_alloc": 0,
-                        "total_alloc": 0,
-                        "profdev_expend": 0,
-                        "admin_expend": 0,
-                        "total_expend": 0,
+                        "profdev_requested": 0,
+                        "admin_requested": 0,
+                        "total_requested": 0,
+                        "profdev_spent": 0,
+                        "admin_spent": 0,
+                        "total_spent": 0,
                         "days_vacation": 0,
                         "days_away": 0,
                     }
                 },
             },
             "unit_totals": {
-                "admin_alloc": Decimal("2350"),
-                "admin_expend": Decimal("0"),
-                "profdev_alloc": Decimal("7695"),
-                "profdev_expend": Decimal("3695"),
-                "total_alloc": Decimal("10045"),
-                "total_expend": Decimal("3695"),
+                "admin_requested": Decimal("2350"),
+                "admin_spent": Decimal("0"),
+                "profdev_requested": Decimal("4000"),
+                "profdev_spent": Decimal("3695"),
+                "total_requested": Decimal("6350"),
+                "total_spent": Decimal("3695"),
                 "days_vacation": Decimal("14"),
                 "days_away": Decimal("33"),
             },
@@ -912,10 +912,10 @@ class ReportTestCase(TestCase):
     def test_individual_data(self):
         expected = {
             "id": 2,
-            "profdev_alloc": Decimal("3500.00000"),
-            "profdev_expend": Decimal("4000.00000"),
-            "admin_alloc": Decimal("1000.00000"),
-            "admin_expend": Decimal("8220.00000"),
+            "profdev_requested": Decimal("4000.00000"),
+            "profdev_spent": Decimal("4000.00000"),
+            "admin_requested": Decimal("8000.00000"),
+            "admin_spent": Decimal("8220.00000"),
             "days_vacation": 0,
             "days_away": 27,
         }
@@ -936,16 +936,16 @@ class EmployeeSubtotalTestCase(TestCase):
     def test_subtotal(self):
         expected = {
             "id": 2,
-            "admin_alloc": Decimal("0.0000"),
-            "admin_expend": Decimal("0.0000"),
+            "admin_requested": Decimal("0.0000"),
+            "admin_spent": Decimal("0.0000"),
             "days_away": 15,
             "days_vacation": 5,
             "total_estimatedexpense": Decimal("6075.0000"),
-            "profdev_alloc": Decimal("2000.0000"),
-            "profdev_expend": Decimal("1855.0000"),
-            "total_alloc": 0,
+            "profdev_requested": Decimal("2000.0000"),
+            "profdev_spent": Decimal("1855.0000"),
+            "total_requested": 0,
             "total_days_ooo": 20,
-            "total_expend": Decimal("0.0000"),
+            "total_spent": Decimal("0.0000"),
         }
         employee_ids = [2]
         start_date = date(2019, 7, 1)

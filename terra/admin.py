@@ -215,7 +215,7 @@ class EstimatedExpenseAdmin(admin.ModelAdmin):
 
 @admin.register(ActualExpense)
 class ActualExpenseAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "type", "total_dollars")
+    list_display = ("id", "treq", "type", "total_dollars", "date_paid")
     list_filter = ("type", ("total", custom_titled_filter("total cost")))
     search_fields = [
         "treq__traveler__user__last_name",
