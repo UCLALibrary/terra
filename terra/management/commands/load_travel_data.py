@@ -28,7 +28,7 @@ def load_data(self, travel_file):
     with open(travel_file, encoding="utf-8-sig", newline="") as csvfile:
         reader = csv.DictReader(csvfile, dialect="excel")
         # Field names from CSV, for reference:
-        # employee_name,employee_id,ucla_id,email,start_date,end_date,workdays,vac_days,t_and_e,purpose,department,unit_head,supervisor,aul,account,cc,fund,amount_approved,amount_paid
+        # employee_name,employee_id,ucla_id,email,start_date,end_date,workdays,vac_days,t_and_e,purpose,department,unit_head,supervisor,aul,account,cc,fund,amount_approved,amount_paid,date_paid
         for row in reader:
             # Get relevant data from CSV, with placeholders for now as needed
             employee_name = row["employee_name"]
@@ -44,10 +44,12 @@ def load_data(self, travel_file):
             fund_part = row["fund"]
             amount_approved = row["amount_approved"]
             amount_paid = row["amount_paid"]
+            date_paid = row["date_paid"]
 
             # Clean up bad input data
             start_date = _convert_MDY(start_date)
             end_date = _convert_MDY(end_date)
+            date_paid = _convert_MDY(date_paid)
             if workdays == "":
                 workdays = 0
 
@@ -79,7 +81,7 @@ def load_data(self, travel_file):
             if amount_approved != "":
                 est_expense = _get_estimated_expense(treq, amount_approved)
             if amount_paid != "":
-                act_expense = _get_actual_expense(treq, amount_paid, fund)
+                act_expense = _get_actual_expense(treq, amount_paid, fund, date_paid)
             
 
 def _get_user(employee_name, email):
@@ -121,9 +123,9 @@ def _get_funding(funding_date, funded_by, treq, fund, amount_approved):
     funding, created = Funding.objects.get_or_create(funded_on=funding_date, funded_by=funded_by, treq=treq, fund=fund, amount=amount_approved)
     return funding
 
-def _get_actual_expense(treq, amount, fund):
+def _get_actual_expense(treq, amount, fund, date_paid):
     # Create, without check for existing
-    expense = ActualExpense.objects.create(treq=treq, total=amount, fund=fund, type="OTH", rate=1, quantity=1)
+    expense = ActualExpense.objects.create(treq=treq, total=amount, fund=fund, type="OTH", rate=1, quantity=1, date_paid=date_paid)
     return expense
 
 def _get_estimated_expense(treq, amount):

@@ -32,9 +32,9 @@
             <tr>
                 <th colspan="2" scope="colgroup"></th>
                 <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
-                <th colspan="2" scope="colgroup" class="text-center">Administrative</th>
+                <th colspan="2" scope="colgroup" class="text-center bg-light">Administrative</th>
                 <th colspan="2" scope="colgroup" class="text-center">Totals</th>
-                <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
+                <th colspan="1" scope="colgroup" class="text-center  bg-light">Days Out</th>
             </tr>
             <tr>
                 <th scope="col">Employee</th>
@@ -43,13 +43,13 @@
                 <th scope="col" class="text-right">Amount Requested</th>
                 <th scope="col" class="text-right">Amount Spent</th>
                 
-                <th scope="col" class="text-right">Amount Requested</th>
-                <th scope="col" class="text-right">Amount Spent</th>
+                <th scope="col" class="text-right  bg-light">Amount Requested</th>
+                <th scope="col" class="text-right bg-light">Amount Spent</th>
 
                 <th scope="col" class="text-right">Total Requested</th>
                 <th scope="col" class="text-right">Total Spent</th>
 
-                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right bg-light">Working</th>
             </tr>
         </thead>
         <tbody>
@@ -99,9 +99,9 @@
             <tr>
                 <th colspan="2" scope="colgroup"></th>
                 <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
-                <th colspan="2" scope="colgroup" class="text-center">Administrative</th>
+                <th colspan="2" scope="colgroup" class="text-center bg-light">Administrative</th>
                 <th colspan="2" scope="colgroup" class="text-center">Totals</th>
-                <th colspan="1" scope="colgroup" class="text-center">Days Out</th>
+                <th colspan="1" scope="colgroup" class="text-center bg-light">Days Out</th>
             </tr>
             <tr>
                 <th scope="col">Employee</th>
@@ -110,31 +110,30 @@
                 <th scope="col" class="text-right">Amount Requested</th>
                 <th scope="col" class="text-right">Amount Spent</th>
                 
-                <th scope="col" class="text-right">Amount Requested</th>
-                <th scope="col" class="text-right">Amount Spent</th>
+                <th scope="col" class="text-right bg-light">Amount Requested</th>
+                <th scope="col" class="text-right bg-light">Amount Spent</th>
 
                 <th scope="col" class="text-right">Total Requested</th>
                 <th scope="col" class="text-right">Total Spent</th>
 
-                <th scope="col" class="text-right">Working</th>
+                <th scope="col" class="text-right bg-light">Working</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <th>Totals</th>
                 <th></th>
-                <th></th>
 
-                <th class="text-right">{{subunit.subunit_totals.profdev_requested|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.profdev_spent|currency}}</th>
+                <th class="text-right">{{report.unit_totals.profdev_requested|currency}}</th>
+                <th class="text-right">{{report.unit_totals.profdev_spent|currency}}</th>
                 
-                <th class="text-right">{{subunit.subunit_totals.admin_requested|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.admin_spent|currency}}</th>
+                <th class="text-right">{{report.unit_totals.admin_requested|currency}}</th>
+                <th class="text-right">{{report.unit_totals.admin_spent|currency}}</th>
                 
-                <th class="text-right">{{subunit.subunit_totals.total_requested|currency}}</th>
-                <th class="text-right">{{subunit.subunit_totals.total_spent|currency}}</th>
+                <th class="text-right">{{report.unit_totals.total_requested|currency}}</th>
+                <th class="text-right">{{report.unit_totals.total_spent|currency}}</th>
                 
-                <th class="text-right">{{subunit.subunit_totals.days_away}}</th>
+                <th class="text-right">{{report.unit_totals.days_away}}</th>
             </tr>
         </tfoot>
     </table>

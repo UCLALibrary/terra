@@ -1,4 +1,4 @@
-"employee_name","email","ucla_id","department","purpose","start_date","end_date","workdays","account","cc","fund","amount_approved","amount_paid"
-"Supervisor,Sally","sally@example.com","12345","General Library","Sample event for managers","1/7/2019","1/8/2019","2","600001","SS","19900",99.88,0
-"Employee,Edward","edward@example.com","54321","East Asian Library","Sample event for everybody","4/1/2019","4/5/2019","5","600001","PD","19900",654.32,100
-"Supervisor,Sally","sally@example.com","12345","General Library","Sample event for everybody","4/1/2019","4/5/2019","5","600001","PD","19900",654.32,200
+"employee_name","email","ucla_id","department","purpose","start_date","end_date","workdays","account","cc","fund","amount_approved","amount_paid","date_paid"
+"Supervisor,Sally","sally@example.com","12345","General Library","Sample event for managers","1/7/2019","1/8/2019","2","600001","SS","19900",99.88,0,"1/1/2020"
+"Employee,Edward","edward@example.com","54321","East Asian Library","Sample event for everybody","4/1/2019","4/5/2019","5","600001","PD","19900",654.32,100,"1/1/2020"
+"Supervisor,Sally","sally@example.com","12345","General Library","Sample event for everybody","4/1/2019","4/5/2019","5","600001","PD","19900",654.32,200,"1/1/2020"

@@ -1116,7 +1116,8 @@
     "rate": "200.00000",
     "quantity": 6,
     "total": "1200.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1128,7 +1129,8 @@
     "rate": null,
     "quantity": null,
     "total": "500.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1140,7 +1142,8 @@
     "rate": null,
     "quantity": null,
     "total": "1200.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1152,7 +1155,8 @@
     "rate": null,
     "quantity": null,
     "total": "330.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1164,7 +1168,8 @@
     "rate": null,
     "quantity": null,
     "total": "330.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1176,7 +1181,8 @@
     "rate": null,
     "quantity": null,
     "total": "330.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1188,7 +1194,8 @@
     "rate": null,
     "quantity": null,
     "total": "330.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1200,7 +1207,8 @@
     "rate": null,
     "quantity": null,
     "total": "4000.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 },
 {
@@ -1212,7 +1220,8 @@
     "rate": null,
     "quantity": null,
     "total": "4000.00000",
-    "fund": 1
+    "fund": 1,
+    "date_paid": "2020-01-01"
   }
 }
 ]
