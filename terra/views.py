@@ -104,15 +104,13 @@ class UnitExportView(UnitDetailView):
             [
                 "Employee",
                 "Type",
-                "Prof Dev Approved",
-                "Admin Approved",
-                "Total Approved",
-                "Prof Dev Expenditures",
-                "Admin Expenditures",
-                "Total Expenditures",
+                "Prof Dev Requested",
+                "Prof Dev Spent",
+                "Admin Requested",
+                "Admin Spent",
+                "Total Requested",
+                "Total Spent",
                 "Working Days Out",
-                "Vacation Days Out",
-                "Total Days Out",
             ]
         )
         for subunit in context["report"]["subunits"].values():
@@ -123,30 +121,26 @@ class UnitExportView(UnitDetailView):
                     [
                         employee,
                         employee.get_type_display(),
-                        employee.data["profdev_alloc"],
-                        employee.data["admin_alloc"],
-                        employee.data["total_alloc"],
-                        employee.data["profdev_expend"],
-                        employee.data["admin_expend"],
-                        employee.data["total_expend"],
+                        employee.data["profdev_requested"],
+                        employee.data["profdev_spent"],
+                        employee.data["admin_requested"],
+                        employee.data["admin_spent"],
+                        employee.data["total_requested"],
+                        employee.data["total_spent"],
                         employee.data["days_away"],
-                        employee.data["days_vacation"],
-                        employee.data["total_days_ooo"],
                     ]
                 )
             writer.writerow(
                 [
                     "Subtotals",
                     "",
-                    subunit["subunit_totals"]["profdev_alloc"],
-                    subunit["subunit_totals"]["admin_alloc"],
-                    subunit["subunit_totals"]["total_alloc"],
-                    subunit["subunit_totals"]["profdev_expend"],
-                    subunit["subunit_totals"]["admin_expend"],
-                    subunit["subunit_totals"]["total_expend"],
+                    subunit["subunit_totals"]["profdev_requested"],
+                    subunit["subunit_totals"]["profdev_spent"],
+                    subunit["subunit_totals"]["admin_requested"],
+                    subunit["subunit_totals"]["admin_spent"],
+                    subunit["subunit_totals"]["total_requested"],
+                    subunit["subunit_totals"]["total_spent"],
                     subunit["subunit_totals"]["days_away"],
-                    subunit["subunit_totals"]["days_vacation"],
-                    subunit["subunit_totals"]["total_days_ooo"],
                 ]
             )
         writer.writerow([])
@@ -155,15 +149,13 @@ class UnitExportView(UnitDetailView):
             [
                 "Totals",
                 "",
-                context["report"]["unit_totals"]["profdev_alloc"],
-                context["report"]["unit_totals"]["admin_alloc"],
-                context["report"]["unit_totals"]["total_alloc"],
-                context["report"]["unit_totals"]["profdev_expend"],
-                context["report"]["unit_totals"]["admin_expend"],
-                context["report"]["unit_totals"]["total_expend"],
+                context["report"]["unit_totals"]["profdev_requested"],
+                context["report"]["unit_totals"]["profdev_spent"],
+                context["report"]["unit_totals"]["admin_requested"],
+                context["report"]["unit_totals"]["admin_spent"],
+                context["report"]["unit_totals"]["total_requested"],
+                context["report"]["unit_totals"]["total_spent"],
                 context["report"]["unit_totals"]["days_away"],
-                context["report"]["unit_totals"]["days_vacation"],
-                context["report"]["unit_totals"]["total_days_ooo"],
             ]
         )
         return response
