@@ -584,12 +584,12 @@ class FundReportsTestCase(TestCase):
 
     def test_fund_report(self):
         expected = {
-            "admin_alloc": Decimal("1050"),
-            "admin_expend": Decimal("0"),
-            "profdev_alloc": Decimal("7195"),
-            "profdev_expend": Decimal("3695"),
-            "total_alloc": Decimal("8245"),
-            "total_expend": Decimal("3695"),
+            "admin_requested": Decimal("1050"),
+            "admin_spent": Decimal("0"),
+            "profdev_requested": Decimal("3500.00000"),
+            "profdev_spent": Decimal("3695"),
+            "total_requested": Decimal("4550.00000"),
+            "total_spent": Decimal("3695"),
         }
         fund = Fund.objects.get(pk=1)
         employees, totals = reports.fund_report(fund)

@@ -60,14 +60,15 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     )
 
     profdev_spent = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=False
-        )
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
         .values("traveler__pk")
-        .annotate(profdev_spent=Sum("actualexpense__total", 
-            filter=Q(actualexpense__date_paid__lte=end_date) & Q(actualexpense__date_paid__gte=start_date)
-            ))
+        .annotate(
+            profdev_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
         .values("profdev_spent")
     )
 
@@ -84,14 +85,15 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
     )
 
     admin_spent = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=True
-        )
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=True)
         .values("traveler__pk")
-        .annotate(admin_spent=Sum("actualexpense__total", 
-            filter=Q(actualexpense__date_paid__lte=end_date) & Q(actualexpense__date_paid__gte=start_date)
-            ))
+        .annotate(
+            admin_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
         .values("admin_spent")
     )
 
@@ -163,7 +165,8 @@ def merge_data(rows, data):
                 employee.data["admin_requested"]
                 employee.data["profdev_requested"]
                 employee.data["total_requested"] = (
-                    employee.data["admin_requested"] + employee.data["profdev_requested"]
+                    employee.data["admin_requested"]
+                    + employee.data["profdev_requested"]
                 )
                 employee.data["total_spent"] = (
                     employee.data["admin_spent"] + employee.data["profdev_spent"]
@@ -228,12 +231,8 @@ def unit_report(unit, start_date=None, end_date=None):
 
 def get_fund_employee_list(fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
-    rows = Funding.objects.filter(
-        fund=fund, treq__return_date__gte=start_date, treq__return_date__lte=end_date
-    ).values(eid=F("treq__traveler"))
-    rows2 = ActualExpense.objects.filter(
-        fund=fund, treq__return_date__gte=start_date, treq__return_date__lte=end_date
-    ).values(eid=F("treq__traveler"))
+    rows = Funding.objects.filter(fund=fund).values(eid=F("treq__traveler"))
+    rows2 = ActualExpense.objects.filter(fund=fund).values(eid=F("treq__traveler"))
     return set([e["eid"] for e in rows.union(rows2)])
 
 
@@ -241,20 +240,21 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     start_date, end_date = check_dates(start_date, end_date)
 
     # 4 subqueries plugged into the final query
-    profdev_alloc = (
+    profdev_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=False,
-            closed=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("funding__amount", filter=Q(funding__fund=fund)))
-        .values("profdev_alloc")
+        .annotate(
+            profdev_requested=Sum("funding__amount", filter=Q(funding__fund=fund))
+        )
+        .values("profdev_requested")
     )
 
-    profdev_expend = (
+    profdev_spent = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=False,
@@ -264,14 +264,17 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
         )
         .values("traveler__pk")
         .annotate(
-            profdev_expend=Sum(
-                "actualexpense__total", filter=Q(actualexpense__fund=fund)
+            profdev_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__fund=fund)
+                & Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
             )
         )
-        .values("profdev_expend")
+        .values("profdev_spent")
     )
 
-    admin_alloc = (
+    admin_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=True,
@@ -280,11 +283,11 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_alloc=Sum("funding__amount"), filter=Q(funding__fund=fund))
-        .values("admin_alloc")
+        .annotate(admin_requested=Sum("funding__amount"), filter=Q(funding__fund=fund))
+        .values("admin_requested")
     )
 
-    admin_expend = (
+    admin_spent = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=True,
@@ -294,24 +297,29 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
         )
         .values("traveler__pk")
         .annotate(
-            admin_expend=Sum("actualexpense__total", filter=Q(actualexpense__fund=fund))
+            admin_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__fund=fund)
+                & Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
         )
-        .values("admin_expend")
+        .values("admin_spent")
     )
 
     # final query
     rows = Employee.objects.filter(pk__in=employee_ids).annotate(
-        profdev_alloc=Coalesce(
-            Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
+        profdev_requested=Coalesce(
+            Subquery(profdev_requested, output_field=DecimalField()), Value(0)
         ),
-        profdev_expend=Coalesce(
-            Subquery(profdev_expend, output_field=DecimalField()), Value(0)
+        profdev_spent=Coalesce(
+            Subquery(profdev_spent, output_field=DecimalField()), Value(0)
         ),
-        admin_alloc=Coalesce(
-            Subquery(admin_alloc, output_field=DecimalField()), Value(0)
+        admin_requested=Coalesce(
+            Subquery(admin_requested, output_field=DecimalField()), Value(0)
         ),
-        admin_expend=Coalesce(
-            Subquery(admin_expend, output_field=DecimalField()), Value(0)
+        admin_spent=Coalesce(
+            Subquery(admin_spent, output_field=DecimalField()), Value(0)
         ),
     )
     return rows
@@ -319,24 +327,22 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
 
 def calculate_fund_totals(employees):
     totals = {
-        "admin_alloc": 0,
-        "admin_expend": 0,
-        "profdev_alloc": 0,
-        "profdev_expend": 0,
-        "total_alloc": 0,
-        "total_expend": 0,
+        "admin_requested": 0,
+        "admin_spent": 0,
+        "profdev_requested": 0,
+        "profdev_spent": 0,
+        "total_requested": 0,
+        "total_spent": 0,
     }
     for e in employees:
-        e.profdev_alloc += e.profdev_expend
-        e.admin_alloc += e.admin_expend
-        e.total_alloc = e.profdev_alloc + e.admin_alloc
-        e.total_expend = e.profdev_expend + e.admin_expend
-        totals["profdev_alloc"] += e.profdev_alloc
-        totals["profdev_expend"] += e.profdev_expend
-        totals["admin_alloc"] += e.admin_alloc
-        totals["admin_expend"] += e.admin_expend
-    totals["total_alloc"] = totals["admin_alloc"] + totals["profdev_alloc"]
-    totals["total_expend"] = totals["admin_expend"] + totals["profdev_expend"]
+        e.total_requested = e.profdev_requested + e.admin_requested
+        e.total_spent = e.profdev_spent + e.admin_spent
+        totals["profdev_requested"] += e.profdev_requested
+        totals["profdev_spent"] += e.profdev_spent
+        totals["admin_requested"] += e.admin_requested
+        totals["admin_spent"] += e.admin_spent
+    totals["total_requested"] = totals["admin_requested"] + totals["profdev_requested"]
+    totals["total_spent"] = totals["admin_spent"] + totals["profdev_spent"]
     return employees, totals
 
 
