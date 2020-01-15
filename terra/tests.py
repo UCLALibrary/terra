@@ -485,9 +485,9 @@ class UnitReportsTestCase(TestCase):
                         "profdev_requested": Decimal("4000"),
                         "admin_requested": Decimal("2350"),
                         "total_requested": Decimal("6350"),
-                        "profdev_spent": Decimal("3695"),
+                        "profdev_spent": Decimal("3260"),
                         "admin_spent": Decimal("0"),
-                        "total_spent": Decimal("3695"),
+                        "total_spent": Decimal("3260"),
                         "days_vacation": Decimal("14"),
                         "days_away": Decimal("33"),
                     }
@@ -521,9 +521,9 @@ class UnitReportsTestCase(TestCase):
                 "admin_requested": Decimal("2350"),
                 "admin_spent": Decimal("0"),
                 "profdev_requested": Decimal("4000"),
-                "profdev_spent": Decimal("3695"),
+                "profdev_spent": Decimal("3260"),
                 "total_requested": Decimal("6350"),
-                "total_spent": Decimal("3695"),
+                "total_spent": Decimal("3260"),
                 "days_vacation": Decimal("14"),
                 "days_away": Decimal("33"),
             },
@@ -587,9 +587,9 @@ class FundReportsTestCase(TestCase):
             "admin_requested": Decimal("1050"),
             "admin_spent": Decimal("0"),
             "profdev_requested": Decimal("3500.00000"),
-            "profdev_spent": Decimal("3695"),
+            "profdev_spent": Decimal("3260"),
             "total_requested": Decimal("4550.00000"),
-            "total_spent": Decimal("3695"),
+            "total_spent": Decimal("3260"),
         }
         fund = Fund.objects.get(pk=1)
         employees, totals = reports.fund_report(fund)
@@ -943,14 +943,16 @@ class EmployeeSubtotalTestCase(TestCase):
             "total_estimatedexpense": Decimal("6075.0000"),
             "profdev_requested": Decimal("2000.0000"),
             "profdev_spent": Decimal("1855.0000"),
-            "total_requested": 0,
+            "total_requested": Decimal(2000),
             "total_days_ooo": 20,
-            "total_spent": Decimal("0.0000"),
+            "total_spent": Decimal("1855.0000"),
         }
         employee_ids = [2]
         start_date = date(2019, 7, 1)
         end_date = date(2020, 6, 30)
-        actual = reports.get_individual_data(employee_ids, start_date, end_date)
+        actual = reports.get_individual_data_employee(
+            employee_ids, start_date, end_date
+        )
         for x in actual:
             for key, value in x.items():
                 with self.subTest(key=key, value=value):

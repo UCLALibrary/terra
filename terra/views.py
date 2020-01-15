@@ -223,12 +223,12 @@ class FundExportView(FundDetailView):
             [
                 "Employee",
                 "Type",
-                "Prof Dev Approved",
-                "Admin Approved",
-                "Total Approved",
-                "Prof Dev Expenditures",
-                "Admin Expenditures",
-                "Total Expenditures",
+                "Prof Dev Requested",
+                "Prof Dev Spent",
+                "Admin Requested",
+                "Admin Spent",
+                "Total Requested",
+                "Total Spent",
             ]
         )
         for e in context["employees"]:
@@ -236,24 +236,24 @@ class FundExportView(FundDetailView):
                 [
                     f"{e.user.last_name}, {e.user.first_name}",
                     e.get_type_display(),
-                    e.profdev_alloc,
-                    e.admin_alloc,
-                    e.total_alloc,
-                    e.profdev_expend,
-                    e.admin_expend,
-                    e.total_expend,
+                    e.profdev_requested,
+                    e.profdev_spent,
+                    e.admin_requested,
+                    e.admin_spent,
+                    e.total_requested,
+                    e.total_spent,
                 ]
             )
         writer.writerow(
             [
                 "Totals",
                 "",
-                totals["profdev_alloc"],
-                totals["admin_alloc"],
-                totals["total_alloc"],
-                totals["profdev_expend"],
-                totals["admin_expend"],
-                totals["total_expend"],
+                totals["profdev_requested"],
+                totals["profdev_spent"],
+                totals["admin_requested"],
+                totals["admin_spent"],
+                totals["total_requested"],
+                totals["total_spent"],
             ]
         )
         return response
