@@ -255,13 +255,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     )
 
     profdev_spent = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=False,
-            closed=True,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
         .values("traveler__pk")
         .annotate(
             profdev_spent=Sum(
@@ -278,7 +272,6 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=True,
-            closed=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
@@ -288,13 +281,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     )
 
     admin_spent = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=True,
-            closed=True,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=True)
         .values("traveler__pk")
         .annotate(
             admin_spent=Sum(
