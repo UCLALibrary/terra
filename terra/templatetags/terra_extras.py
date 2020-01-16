@@ -13,6 +13,16 @@ def check_or_cross(bool):
 
 @register.filter
 def currency(value):
-    if value is None or value=="":
+    if value is None or value == "":
         value = 0
     return format_currency(value, grouping=True)
+
+
+@register.filter
+def cap(value):
+    if value >= 3500:
+        return '<span class="badge badge-pill badge-danger">{}</span>'.format(value)
+    elif value >= 2800:
+        return '<span class="badge badge-pill badge-warning">{}</span>'.format(value)
+    else:
+        return value
