@@ -360,56 +360,54 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
 
     # 4 subqueries plugged into the final query
 
-    profdev_alloc = (
+    profdev_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=False,
-            closed=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("funding__amount"))
-        .values("profdev_alloc")
+        .annotate(profdev_requested=Sum("funding__amount"))
+        .values("profdev_requested")
     )
 
-    profdev_expend = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=False,
-            closed=True,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
+    profdev_spent = (
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
         .values("traveler__pk")
-        .annotate(profdev_expend=Sum("actualexpense__total"))
-        .values("profdev_expend")
-    )
-
-    admin_alloc = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            administrative=True,
-            closed=False,
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
+        .annotate(
+            profdev_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
         )
-        .values("traveler__pk")
-        .annotate(admin_alloc=Sum("funding__amount"))
-        .values("admin_alloc")
+        .values("profdev_spent")
     )
 
-    admin_expend = (
+    admin_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             administrative=True,
-            closed=True,
             departure_date__gte=start_date,
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(admin_expend=Sum("actualexpense__total"))
-        .values("admin_expend")
+        .annotate(admin_requested=Sum("funding__amount"))
+        .values("admin_requested")
+    )
+
+    admin_spent = (
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=True)
+        .values("traveler__pk")
+        .annotate(
+            admin_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
+        .values("admin_spent")
     )
 
     days_vacation = TravelRequest.objects.filter(
@@ -432,17 +430,17 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
-            profdev_alloc=Coalesce(
-                Subquery(profdev_alloc, output_field=DecimalField()), Value(0)
+            profdev_requested=Coalesce(
+                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
             ),
-            profdev_expend=Coalesce(
-                Subquery(profdev_expend, output_field=DecimalField()), Value(0)
+            profdev_spent=Coalesce(
+                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
             ),
-            admin_alloc=Coalesce(
-                Subquery(admin_alloc, output_field=DecimalField()), Value(0)
+            admin_requested=Coalesce(
+                Subquery(admin_requested, output_field=DecimalField()), Value(0)
             ),
-            admin_expend=Coalesce(
-                Subquery(admin_expend, output_field=DecimalField()), Value(0)
+            admin_spent=Coalesce(
+                Subquery(admin_spent, output_field=DecimalField()), Value(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
@@ -460,10 +458,10 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
         )
         .values(
             "id",
-            "profdev_alloc",
-            "profdev_expend",
-            "admin_alloc",
-            "admin_expend",
+            "profdev_requested",
+            "profdev_spent",
+            "admin_requested",
+            "admin_spent",
             "days_vacation",
             "days_away",
         )
@@ -494,13 +492,13 @@ def merge_data_type(employee_ids, start_date, end_date):
                 employee["name"] = e.__str__()
                 employee["unit"] = e.unit.__str__()
                 employee["unit_manager"] = e.unit.manager.__str__()
-                employee["admin_alloc"] += employee["admin_expend"]
-                employee["profdev_alloc"] += employee["profdev_expend"]
-                employee["total_alloc"] = (
-                    employee["admin_alloc"] + employee["profdev_alloc"]
+                employee["admin_requested"]
+                employee["profdev_requested"]
+                employee["total_requested"] = (
+                    employee["admin_requested"] + employee["profdev_requested"]
                 )
-                employee["total_expend"] = (
-                    employee["admin_expend"] + employee["profdev_expend"]
+                employee["total_spent"] = (
+                    employee["admin_spent"] + employee["profdev_spent"]
                 )
                 employee["total_days_ooo"] = (
                     employee["days_away"] + employee["days_vacation"]
@@ -508,65 +506,71 @@ def merge_data_type(employee_ids, start_date, end_date):
 
             except ObjectDoesNotExist:
                 employee = {
-                    "admin_alloc": 0,
-                    "admin_expend": 0,
+                    "admin_requested": 0,
+                    "admin_spent": 0,
+                    "profdev_requested": 0,
+                    "profdev_spent": 0,
+                    "total_spent": 0,
+                    "total_requested": 0,
                     "days_away": 0,
                     "days_vacation": 0,
-                    "profdev_alloc": 0,
-                    "profdev_expend": 0,
-                    "total_alloc": 0,
                     "total_days_ooo": 0,
-                    "total_expend": 0,
                 }
             data["type"][employee_type]["employees"].append(employee)
 
     for employee_type in data["type"]:
         type_totals = {
-            "admin_alloc": 0,
-            "admin_expend": 0,
+            "admin_requested": 0,
+            "admin_spent": 0,
             "days_away": 0,
             "days_vacation": 0,
-            "profdev_alloc": 0,
-            "profdev_expend": 0,
-            "total_alloc": 0,
+            "profdev_requested": 0,
+            "profdev_spent": 0,
+            "total_requested": 0,
             "total_days_ooo": 0,
-            "total_expend": 0,
+            "total_spent": 0,
         }
         # add a totals dictionary for each employee type
         for employee in data["type"][employee_type]["employees"]:
-            type_totals["admin_alloc"] += employee["admin_alloc"]
-            type_totals["admin_expend"] += employee["admin_expend"]
+            type_totals["admin_requested"] += employee["admin_requested"]
+            type_totals["admin_spent"] += employee["admin_spent"]
             type_totals["days_away"] += employee["days_away"]
             type_totals["days_vacation"] += employee["days_vacation"]
-            type_totals["profdev_alloc"] += employee["profdev_alloc"]
-            type_totals["profdev_expend"] += employee["profdev_expend"]
-            type_totals["total_alloc"] += employee["total_alloc"]
+            type_totals["profdev_requested"] += employee["profdev_requested"]
+            type_totals["profdev_spent"] += employee["profdev_spent"]
+            type_totals["total_requested"] += employee["total_requested"]
             type_totals["total_days_ooo"] += employee["total_days_ooo"]
-            type_totals["total_expend"] += employee["total_expend"]
+            type_totals["total_spent"] += employee["total_spent"]
         data["type"][employee_type]["totals"] = type_totals
 
     complete_total = {
-        "admin_alloc": 0,
-        "admin_expend": 0,
+        "admin_requested": 0,
+        "admin_spent": 0,
         "days_away": 0,
         "days_vacation": 0,
-        "profdev_alloc": 0,
-        "profdev_expend": 0,
-        "total_alloc": 0,
+        "profdev_requested": 0,
+        "profdev_spent": 0,
+        "total_requested": 0,
         "total_days_ooo": 0,
-        "total_expend": 0,
+        "total_spent": 0,
     }
 
     for t in data["type"]:
-        complete_total["admin_alloc"] += data["type"][t]["totals"]["admin_alloc"]
-        complete_total["admin_expend"] += data["type"][t]["totals"]["admin_expend"]
+        complete_total["admin_requested"] += data["type"][t]["totals"][
+            "admin_requested"
+        ]
+        complete_total["admin_spent"] += data["type"][t]["totals"]["admin_spent"]
         complete_total["days_away"] += data["type"][t]["totals"]["days_away"]
         complete_total["days_vacation"] += data["type"][t]["totals"]["days_vacation"]
-        complete_total["profdev_alloc"] += data["type"][t]["totals"]["profdev_alloc"]
-        complete_total["profdev_expend"] += data["type"][t]["totals"]["profdev_expend"]
-        complete_total["total_alloc"] += data["type"][t]["totals"]["total_alloc"]
+        complete_total["profdev_requested"] += data["type"][t]["totals"][
+            "profdev_requested"
+        ]
+        complete_total["profdev_spent"] += data["type"][t]["totals"]["profdev_spent"]
+        complete_total["total_requested"] += data["type"][t]["totals"][
+            "total_requested"
+        ]
         complete_total["total_days_ooo"] += data["type"][t]["totals"]["total_days_ooo"]
-        complete_total["total_expend"] += data["type"][t]["totals"]["total_expend"]
+        complete_total["total_spent"] += data["type"][t]["totals"]["total_spent"]
     data["all_type_total"] = complete_total
 
     return data
