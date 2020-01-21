@@ -111,6 +111,8 @@
                 <thead class="thead-light">
                     <tr>
                         <th>Expense Type</th>
+                        <th>FAU</th>
+                        <th>Date Paid</th>
                         <th>Amount</th>
                     </tr>
                 </thead>
@@ -118,6 +120,8 @@
                     {% for actualexpense in treq.actualexpense_set.all %}
                     <tr>
                         <td>{{actualexpense.get_type_display}}</td>
+                        <td>{{actualexpense.fund}}</td>
+                        <td>{{actualexpense.date_paid}}</td>
                         <td>{{actualexpense.total|currency}}</td>
                     </tr>
                     {% endfor %}
@@ -125,7 +129,10 @@
                 <tfoot>
                     <tr>
                         <th>Total</th>
+                        <td></td>
+                        <td></td>
                         <td>{{treq.actual_expenses|currency}}</td>
+
                     </tr>
                 </tfoot>
             </table>
