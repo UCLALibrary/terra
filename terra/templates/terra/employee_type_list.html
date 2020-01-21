@@ -30,10 +30,10 @@
         <thead class="thead-light">
             <tr>
                 <th colspan="3" scope="colgroup"></th>
-                <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
-                <th colspan="2" scope="colgroup" class="text-center bg-light">Administrative</th>
-                <th colspan="2" scope="colgroup" class="text-center">Total</th>
-                <th colspan="1" scope="colgroup" class="text-center bg-light">Days Out</th>
+                <th colspan="3" scope="colgroup" class="text-center">Professional Development</th>
+                <th colspan="3" scope="colgroup" class="text-center bg-light">Administrative</th>
+                <th colspan="3" scope="colgroup" class="text-center">Total</th>
+                
             </tr>
             <tr>
                 <th scope="col">Unit</th>
@@ -41,11 +41,13 @@
                 <th scope="col">Employee</th>  
                 <th scope="col" class="text-right">Amount Requested</th>
                 <th scope="col" class="text-right">Amount Spent</th>
+                <th scope="col" class="text-right">Days Out</th>
                 <th scope="col" class="text-right bg-light">Amount Requested</th>
                 <th scope="col" class="text-right bg-light">Amount Spent</th>
+                <th scope="col" class="text-right bg-light">Days Out</th>
                 <th scope="col" class="text-right">Total Requested</th>
                 <th scope="col" class="text-right">Total Spent</th>
-                <th scope="col" class="text-right bg-light">Working</th>
+                <th scope="col" class="text-right">Days Out</th>
             </tr>
         </thead>
         <tbody>
@@ -59,14 +61,17 @@
 
                 <td class="text-right">{{employee.profdev_requested|cap|safe}}</td>
                 <td class="text-right">{{employee.profdev_spent|cap|safe}}</td>
+                <td class="text-right">{{employee.profdev_days_away}}</td>
 
                 <td class="text-right">{{employee.admin_requested|currency}}</td>
                 <td class="text-right">{{employee.admin_spent|currency}}</td>
+                <td class="text-right">{{employee.admin_days_away}}</td>
 
                 <td class="text-right">{{employee.total_requested|currency}}</td>
                 <td class="text-right">{{employee.total_spent|currency}}</td>
+                <td class="text-right">{{employee.total_days_ooo}}</td>
 
-                <td class="text-right">{{employee.days_away}}</td>
+                
             </tr>
 {% endfor %}
 
@@ -78,14 +83,18 @@
                 <th></th>
                 <th class="text-right">{{value.totals.profdev_requested|currency}}</th>
                 <th class="text-right">{{value.totals.profdev_spent|currency}}</th>
+                <th class="text-right">{{value.totals.profdev_days_away}}</th>
 
                 <th class="text-right">{{value.totals.admin_requested|currency}}</th>
                 <th class="text-right">{{value.totals.admin_spent|currency}}</th>
+                <th class="text-right">{{value.totals.admin_days_away}}</th>
+
 
                 <th class="text-right">{{value.totals.total_requested|currency}}</th>
                 <th class="text-right">{{value.totals.total_spent|currency}}</th>
+                <th class="text-right">{{value.totals.total_days_ooo}}</th>
                 
-                <th class="text-right">{{value.totals.days_away}}</th>
+                
             </tr>
         </tfoot>
     </table>
@@ -95,10 +104,9 @@
         <thead class="thead-light">
             <tr>
                 <th colspan="3" scope="colgroup"></th>
-                <th colspan="2" scope="colgroup" class="text-center">Professional Development</th>
-                <th colspan="2" scope="colgroup" class="text-center bg-light">Administrative</th>
-                <th colspan="2" scope="colgroup" class="text-center">Total</th>
-                <th colspan="1" scope="colgroup" class="text-center bg-light">Days Out</th>
+                <th colspan="3" scope="colgroup" class="text-center">Professional Development</th>
+                <th colspan="3" scope="colgroup" class="text-center bg-light">Administrative</th>
+                <th colspan="3" scope="colgroup" class="text-center">Total</th>
             </tr>
             <tr>
                 <th scope="col">Unit</th>
@@ -106,11 +114,13 @@
                 <th scope="col">Employee</th>  
                 <th scope="col" class="text-right">Amount Requested</th>
                 <th scope="col" class="text-right">Amount Spent</th>
+                <th scope="col" class="text-right">Days Out</th>
                 <th scope="col" class="text-right bg-light">Amount Requested</th>
                 <th scope="col" class="text-right bg-light">Amount Spent</th>
+                <th scope="col" class="text-right bg-light">Days Out</th>
                 <th scope="col" class="text-right">Total Requested</th>
                 <th scope="col" class="text-right">Total Spent</th>
-                <th scope="col" class="text-right bg-light">Working</th>
+                <th scope="col" class="text-right">Days Out</th>
             </tr>
         </thead>
  <tfoot>
@@ -120,14 +130,17 @@
                 <th></th>
                 <th class="text-right">{{merge.all_type_total.profdev_requested|currency}}</th>
                 <th class="text-right">{{merge.all_type_total.profdev_spent|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.profdev_days_away}}</th>
 
                 <th class="text-right">{{merge.all_type_total.admin_requested|currency}}</th>
                 <th class="text-right">{{merge.all_type_total.admin_spent|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.admin_days_away}}</th>
 
                 <th class="text-right">{{merge.all_type_total.total_requested|currency}}</th>
                 <th class="text-right">{{merge.all_type_total.total_spent|currency}}</th>
+                <th class="text-right">{{merge.all_type_total.total_days_ooo}}</th>
 
-                <th class="text-right">{{merge.all_type_total.days_away}}</th>
+                
             </tr>
         </tfoot>
     </table>

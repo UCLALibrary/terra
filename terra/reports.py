@@ -103,14 +103,25 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         return_date__lte=end_date,
     ).annotate(days_vacation=Sum("vacation__duration"))
 
-    days_away = (
+    profdev_days_away = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            administrative=False,
         )
         .values("traveler_id")
-        .annotate(days_away=Sum("days_ooo"))
+        .annotate(profdev_days_away=Sum("days_ooo"))
+    )
+    admin_days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+            administrative=True,
+        )
+        .values("traveler_id")
+        .annotate(admin_days_away=Sum("days_ooo"))
     )
 
     # final query
@@ -137,9 +148,17 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
                 ),
                 Value(0),
             ),
-            days_away=Coalesce(
+            profdev_days_away=Coalesce(
                 Subquery(
-                    days_away.values("days_away")[:1], output_field=IntegerField()
+                    profdev_days_away.values("profdev_days_away")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
+            admin_days_away=Coalesce(
+                Subquery(
+                    admin_days_away.values("admin_days_away")[:1],
+                    output_field=IntegerField(),
                 ),
                 Value(0),
             ),
@@ -151,7 +170,8 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             "admin_requested",
             "admin_spent",
             "days_vacation",
-            "days_away",
+            "profdev_days_away",
+            "admin_days_away",
         )
     )
     return rows
@@ -172,13 +192,15 @@ def merge_data(rows, data):
                     employee.data["admin_spent"] + employee.data["profdev_spent"]
                 )
                 employee.data["total_days_ooo"] = (
-                    employee.data["days_away"] + employee.data["days_vacation"]
+                    employee.data["profdev_days_away"]
+                    + employee.data["admin_days_away"]
                 )
             except ObjectDoesNotExist:
                 employee.data = {
                     "admin_requested": 0,
                     "admin_spent": 0,
-                    "days_away": 0,
+                    "admin_days_away": 0,
+                    "profdev_days_away": 0,
                     "days_vacation": 0,
                     "profdev_requested": 0,
                     "profdev_spent": 0,
@@ -198,7 +220,8 @@ def unit_totals(employees):
         "admin_spent": sum(e.data["admin_spent"] for e in employees),
         "total_spent": sum(e.data["total_spent"] for e in employees),
         "days_vacation": sum(e.data["days_vacation"] for e in employees),
-        "days_away": sum(e.data["days_away"] for e in employees),
+        "profdev_days_away": sum(e.data["profdev_days_away"] for e in employees),
+        "admin_days_away": sum(e.data["admin_days_away"] for e in employees),
         "total_days_ooo": sum(e.data["total_days_ooo"] for e in employees),
     }
 
@@ -207,7 +230,8 @@ def calculate_totals(data):
     data["unit_totals"] = {
         "admin_requested": 0,
         "admin_spent": 0,
-        "days_away": 0,
+        "admin_days_away": 0,
+        "profdev_days_away": 0,
         "days_vacation": 0,
         "profdev_requested": 0,
         "profdev_spent": 0,
@@ -416,16 +440,26 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
         return_date__lte=end_date,
     ).annotate(days_vacation=Sum("vacation__duration"))
 
-    days_away = (
+    profdev_days_away = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            administrative=False,
         )
         .values("traveler_id")
-        .annotate(days_away=Sum("days_ooo"))
+        .annotate(profdev_days_away=Sum("days_ooo"))
     )
-
+    admin_days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+            administrative=True,
+        )
+        .values("traveler_id")
+        .annotate(admin_days_away=Sum("days_ooo"))
+    )
     # final query
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
@@ -449,9 +483,17 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
                 ),
                 Value(0),
             ),
-            days_away=Coalesce(
+            profdev_days_away=Coalesce(
                 Subquery(
-                    days_away.values("days_away")[:1], output_field=IntegerField()
+                    profdev_days_away.values("profdev_days_away")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
+            admin_days_away=Coalesce(
+                Subquery(
+                    admin_days_away.values("admin_days_away")[:1],
+                    output_field=IntegerField(),
                 ),
                 Value(0),
             ),
@@ -463,7 +505,8 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
             "admin_requested",
             "admin_spent",
             "days_vacation",
-            "days_away",
+            "profdev_days_away",
+            "admin_days_away",
         )
     )
     return rows
@@ -501,7 +544,7 @@ def merge_data_type(employee_ids, start_date, end_date):
                     employee["admin_spent"] + employee["profdev_spent"]
                 )
                 employee["total_days_ooo"] = (
-                    employee["days_away"] + employee["days_vacation"]
+                    employee["profdev_days_away"] + employee["admin_days_away"]
                 )
 
             except ObjectDoesNotExist:
@@ -512,7 +555,8 @@ def merge_data_type(employee_ids, start_date, end_date):
                     "profdev_spent": 0,
                     "total_spent": 0,
                     "total_requested": 0,
-                    "days_away": 0,
+                    "profdev_days_away": 0,
+                    "admin_days_away": 0,
                     "days_vacation": 0,
                     "total_days_ooo": 0,
                 }
@@ -522,7 +566,8 @@ def merge_data_type(employee_ids, start_date, end_date):
         type_totals = {
             "admin_requested": 0,
             "admin_spent": 0,
-            "days_away": 0,
+            "admin_days_away": 0,
+            "profdev_days_away": 0,
             "days_vacation": 0,
             "profdev_requested": 0,
             "profdev_spent": 0,
@@ -534,7 +579,8 @@ def merge_data_type(employee_ids, start_date, end_date):
         for employee in data["type"][employee_type]["employees"]:
             type_totals["admin_requested"] += employee["admin_requested"]
             type_totals["admin_spent"] += employee["admin_spent"]
-            type_totals["days_away"] += employee["days_away"]
+            type_totals["profdev_days_away"] += employee["profdev_days_away"]
+            type_totals["admin_days_away"] += employee["admin_days_away"]
             type_totals["days_vacation"] += employee["days_vacation"]
             type_totals["profdev_requested"] += employee["profdev_requested"]
             type_totals["profdev_spent"] += employee["profdev_spent"]
@@ -546,7 +592,8 @@ def merge_data_type(employee_ids, start_date, end_date):
     complete_total = {
         "admin_requested": 0,
         "admin_spent": 0,
-        "days_away": 0,
+        "profdev_days_away": 0,
+        "admin_days_away": 0,
         "days_vacation": 0,
         "profdev_requested": 0,
         "profdev_spent": 0,
@@ -560,7 +607,12 @@ def merge_data_type(employee_ids, start_date, end_date):
             "admin_requested"
         ]
         complete_total["admin_spent"] += data["type"][t]["totals"]["admin_spent"]
-        complete_total["days_away"] += data["type"][t]["totals"]["days_away"]
+        complete_total["profdev_days_away"] += data["type"][t]["totals"][
+            "profdev_days_away"
+        ]
+        complete_total["admin_days_away"] += data["type"][t]["totals"][
+            "admin_days_away"
+        ]
         complete_total["days_vacation"] += data["type"][t]["totals"]["days_vacation"]
         complete_total["profdev_requested"] += data["type"][t]["totals"][
             "profdev_requested"
