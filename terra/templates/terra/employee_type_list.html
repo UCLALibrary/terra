@@ -57,8 +57,8 @@
                 <td>{{employee.unit_manager}}</td>
                 <td><a href="/employee/{{employee.id}}/">{{employee.name}}</a></td>
 
-                <td class="text-right">{{employee.profdev_requested|currency}}</td>
-                <td class="text-right">{{employee.profdev_spent|currency}}</td>
+                <td class="text-right">{{employee.profdev_requested|cap|safe}}</td>
+                <td class="text-right">{{employee.profdev_spent|cap|safe}}</td>
 
                 <td class="text-right">{{employee.admin_requested|currency}}</td>
                 <td class="text-right">{{employee.admin_spent|currency}}</td>

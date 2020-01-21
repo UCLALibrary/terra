@@ -1135,7 +1135,7 @@
     "funded_by": 3,
     "treq": 1,
     "fund": 1,
-    "amount": "1500.00000"
+    "amount": "3500.00000"
   }
 },
 {
@@ -1585,7 +1585,7 @@
     "type": "LDG",
     "rate": null,
     "quantity": null,
-    "total": "915.00000",
+    "total": "2000.00000",
     "fund": 1,
     "date_paid": "2020-01-01"
   }

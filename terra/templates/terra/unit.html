@@ -58,8 +58,8 @@
                 <td><a href="/employee/{{employee.pk}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
                 <td> {{employee.get_type_display}}</td>
 
-                <td class="text-right">{{employee.data.profdev_requested|currency}}</td>
-                <td class="text-right">{{employee.data.profdev_spent|currency}}</td>
+                <td class="text-right">{{employee.data.profdev_requested|cap|safe}}</td>
+                <td class="text-right">{{employee.data.profdev_spent|cap|safe}}</td>
                 
                 <td class="text-right">{{employee.data.admin_requested|currency}}</td>
                 <td class="text-right">{{employee.data.admin_spent|currency}}</td>
