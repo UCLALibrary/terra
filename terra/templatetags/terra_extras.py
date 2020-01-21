@@ -20,7 +20,9 @@ def currency(value):
 
 @register.filter
 def cap(value):
-
+    if value is None or value == "":
+        value = 0
+        return format_currency(value, grouping=True)
     if value >= 3500:
         return '<span class="badge badge-danger">{}</span>'.format(
             format_currency(value, grouping=True)
