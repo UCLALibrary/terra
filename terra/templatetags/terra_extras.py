@@ -25,8 +25,8 @@ def cap(value):
         return '<span class="badge badge-danger">{}</span>'.format(
             format_currency(value, grouping=True)
         )
-        # over or at professional development cap
-    elif value >= 2800:
+        # Over or at professional development cap
+    elif value >= 2800 and value < 3500:
         return '<span class="badge badge-warning">{}</span>'.format(
             format_currency(value, grouping=True)
         )
