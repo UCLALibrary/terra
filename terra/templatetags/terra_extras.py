@@ -24,12 +24,12 @@ def cap(value):
         value = 0
         return format_currency(value, grouping=True)
     if value >= 3500:
-        return '<span class="badge badge-danger">{}</span>'.format(
+        return '<span class="alert-danger">{}</span>'.format(
             format_currency(value, grouping=True)
         )
         # Over or at professional development cap
     elif value >= 2800 and value < 3500:
-        return '<span class="badge badge-warning">{}</span>'.format(
+        return '<span class="alert-warning">{}</span>'.format(
             format_currency(value, grouping=True)
         )
         # Within 20% of professional development cap
