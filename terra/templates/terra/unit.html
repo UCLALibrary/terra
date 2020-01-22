@@ -60,7 +60,7 @@
 
                 <td class="text-right">{{employee.data.profdev_requested|cap|safe}}</td>
                 <td class="text-right">{{employee.data.profdev_spent|cap|safe}}</td>
-                <td class="text-right">{{employee.data.profdev_days_away}}</td>
+                <td class="text-right">{{employee.data.profdev_days_away|days_cap|safe}}</td>
                 
                 <td class="text-right">{{employee.data.admin_requested|currency}}</td>
                 <td class="text-right">{{employee.data.admin_spent|currency}}</td>
