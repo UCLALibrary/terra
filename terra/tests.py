@@ -20,7 +20,7 @@ from .models import (
     EstimatedExpense,
     ActualExpense,
 )
-from .templatetags.terra_extras import check_or_cross, currency
+from .templatetags.terra_extras import check_or_cross, currency, cap, days_cap
 from .utils import current_fiscal_year, in_fiscal_year
 from terra import reports
 
@@ -232,6 +232,20 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(currency(-100.0000), "-$100.00")
         self.assertEqual(currency(300000.0000), "$300,000.00")
         self.assertEqual(currency(None), "$0.00")
+
+    def test_cap(self):
+        self.assertEqual(cap(3600), '<span class="alert-danger">$3,600.00</span>')
+        self.assertEqual(cap(3400), '<span class="alert-warning">$3,400.00</span>')
+        self.assertEqual(cap(1600), "$1,600.00")
+        self.assertEqual(cap(None), "$0.00")
+        self.assertEqual(cap(0), "$0.00")
+
+    def test_days_cap(self):
+        self.assertEqual(days_cap(17), '<span class="alert-danger">17</span>')
+        self.assertEqual(days_cap(12), '<span class="alert-warning">12</span>')
+        self.assertEqual(days_cap(10), 10)
+        self.assertEqual(days_cap(None), 0)
+        self.assertEqual(days_cap(0), 0)
 
 
 class TestEmpoyeeDetailView(TestCase):
