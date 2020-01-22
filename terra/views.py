@@ -106,11 +106,13 @@ class UnitExportView(UnitDetailView):
                 "Type",
                 "Prof Dev Requested",
                 "Prof Dev Spent",
+                "Prof Dev Days Out",
                 "Admin Requested",
                 "Admin Spent",
+                "Admin Days Out",
                 "Total Requested",
                 "Total Spent",
-                "Working Days Out",
+                "Total Days Out",
             ]
         )
         for subunit in context["report"]["subunits"].values():
@@ -123,11 +125,13 @@ class UnitExportView(UnitDetailView):
                         employee.get_type_display(),
                         employee.data["profdev_requested"],
                         employee.data["profdev_spent"],
+                        employee.data["profdev_days_away"],
                         employee.data["admin_requested"],
                         employee.data["admin_spent"],
+                        employee.data["admin_days_away"],
                         employee.data["total_requested"],
                         employee.data["total_spent"],
-                        employee.data["days_away"],
+                        employee.data["total_days_ooo"],
                     ]
                 )
             writer.writerow(
@@ -136,11 +140,13 @@ class UnitExportView(UnitDetailView):
                     "",
                     subunit["subunit_totals"]["profdev_requested"],
                     subunit["subunit_totals"]["profdev_spent"],
+                    subunit["subunit_totals"]["profdev_days_away"],
                     subunit["subunit_totals"]["admin_requested"],
                     subunit["subunit_totals"]["admin_spent"],
+                    subunit["subunit_totals"]["admin_days_away"],
                     subunit["subunit_totals"]["total_requested"],
                     subunit["subunit_totals"]["total_spent"],
-                    subunit["subunit_totals"]["days_away"],
+                    subunit["subunit_totals"]["total_days_ooo"],
                 ]
             )
         writer.writerow([])
@@ -151,11 +157,13 @@ class UnitExportView(UnitDetailView):
                 "",
                 context["report"]["unit_totals"]["profdev_requested"],
                 context["report"]["unit_totals"]["profdev_spent"],
+                context["report"]["unit_totals"]["profdev_days_away"],
                 context["report"]["unit_totals"]["admin_requested"],
                 context["report"]["unit_totals"]["admin_spent"],
+                context["report"]["unit_totals"]["admin_days_away"],
                 context["report"]["unit_totals"]["total_requested"],
                 context["report"]["unit_totals"]["total_spent"],
-                context["report"]["unit_totals"]["days_away"],
+                context["report"]["unit_totals"]["total_days_ooo"],
             ]
         )
         return response
@@ -313,11 +321,13 @@ class EmployeeTypeExportView(EmployeeTypeListView):
                 "Employee",
                 "Prof Dev Requested",
                 "Prof Dev Spent",
+                "Prof Dev Days Out",
                 "Admin Requested",
                 "Admin Spent",
+                "Admin Days Out",
                 "Total Requested",
                 "Total Spent",
-                "Working Days Out",
+                "Total Days Out",
             ]
         )
         for key, value in context["merge"]["type"].items():
@@ -331,11 +341,13 @@ class EmployeeTypeExportView(EmployeeTypeListView):
                         employee["name"],
                         employee["profdev_requested"],
                         employee["profdev_spent"],
+                        employee["profdev_days_away"],
                         employee["admin_requested"],
                         employee["admin_spent"],
+                        employee["admin_days_away"],
                         employee["total_requested"],
                         employee["total_spent"],
-                        employee["days_away"],
+                        employee["total_days_ooo"],
                     ]
                 )
             writer.writerow(
@@ -345,11 +357,13 @@ class EmployeeTypeExportView(EmployeeTypeListView):
                     "",
                     value["totals"]["profdev_requested"],
                     value["totals"]["profdev_spent"],
+                    value["totals"]["profdev_days_away"],
                     value["totals"]["admin_requested"],
                     value["totals"]["admin_spent"],
+                    value["totals"]["admin_days_away"],
                     value["totals"]["total_requested"],
                     value["totals"]["total_spent"],
-                    value["totals"]["days_away"],
+                    value["totals"]["total_days_ooo"],
                 ]
             )
         writer.writerow([])
@@ -361,11 +375,13 @@ class EmployeeTypeExportView(EmployeeTypeListView):
                 "",
                 context["merge"]["all_type_total"]["profdev_requested"],
                 context["merge"]["all_type_total"]["profdev_spent"],
+                context["merge"]["all_type_total"]["profdev_days_away"],
                 context["merge"]["all_type_total"]["admin_requested"],
                 context["merge"]["all_type_total"]["admin_spent"],
+                context["merge"]["all_type_total"]["admin_days_away"],
                 context["merge"]["all_type_total"]["total_requested"],
                 context["merge"]["all_type_total"]["total_spent"],
-                context["merge"]["all_type_total"]["days_away"],
+                context["merge"]["all_type_total"]["total_days_ooo"],
             ]
         )
         return response
