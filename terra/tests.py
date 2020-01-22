@@ -20,7 +20,7 @@ from .models import (
     EstimatedExpense,
     ActualExpense,
 )
-from .templatetags.terra_extras import check_or_cross, currency
+from .templatetags.terra_extras import check_or_cross, currency, cap, days_cap
 from .utils import current_fiscal_year, in_fiscal_year
 from terra import reports
 
@@ -232,6 +232,20 @@ class TemplateTagsTestCase(TestCase):
         self.assertEqual(currency(-100.0000), "-$100.00")
         self.assertEqual(currency(300000.0000), "$300,000.00")
         self.assertEqual(currency(None), "$0.00")
+
+    def test_cap(self):
+        self.assertEqual(cap(3600), '<span class="alert-danger">$3,600.00</span>')
+        self.assertEqual(cap(3400), '<span class="alert-warning">$3,400.00</span>')
+        self.assertEqual(cap(1600), "$1,600.00")
+        self.assertEqual(cap(None), "$0.00")
+        self.assertEqual(cap(0), "$0.00")
+
+    def test_days_cap(self):
+        self.assertEqual(days_cap(17), '<span class="alert-danger">17</span>')
+        self.assertEqual(days_cap(12), '<span class="alert-warning">12</span>')
+        self.assertEqual(days_cap(10), 10)
+        self.assertEqual(days_cap(None), 0)
+        self.assertEqual(days_cap(0), 0)
 
 
 class TestEmpoyeeDetailView(TestCase):
@@ -493,9 +507,9 @@ class UnitReportsTestCase(TestCase):
                         "admin_spent": Decimal("0"),
                         "total_spent": Decimal("4345"),
                         "days_vacation": Decimal("14"),
-                        "profdev_days_away": Decimal("30"),
+                        "profdev_days_away": Decimal("42"),
                         "admin_days_away": Decimal("3"),
-                        "total_days_ooo": Decimal("33"),
+                        "total_days_ooo": Decimal("45"),
                     }
                 },
                 1: {
@@ -535,9 +549,9 @@ class UnitReportsTestCase(TestCase):
                 "total_requested": Decimal("8350"),
                 "total_spent": Decimal("4345"),
                 "days_vacation": Decimal("14"),
-                "profdev_days_away": Decimal("30"),
+                "profdev_days_away": Decimal("42"),
                 "admin_days_away": Decimal("3"),
-                "total_days_ooo": Decimal("33"),
+                "total_days_ooo": Decimal("45"),
             },
         }
         actual = reports.unit_report(
@@ -804,26 +818,26 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "admin_requested": Decimal("0.00000"),
                             "admin_spent": Decimal("0.00000"),
                             "days_vacation": 5,
-                            "profdev_days_away": 15,
+                            "profdev_days_away": 20,
                             "admin_days_away": 0,
                             "name": "Prigge, Ashton",
                             "unit": "Software Development & Library Systems",
                             "unit_manager": "Gomez, Joshua",
                             "total_requested": Decimal("4000.00000"),
                             "total_spent": Decimal("1420.00000"),
-                            "total_days_ooo": 15,
+                            "total_days_ooo": 20,
                         }
                     ],
                     "totals": {
                         "admin_requested": Decimal("0.00000"),
                         "admin_spent": Decimal("0.00000"),
                         "admin_days_away": 0,
-                        "profdev_days_away": 15,
+                        "profdev_days_away": 20,
                         "days_vacation": 5,
                         "profdev_requested": Decimal("4000.00000"),
                         "profdev_spent": Decimal("1420.00000"),
                         "total_requested": Decimal("4000.00000"),
-                        "total_days_ooo": 15,
+                        "total_days_ooo": 20,
                         "total_spent": Decimal("1420.00000"),
                     },
                 },
@@ -836,26 +850,26 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "admin_requested": Decimal("0.00000"),
                             "admin_spent": Decimal("0.00000"),
                             "days_vacation": 0,
-                            "profdev_days_away": 5,
+                            "profdev_days_away": 12,
                             "admin_days_away": 0,
                             "name": "Awopetu, Tinu",
                             "unit": "Software Development & Library Systems",
                             "unit_manager": "Gomez, Joshua",
                             "total_requested": Decimal("0.00000"),
                             "total_spent": Decimal("2925.00000"),
-                            "total_days_ooo": 5,
+                            "total_days_ooo": 12,
                         }
                     ],
                     "totals": {
                         "admin_requested": Decimal("0.00000"),
                         "admin_spent": Decimal("0.00000"),
                         "admin_days_away": 0,
-                        "profdev_days_away": 5,
+                        "profdev_days_away": 12,
                         "days_vacation": 0,
                         "profdev_requested": Decimal("0.00000"),
                         "profdev_spent": Decimal("2925.00000"),
                         "total_requested": Decimal("0.00000"),
-                        "total_days_ooo": 5,
+                        "total_days_ooo": 12,
                         "total_spent": Decimal("2925.00000"),
                     },
                 },
@@ -878,13 +892,13 @@ class EmployeeTypeReportsTestCase(TestCase):
             "all_type_total": {
                 "admin_requested": Decimal("2350.00000"),
                 "admin_spent": Decimal("0.00000"),
-                "profdev_days_away": 30,
+                "profdev_days_away": 42,
                 "admin_days_away": 3,
                 "days_vacation": 14,
                 "profdev_requested": Decimal("6000.00000"),
                 "profdev_spent": Decimal("4345.00000"),
                 "total_requested": Decimal("8350.00000"),
-                "total_days_ooo": 33,
+                "total_days_ooo": 45,
                 "total_spent": Decimal("4345.00000"),
             },
         }
@@ -965,7 +979,7 @@ class EmployeeSubtotalTestCase(TestCase):
             "id": 2,
             "admin_requested": Decimal("0.0000"),
             "admin_spent": Decimal("0.0000"),
-            "days_away": 15,
+            "days_away": 20,
             "days_vacation": 5,
             "total_estimatedexpense": Decimal("6075.0000"),
             "profdev_requested": Decimal("4000.0000"),

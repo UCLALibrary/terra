@@ -35,3 +35,18 @@ def cap(value):
         # Within 20% of professional development cap
     else:
         return format_currency(value, grouping=True)
+
+
+@register.filter
+def days_cap(value):
+    if value is None or value == "":
+        value = 0
+        return value
+    if value >= 15:
+        return '<span class="alert-danger">{}</span>'.format(value)
+        # Over or at professional development cap
+    elif value >= 12 and value < 15:
+        return '<span class="alert-warning">{}</span>'.format(value)
+        # Within 20% of professional development cap
+    else:
+        return value
