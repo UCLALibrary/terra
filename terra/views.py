@@ -6,13 +6,14 @@ from django.views.generic import View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund, Employee, EMPLOYEE_TYPES
+from .models import TravelRequest, Unit, Fund, Employee, ActualExpense
 from .reports import (
     unit_report,
     fund_report,
     merge_data_type,
     get_type_and_employees,
     employee_total_report,
+    get_subunits_and_employees,
 )
 from .utils import current_fiscal_year_object, current_fiscal_year
 
@@ -385,3 +386,33 @@ class EmployeeTypeExportView(EmployeeTypeListView):
             ]
         )
         return response
+
+
+class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
+    model = ActualExpense
+    context_object_name = "actualexpenses"
+    login_url = "/accounts/login/"
+    redirect_field_name = "next"
+
+    def test_func(self):
+        return self.request.user.employee.has_full_report_access()
+
+    def get_queryset(self):
+        if self.request.user.employee.has_full_report_access():
+            actualexpenses = ActualExpense.objects.all()
+
+        return actualexpenses.order_by("treq", "treq__traveler__unit")
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super().get_context_data(*args, **kwargs)
+        context["report"] = get_subunits_and_employees(Unit.objects.get(pk=1))
+        fy = current_fiscal_year_object()
+        context["unit_totals"] = unit_report(
+            unit=(Unit.objects.get(pk=1)),
+            start_date=fy.start.date(),
+            end_date=fy.end.date(),
+        )
+
+        return context

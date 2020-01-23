@@ -1,0 +1,109 @@
+{% extends "terra/base.html" %}
+
+{% load terra_extras %}
+
+{% block title %}Actual Expense Report{% endblock %}
+
+{% block supplemental_css %}
+<style>
+    body {
+        padding-top: 6.5rem;
+
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>Actual Expense Report</h1>
+<br/>
+
+{% for k,v in report.subunits.items %}
+    <table class="table">
+      
+      
+        <thead class="thead-light">
+          <h3>{{v.subunit}}</h3>
+          <th class="text">Unit</th>
+          <th class="text">Employee</th>
+          <th class="text">Activity</th>
+          <th class="text">Dates</th>
+          <th class="text">Closed</th>
+          <th class="text">Reimbursed</th>
+          <th class="text">Fund</th>
+          <th class="text-right">Amount</th>
+        </thead>
+        <tbody>
+        {% for e in v.employees.values %}
+        {% for actualexpense in actualexpenses %}
+        {% if actualexpense.treq.traveler == e %}
+        {% if actualexpense.in_fiscal_year %}   
+            <tr>
+                <td class="text">{{actualexpense.treq.traveler.unit}}</td>
+                <td class="text">{{actualexpense.treq.traveler}}</td>
+                <td class="text">{{actualexpense.treq.activity}}</td>
+                <td class="text">{{actualexpense.treq.departure_date}} - {{actualexpense.treq.return_date}}</td>
+                <td class="text">{{actualexpense.treq.closed|check_or_cross|safe}}</td>
+                <td class="textt">{{actualexpense.reimbursed|check_or_cross|safe}}</td>
+                <td class="text">{{actualexpense.fund}}</td>
+                <td class="text-right">{{actualexpense.total|currency}}</td>  
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+        {% for subunit_id, subunit in unit_totals.subunits.items %}
+          {% if subunit.subunit == v.subunit %}
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right">{{subunit.subunit_totals.total_spent|currency}}</th>
+   
+            </tr>
+
+        </tfoot>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+      </table>
+    <hr/>
+
+    <table class="table">
+        <thead class="thead-light">
+          <h3>Library Total</h3>
+          <tr>
+              <th></th>
+                <th></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right">Amount</th>
+              </tr>
+        </thead>
+        <tfoot>
+            <tr>
+<th>Total</th>
+                <th></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right">{{unit_totals.unit_totals.total_spent|currency}}</th>    
+            </tr>
+        </tfoot>
+    </table>
+
+
+
+
+{% endblock %}
+
