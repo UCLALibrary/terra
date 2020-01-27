@@ -398,21 +398,108 @@ class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.employee.has_full_report_access()
 
-    def get_queryset(self):
-        if self.request.user.employee.has_full_report_access():
-            actualexpenses = ActualExpense.objects.all()
-
-        return actualexpenses.order_by("treq", "treq__traveler__unit")
-
     def get_context_data(self, *args, **kwargs):
 
         context = super().get_context_data(*args, **kwargs)
         context["report"] = get_subunits_and_employees(Unit.objects.get(pk=1))
         fy = current_fiscal_year_object()
+        context["fiscalyear"] = fy
         context["unit_totals"] = unit_report(
             unit=(Unit.objects.get(pk=1)),
             start_date=fy.start.date(),
             end_date=fy.end.date(),
         )
-
+        context["actualexpenses"] = ActualExpense.objects.all()
         return context
+
+
+class ActualExpenseExportView(ActualExpenseListView):
+    def render_to_response(self, context, **response_kwargs):
+
+        response = HttpResponse(content_type="text/csv")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="Actual_Expense_report.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Unit",
+                "Employee",
+                "Activity",
+                "Departure Date",
+                "Return Date",
+                "Closed",
+                "Reimbursed",
+                "Fund",
+                "Amount",
+            ]
+        )
+        for v in context["report"]["subunits"].values():
+            writer.writerow([])
+            writer.writerow([v["subunit"]])
+            for e in v["employees"].values():
+                for actualexpense in context["actualexpenses"]:
+                    if actualexpense.treq.traveler == e:
+                        if actualexpense.in_fiscal_year:
+
+                            writer.writerow(
+                                [
+                                    actualexpense.treq.traveler.unit,
+                                    actualexpense.treq.traveler,
+                                    actualexpense.treq.activity,
+                                    actualexpense.treq.departure_date,
+                                    actualexpense.treq.return_date,
+                                    actualexpense.treq.closed,
+                                    actualexpense.reimbursed,
+                                    actualexpense.fund,
+                                    actualexpense.total,
+                                ]
+                            )
+                for subunit in context["unit_totals"]["subunits"].values():
+                    for employee in subunit["employees"].values():
+                        if employee == e and employee.data["total_spent"] != 0:
+                            writer.writerow(
+                                [
+                                    "Employee Total",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    employee.data["total_spent"],
+                                ]
+                            )
+                            writer.writerow([])
+            for subunit in context["unit_totals"]["subunits"].values():
+                if subunit["subunit"] == v["subunit"]:
+                    writer.writerow(
+                        [
+                            "Unit Subtotal",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            subunit["subunit_totals"]["total_spent"],
+                        ]
+                    )
+        writer.writerow([])
+        writer.writerow(
+            [
+                "Library Total",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                context["unit_totals"]["unit_totals"]["total_spent"],
+            ]
+        )
+
+        return response
