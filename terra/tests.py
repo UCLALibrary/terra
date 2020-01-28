@@ -998,3 +998,14 @@ class EmployeeSubtotalTestCase(TestCase):
             for key, value in x.items():
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
+
+
+class ActualExpenseReportTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_actualexpense_report_denies_anonymous(self):
+        response = self.client.get("/actual_expense_report/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/actual_expense_report/", status_code=302
+        )

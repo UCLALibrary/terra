@@ -460,7 +460,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                         if employee == e and employee.data["total_spent"] != 0:
                             writer.writerow(
                                 [
-                                    "Employee Total",
+                                    f"{employee} Total",
                                     "",
                                     "",
                                     "",
@@ -476,7 +476,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                 if subunit["subunit"] == v["subunit"]:
                     writer.writerow(
                         [
-                            "Unit Subtotal",
+                            "Subtotal",
                             "",
                             "",
                             "",
