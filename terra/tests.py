@@ -1036,7 +1036,6 @@ class EmployeeSubtotalTestCase(TestCase):
             }
         }
         actual = reports.get_subunits_and_employees(Unit.objects.get(pk=1))
-        print(actual.values())
-        print(expected.values())
-        self.assertEqual(actual.keys(), expected.keys())
-        # self.assertEqual(actual.values(), expected.values())
+        self.assertEqual(actual["subunits"].keys(), expected["subunits"].keys())
+        # self.assertEqual(actual["subunits"].values(), expected["subunits"].values())
+        # print(actual["subunits"])
