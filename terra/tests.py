@@ -999,13 +999,7 @@ class EmployeeSubtotalTestCase(TestCase):
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
 
-
-# Removed seperate class for now. Getting query error
-
-
-class ActualExpenseReportTestCase(TestCase):
-
-    fixtures = ["sample_data.json"]
+    # Removed seperate class for now. Getting query error
 
     def test_actualexpense_report_denies_anonymous(self):
         response = self.client.get("/actual_expense_report/", follow=True)
@@ -1019,5 +1013,30 @@ class ActualExpenseReportTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/actual_expense_report.html")
 
-    def actualexpenses_detail(self):
-        context["actualexpenses"] = ActualExpense.objects.all()
+    def test_unit_and_employee(self):
+        expected = {
+            "subunits": {
+                1: {
+                    "subunit": "<Unit 1: Library>",
+                    "employees": {4: "<Employee 4: Steel, Virginia>"},
+                },
+                2: {
+                    "subunit": "<Unit 2: DIIT>",
+                    "employees": {
+                        1: "<Employee 1: Grappone, Todd>",
+                        5: "<Employee 5: Awopetu, Tinu>",
+                        3: "<Employee 3: Gomez, Joshua>",
+                        2: "<Employee 2: Prigge, Ashton>",
+                    },
+                },
+                4: {
+                    "subunit": "<Unit 4: Library Business Services>",
+                    "employees": {6: "<Employee 6: Wang, Doris>"},
+                },
+            }
+        }
+        actual = reports.get_subunits_and_employees(Unit.objects.get(pk=1))
+        print(actual.values())
+        print(expected.values())
+        self.assertEqual(actual.keys(), expected.keys())
+        # self.assertEqual(actual.values(), expected.values())
