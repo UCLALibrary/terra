@@ -396,7 +396,8 @@ class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     redirect_field_name = "next"
 
     def test_func(self):
-        return self.request.user.employee.has_full_report_access()
+        if self.request.user.employee.has_full_report_access():
+            return True
 
     def get_context_data(self, *args, **kwargs):
 
@@ -423,7 +424,7 @@ class ActualExpenseExportView(ActualExpenseListView):
         writer = csv.writer(response)
         writer.writerow(
             [
-                "Unit",
+                "Department",
                 "Employee",
                 "Activity",
                 "Departure Date",

@@ -30,7 +30,7 @@
 
         <thead class="thead-light">
           <h3>{{v.subunit}}</h3>
-          <th class="text">Unit/Department</th>
+          <th class="text">Department</th>
           <th class="text">Employee</th>
           <th class="text">Activity</th>
           <th class="text">Dates</th>
@@ -81,7 +81,7 @@
         {% for subunit in unit_totals.subunits.values %}
           {% if subunit.subunit == v.subunit %}
             <tr>
-                <th>Total</th>
+                <th>{{v.subunit}} Subtotal</th>
                 <th></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>

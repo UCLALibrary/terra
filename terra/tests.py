@@ -1000,6 +1000,9 @@ class EmployeeSubtotalTestCase(TestCase):
                     self.assertEqual(x[key], expected[key])
 
 
+# Removed seperate class for now. Getting query error
+
+
 class ActualExpenseReportTestCase(TestCase):
 
     fixtures = ["sample_data.json"]
@@ -1009,3 +1012,12 @@ class ActualExpenseReportTestCase(TestCase):
         self.assertRedirects(
             response, "/accounts/login/?next=/actual_expense_report/", status_code=302
         )
+
+    def test_actualexpense_report_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/actual_expense_report/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/actual_expense_report.html")
+
+    def actualexpenses_detail(self):
+        context["actualexpenses"] = ActualExpense.objects.all()
