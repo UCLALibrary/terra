@@ -1001,6 +1001,11 @@ class EmployeeSubtotalTestCase(TestCase):
 
     # Removed seperate class for now. Getting query error
 
+
+class ActualExpenseTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
     def test_actualexpense_report_denies_anonymous(self):
         response = self.client.get("/actual_expense_report/", follow=True)
         self.assertRedirects(
@@ -1037,5 +1042,8 @@ class EmployeeSubtotalTestCase(TestCase):
         }
         actual = reports.get_subunits_and_employees(Unit.objects.get(pk=1))
         self.assertEqual(actual["subunits"].keys(), expected["subunits"].keys())
-        # self.assertEqual(actual["subunits"].values(), expected["subunits"].values())
-        # print(actual["subunits"])
+
+        for key in actual["subunits"].keys():
+            self.assertEqual(
+                actual["subunits"][key].keys(), expected["subunits"][key].keys()
+            )
