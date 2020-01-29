@@ -999,7 +999,7 @@ class EmployeeSubtotalTestCase(TestCase):
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
 
-    # removing seperate class
+    # removing seperate class Actual Expense report tests
 
     def test_actualexpense_report_denies_anonymous(self):
         response = self.client.get("/actual_expense_report/", follow=True)
@@ -1040,5 +1040,13 @@ class EmployeeSubtotalTestCase(TestCase):
 
         for key in actual["subunits"].keys():
             self.assertEqual(
-                actual["subunits"][key].keys(), expected["subunits"][key].keys()
+                actual["subunits"][key]["employees"].keys(),
+                expected["subunits"][key]["employees"].keys(),
             )
+
+    def test_actual_expenses(self):
+        actualexpense = ActualExpense.objects.get(pk=2)
+        self.assertEqual(actualexpense.total, Decimal("325.00000"))
+        self.assertEqual(actualexpense.fund.pk, 1)
+        self.assertEqual(actualexpense.reimbursed, False)
+        self.assertEqual(actualexpense.treq.pk, 5)
