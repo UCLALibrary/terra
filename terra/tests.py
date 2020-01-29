@@ -365,40 +365,37 @@ class TestUnitListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
+# This test case disabled for now; see bug TRRA-195.
+# class DataLoadTestCase(TestCase):
 
-"""
-
-class DataLoadTestCase(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        # Travel data requires Employees, which require Units
-        call_command("load_units", "terra/fixtures/test_units.csv")
-        call_command("load_employees", "terra/fixtures/test_employees.csv")
-        call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
+#     @classmethod
+#     def setUpTestData(cls):
+#         # Travel data requires Employees, which require Units
+#         call_command("load_units", "terra/fixtures/test_units.csv")
+#         call_command("load_employees", "terra/fixtures/test_employees.csv")
+#         call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
  
-    def test_load_units(self):
-        unit_count = Unit.objects.all().count()
-        self.assertEqual(unit_count, 3)
-        unit = Unit.objects.get(name__exact="East Asian Library")
-        self.assertEqual(str(unit), "East Asian Library")
+#     def test_load_units(self):
+#         unit_count = Unit.objects.all().count()
+#         self.assertEqual(unit_count, 3)
+#         unit = Unit.objects.get(name__exact="East Asian Library")
+#         self.assertEqual(str(unit), "East Asian Library")
 
-    def test_load_employees(self):
-        emp_count = Employee.objects.all().count()
-        # Edward, Sally, and fake placeholder = 3
-        self.assertEqual(emp_count, 3)
-        # Edward Employee works for Sally Supervisor
-        emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
-        sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
-        self.assertEqual(emp.supervisor, sup)
+#     def test_load_employees(self):
+#         emp_count = Employee.objects.all().count()
+#         # Edward, Sally, and fake placeholder = 3
+#         self.assertEqual(emp_count, 3)
+#         # Edward Employee works for Sally Supervisor
+#         emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
+#         sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
+#         self.assertEqual(emp.supervisor, sup)
 
-    def test_load_travel_data(self):
-        treq_count = TravelRequest.objects.all().count()
-        self.assertEqual(treq_count, 3)
-        activity_count = Activity.objects.all().count()
-        # 2 people have the same activity, so count is less than treq_count
-        self.assertEqual(activity_count, 2)
-"""
+#     def test_load_travel_data(self):
+#         treq_count = TravelRequest.objects.all().count()
+#         self.assertEqual(treq_count, 3)
+#         activity_count = Activity.objects.all().count()
+#         # 2 people have the same activity, so count is less than treq_count
+#         self.assertEqual(activity_count, 2)
 
 
 class UtilsTestCase(TestCase):
