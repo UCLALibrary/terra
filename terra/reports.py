@@ -248,7 +248,9 @@ def calculate_totals(data):
 
 def unit_report(unit, start_date=None, end_date=None):
     data = get_subunits_and_employees(unit)
-    rows = get_individual_data([e.id for e in unit.all_employees()])
+    rows = get_individual_data(
+        [e.id for e in unit.all_employees()], start_date, end_date
+    )
     data = merge_data(rows, data)
     return calculate_totals(data)
 

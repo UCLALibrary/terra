@@ -27,6 +27,12 @@ def fiscal_year_bookends(fiscal_year=None):
     return (fy.start.date(), fy.end.date())
 
 
+def fiscal_year(fiscal_year=None):
+    if fiscal_year is None:
+        fiscal_year = current_fiscal_year()
+    return FY.FiscalYear(fiscal_year)
+
+
 def in_fiscal_year(date, fiscal_year=None):
     if fiscal_year is None:
         fiscal_year = current_fiscal_year()
