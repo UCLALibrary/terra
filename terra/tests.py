@@ -999,12 +999,7 @@ class EmployeeSubtotalTestCase(TestCase):
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
 
-    # Removed seperate class for now. Getting query error
-
-
-class ActualExpenseTestCase(TestCase):
-
-    fixtures = ["sample_data.json"]
+    # removing seperate class
 
     def test_actualexpense_report_denies_anonymous(self):
         response = self.client.get("/actual_expense_report/", follow=True)
