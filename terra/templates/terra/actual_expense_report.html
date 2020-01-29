@@ -44,9 +44,10 @@
             {% if actualexpense.treq.traveler == e %}
               {% if actualexpense.in_fiscal_year %}   
                   <tr>
+
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
-                    <td class="text">{{actualexpense.treq.traveler}}</td>
-                    <td class="text">{{actualexpense.treq.activity}}</td>
+                    <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/">{{actualexpense.treq.traveler}}</a></td>
+                    <td><a href="/treq/{{actualexpense.treq.pk}}/">{{actualexpense.treq.activity}}</a></td>
                     <td class="text">{{actualexpense.treq.departure_date}} - {{actualexpense.treq.return_date}}</td>
                     <td class="text">{{actualexpense.treq.closed|check_or_cross|safe}}</td>
                     <td class="textt">{{actualexpense.reimbursed|check_or_cross|safe}}</td>
