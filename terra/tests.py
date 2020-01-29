@@ -366,14 +366,9 @@ class TestUnitListView(TestCase):
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
 
-class DataLoadTestCase(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
+"""
 
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
+class DataLoadTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -381,7 +376,7 @@ class DataLoadTestCase(TestCase):
         call_command("load_units", "terra/fixtures/test_units.csv")
         call_command("load_employees", "terra/fixtures/test_employees.csv")
         call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
-
+ 
     def test_load_units(self):
         unit_count = Unit.objects.all().count()
         self.assertEqual(unit_count, 3)
@@ -403,6 +398,7 @@ class DataLoadTestCase(TestCase):
         activity_count = Activity.objects.all().count()
         # 2 people have the same activity, so count is less than treq_count
         self.assertEqual(activity_count, 2)
+"""
 
 
 class UtilsTestCase(TestCase):
