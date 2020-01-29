@@ -2,10 +2,11 @@ from datetime import date
 from decimal import Decimal
 import json
 
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
+
 
 from fiscalyear import FiscalYear
 
@@ -365,6 +366,7 @@ class TestUnitListView(TestCase):
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
 
+@tag("trouble")
 class DataLoadTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -1000,6 +1002,10 @@ class EmployeeSubtotalTestCase(TestCase):
                     self.assertEqual(x[key], expected[key])
 
     # removing seperate class Actual Expense report tests
+
+
+class ActualExpenseTestCase(TestCase):
+    fixtures = ["sample_data.json"]
 
     def test_actualexpense_report_denies_anonymous(self):
         response = self.client.get("/actual_expense_report/", follow=True)
