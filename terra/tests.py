@@ -2,7 +2,7 @@ from datetime import date
 from decimal import Decimal
 import json
 
-from django.test import TestCase, tag
+from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
@@ -366,8 +366,15 @@ class TestUnitListView(TestCase):
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
 
-@tag("trouble")
 class DataLoadTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+
     @classmethod
     def setUpTestData(cls):
         # Travel data requires Employees, which require Units
@@ -1000,8 +1007,6 @@ class EmployeeSubtotalTestCase(TestCase):
             for key, value in x.items():
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
-
-    # removing seperate class Actual Expense report tests
 
 
 class ActualExpenseTestCase(TestCase):

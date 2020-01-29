@@ -247,11 +247,6 @@ class TravelRequest(models.Model):
     def approved_total(self):
         return utils.format_currency(self.total_funding())
 
-    def total_per_fund(self):
-
-        funds = [ae.fund for ae in self.actualexpense_set.all()]
-        return funds
-
 
 class Vacation(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)

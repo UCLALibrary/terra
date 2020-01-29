@@ -32,7 +32,7 @@ if [ "$TRAVIS" = "true" ]; then
 fi
 
 # Run the tests
-${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra --exclude-tag=trouble
+${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
 # Capture return value from tests, or it'll be lost when the next command runs
 TEST_RETVAL=$?
 
