@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
 
+
 from fiscalyear import FiscalYear
 
 from .models import (
@@ -364,36 +365,37 @@ class TestUnitListView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
+# This test case disabled for now; see bug TRRA-195.
+# class DataLoadTestCase(TestCase):
 
-class DataLoadTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        # Travel data requires Employees, which require Units
-        call_command("load_units", "terra/fixtures/test_units.csv")
-        call_command("load_employees", "terra/fixtures/test_employees.csv")
-        call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
+#     @classmethod
+#     def setUpTestData(cls):
+#         # Travel data requires Employees, which require Units
+#         call_command("load_units", "terra/fixtures/test_units.csv")
+#         call_command("load_employees", "terra/fixtures/test_employees.csv")
+#         call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
+ 
+#     def test_load_units(self):
+#         unit_count = Unit.objects.all().count()
+#         self.assertEqual(unit_count, 3)
+#         unit = Unit.objects.get(name__exact="East Asian Library")
+#         self.assertEqual(str(unit), "East Asian Library")
 
-    def test_load_units(self):
-        unit_count = Unit.objects.all().count()
-        self.assertEqual(unit_count, 3)
-        unit = Unit.objects.get(name__exact="East Asian Library")
-        self.assertEqual(str(unit), "East Asian Library")
+#     def test_load_employees(self):
+#         emp_count = Employee.objects.all().count()
+#         # Edward, Sally, and fake placeholder = 3
+#         self.assertEqual(emp_count, 3)
+#         # Edward Employee works for Sally Supervisor
+#         emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
+#         sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
+#         self.assertEqual(emp.supervisor, sup)
 
-    def test_load_employees(self):
-        emp_count = Employee.objects.all().count()
-        # Edward, Sally, and fake placeholder = 3
-        self.assertEqual(emp_count, 3)
-        # Edward Employee works for Sally Supervisor
-        emp = Employee.objects.get(user=User.objects.get(last_name__exact="Employee"))
-        sup = Employee.objects.get(user=User.objects.get(last_name__exact="Supervisor"))
-        self.assertEqual(emp.supervisor, sup)
-
-    def test_load_travel_data(self):
-        treq_count = TravelRequest.objects.all().count()
-        self.assertEqual(treq_count, 3)
-        activity_count = Activity.objects.all().count()
-        # 2 people have the same activity, so count is less than treq_count
-        self.assertEqual(activity_count, 2)
+#     def test_load_travel_data(self):
+#         treq_count = TravelRequest.objects.all().count()
+#         self.assertEqual(treq_count, 3)
+#         activity_count = Activity.objects.all().count()
+#         # 2 people have the same activity, so count is less than treq_count
+#         self.assertEqual(activity_count, 2)
 
 
 class UtilsTestCase(TestCase):
@@ -998,3 +1000,57 @@ class EmployeeSubtotalTestCase(TestCase):
             for key, value in x.items():
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
+
+
+class ActualExpenseTestCase(TestCase):
+    fixtures = ["sample_data.json"]
+
+    def test_actualexpense_report_denies_anonymous(self):
+        response = self.client.get("/actual_expense_report/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/actual_expense_report/", status_code=302
+        )
+
+    def test_actualexpense_report_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/actual_expense_report/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "terra/actual_expense_report.html")
+
+    def test_unit_and_employee(self):
+        expected = {
+            "subunits": {
+                1: {
+                    "subunit": "<Unit 1: Library>",
+                    "employees": {4: "<Employee 4: Steel, Virginia>"},
+                },
+                2: {
+                    "subunit": "<Unit 2: DIIT>",
+                    "employees": {
+                        1: "<Employee 1: Grappone, Todd>",
+                        5: "<Employee 5: Awopetu, Tinu>",
+                        3: "<Employee 3: Gomez, Joshua>",
+                        2: "<Employee 2: Prigge, Ashton>",
+                    },
+                },
+                4: {
+                    "subunit": "<Unit 4: Library Business Services>",
+                    "employees": {6: "<Employee 6: Wang, Doris>"},
+                },
+            }
+        }
+        actual = reports.get_subunits_and_employees(Unit.objects.get(pk=1))
+        self.assertEqual(actual["subunits"].keys(), expected["subunits"].keys())
+
+        for key in actual["subunits"].keys():
+            self.assertEqual(
+                actual["subunits"][key]["employees"].keys(),
+                expected["subunits"][key]["employees"].keys(),
+            )
+
+    def test_actual_expenses(self):
+        actualexpense = ActualExpense.objects.get(pk=2)
+        self.assertEqual(actualexpense.total, Decimal("325.00000"))
+        self.assertEqual(actualexpense.fund.pk, 1)
+        self.assertEqual(actualexpense.reimbursed, False)
+        self.assertEqual(actualexpense.treq.pk, 5)

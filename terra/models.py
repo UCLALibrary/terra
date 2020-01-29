@@ -343,6 +343,7 @@ class ActualExpense(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=5)
     fund = models.ForeignKey("Fund", on_delete=models.PROTECT)
     date_paid = models.DateField()
+    reimbursed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(repr(self))
@@ -357,3 +358,6 @@ class ActualExpense(models.Model):
 
     def total_dollars(self):
         return "$%.2f" % self.total
+
+    def in_fiscal_year(self, fiscal_year=None):
+        return utils.in_fiscal_year(self.date_paid, fiscal_year)
