@@ -20,6 +20,11 @@ def current_fiscal_year_object(today=None):
     return FY.FiscalYear(year)
 
 
+def current_fiscal_year_int(today=None):
+    year = current_fiscal_year(today=today)
+    return year
+
+
 def fiscal_year_bookends(fiscal_year=None):
     if fiscal_year is None:
         fiscal_year = current_fiscal_year()

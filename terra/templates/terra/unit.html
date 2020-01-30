@@ -16,24 +16,24 @@
 {% block body %}
     <div class="row">
         <div class="col">
-            <h1>Fiscal Year {{fiscalyear}}</h1>
-            <h2>{{unit.name}}</h2>
-            <h3>{{unit.manager}}</h3>
+            <div class="row"> <h1>Fiscal Year {{fiscalyear}}</h1> 
             <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Year
+    Fiscal Year
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2021 %}">2021</a>
     <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2020 %}">2020</a>
     <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2019 %}">2019</a>
-    <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2018 %}">2018</a>
   </div>
 </div>
+</div>
+            <h2>{{unit.name}}</h2>
+            <h3>{{unit.manager}}</h3>
+            
         </div>
-
         <div class="col text-right">
-            <a href="/unit/{{unit.pk}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="{% url 'unit_csv' pk=unit.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
         </div>
     </div>
 
