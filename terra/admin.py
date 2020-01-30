@@ -9,7 +9,6 @@ from .models import (
     Vacation,
     Fund,
     Funding,
-    EstimatedExpense,
     ActualExpense,
 )
 
@@ -48,11 +47,6 @@ class FundingInline(admin.TabularInline):
     model = Funding
     extra = 1
     autocomplete_fields = ["funded_by", "fund"]
-
-
-class EstimatedExpenseInline(admin.TabularInline):
-    model = EstimatedExpense
-    extra = 1
 
 
 class ActualExpenseInline(admin.TabularInline):
@@ -95,13 +89,6 @@ def days_ooo(obj):
 days_ooo.short_description = "Days Out"
 
 
-def allocations_total(obj):
-    return obj.allocations_total()
-
-
-allocations_total.short_description = "Estimated"
-
-
 def approved_total(obj):
     return obj.approved_total()
 
@@ -128,7 +115,6 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "approved",
         "funded",
         "closed",
-        allocations_total,
         approved_total,
         expenditures_total,
     )
@@ -145,7 +131,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "activity__name",
     ]
     autocomplete_fields = ["activity", "approved_by", "traveler"]
-    inlines = (EstimatedExpenseInline, FundingInline, ActualExpenseInline)
+    inlines = (FundingInline, ActualExpenseInline)
 
 
 @admin.register(Activity)
@@ -199,18 +185,6 @@ class FundingAdmin(admin.ModelAdmin):
         "treq__activity__name",
     ]
     autocomplete_fields = ["funded_by", "fund", "treq"]
-
-
-@admin.register(EstimatedExpense)
-class EstimatedExpenseAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "type", "total_dollars")
-    list_filter = ("type", ("total", custom_titled_filter("total cost")))
-    search_fields = [
-        "treq__traveler__user__last_name",
-        "treq__traveler__user__first_name",
-        "treq__activity__name",
-    ]
-    autocomplete_fields = ["treq"]
 
 
 @admin.register(ActualExpense)

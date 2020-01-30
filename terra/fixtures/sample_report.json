@@ -467,42 +467,7 @@
     "codename": "view_unit"
   }
 },
-{
-  "model": "auth.permission",
-  "pk": 53,
-  "fields": {
-    "name": "Can add estimated expense",
-    "content_type": 14,
-    "codename": "add_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 54,
-  "fields": {
-    "name": "Can change estimated expense",
-    "content_type": 14,
-    "codename": "change_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 55,
-  "fields": {
-    "name": "Can delete estimated expense",
-    "content_type": 14,
-    "codename": "delete_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 56,
-  "fields": {
-    "name": "Can view estimated expense",
-    "content_type": 14,
-    "codename": "view_estimatedexpense"
-  }
-},
+
 {
   "model": "auth.permission",
   "pk": 57,
@@ -565,10 +530,6 @@
       30,
       31,
       32,
-      53,
-      54,
-      55,
-      56,
       33,
       34,
       35,
@@ -1048,62 +1009,6 @@
     "treq": 15,
     "fund": 1,
     "amount": "1000.00000"
-  }
-},
-
-{
-  "model": "terra.estimatedexpense",
-  "pk": 30,
-  "fields": {
-    "treq": 10,
-    "type": "LDG",
-    "rate": "200.00000",
-    "quantity": 5,
-    "total": "1000.00000"
-  }
-},
-{
-  "model": "terra.estimatedexpense",
-  "pk": 31,
-  "fields": {
-    "treq": 11,
-    "type": "LDG",
-    "rate": "200.00000",
-    "quantity": 5,
-    "total": "1000.00000"
-  }
-},
-{
-  "model": "terra.estimatedexpense",
-  "pk": 32,
-  "fields": {
-    "treq": 12,
-    "type": "CON",
-    "rate": "200.00000",
-    "quantity": 5,
-    "total": "1000.00000"
-  }
-},
-{
-  "model": "terra.estimatedexpense",
-  "pk": 33,
-  "fields": {
-    "treq": 12,
-    "type": "LDG",
-    "rate": "200.00000",
-    "quantity": 5,
-    "total": "1000.00000"
-  }
-},
-{
-  "model": "terra.estimatedexpense",
-  "pk": 34,
-  "fields": {
-    "treq": 15,
-    "type": "LDG",
-    "rate": "200.00000",
-    "quantity": 5,
-    "total": "1000.00000"
   }
 },
 

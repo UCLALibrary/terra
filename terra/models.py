@@ -207,15 +207,9 @@ class TravelRequest(models.Model):
     approved.boolean = True
 
     def funded(self):
-        return self.total_funding() >= self.estimated_expenses()
+        return self.total_funding() > 0
 
     funded.boolean = True
-
-    def estimated_expenses(self):
-        return sum([ee.total for ee in self.estimatedexpense_set.all()])
-
-    def allocations_total(self):
-        return utils.format_currency(self.estimated_expenses())
 
     def actual_expenses(self):
         return sum([ae.total for ae in self.actualexpense_set.all()])
@@ -311,28 +305,6 @@ class Funding(models.Model):
         return "<Funding {}: {} {}>".format(
             self.id, self.treq.activity.name, self.treq.traveler
         )
-
-
-class EstimatedExpense(models.Model):
-    treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
-    type = models.CharField(max_length=3, choices=EXPENSE_TYPES)
-    rate = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
-    quantity = models.IntegerField(null=True, blank=True)
-    total = models.DecimalField(max_digits=10, decimal_places=5)
-
-    def __str__(self):
-        return str(repr(self))
-
-    def __repr__(self):
-        return "<EstimatedExpense {}: {} {} {}>".format(
-            self.id,
-            self.get_type_display(),
-            self.treq.activity.name,
-            self.treq.traveler,
-        )
-
-    def total_dollars(self):
-        return "$%.2f" % self.total
 
 
 class ActualExpense(models.Model):
