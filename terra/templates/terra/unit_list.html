@@ -20,20 +20,20 @@
 <div class="col-7">
 	<div class="list-group">
 	{% for unit in units %}
-	  <a href="/unit/{{unit.pk}}" class="list-group-item list-group-item-action">
+	  <a href="{% url 'unit_detail' pk=unit.id year=2020 %}" class="list-group-item list-group-item-action">
 	    <b>{{unit}}</b> - {{unit.manager}}
 	  </a>
 	  {% if unit.subunits.all %}
 	  <div class="list-group">
 		{% for subunit in unit.subunits.all %}
-		  <a href="/unit/{{subunit.pk}}" class="list-group-item list-group-item-action">
+		  <a href="{% url 'unit_detail' pk=subunit.id year=2020 %}" class="list-group-item list-group-item-action">
 		    &nbsp; &nbsp; &nbsp;
 		    <b>{{subunit}}</b> - {{subunit.manager}}
 		  </a>
 		  {% if subunit.subunits.all %}
 		  <div class="list-group">
 			{% for subsubunit in subunit.subunits.all %}
-			  <a href="/unit/{{subsubunit.pk}}" class="list-group-item list-group-item-action">
+			  <a href="{% url 'unit_detail' pk=subunit.id year=2020 %}" class="list-group-item list-group-item-action">
 			    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 			    <b>{{subsubunit}}</b> - {{subsubunit.manager}}
 			  </a>
