@@ -16,24 +16,23 @@
 {% block body %}
     <div class="row">
         <div class="col">
-            <div class="row"> <h1>Fiscal Year {{fiscalyear}}</h1> 
-            <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Fiscal Year
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2021 %}">2021</a>
-    <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2020 %}">2020</a>
-    <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2019 %}">2019</a>
-  </div>
-</div>
-</div>
+             <h1>Fiscal Year {{fiscalyear}}</h1> 
             <h2>{{unit.name}}</h2>
             <h3>{{unit.manager}}</h3>
-            
         </div>
         <div class="col text-right">
             <a href="{% url 'unit_csv' pk=unit.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Fiscal Year
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2021 %}">FY2021</a>
+                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2020 %}">FY2020</a>
+                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2019 %}">FY2019</a>
+            </div>
         </div>
     </div>
 

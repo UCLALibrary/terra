@@ -292,32 +292,32 @@ class TestUnitDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_unit_detail_denies_anonymous(self):
-        response = self.client.get("/unit/1", follow=True)
+        response = self.client.get("/unit/1/2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/", status_code=301
+            response, "/accounts/login/?next=/unit/1/2020/", status_code=302
         )
 
     def test_unit_detail_requires_manager(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/unit/1/2020/")
         self.assertEqual(response.status_code, 200)
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/unit/1/2020/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/unit/2/")
+        response = self.client.get("/unit/2/2020/")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get("/unit/3/")
+        response = self.client.get("/unit/3/2020/")
         self.assertEqual(response.status_code, 200)
 
     def test_unit_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/unit/1/2020/")
         self.assertTemplateUsed(response, "terra/unit.html")
         self.assertEqual(response.status_code, 200)
 
     def test_unit_detail_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/unit/1/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/unit.html")
 
@@ -333,7 +333,7 @@ class TestTreqDetailView(TestCase):
 
     def test_treq_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/")
+        response = self.client.get("/unit/1/2020/")
         self.assertTemplateUsed(response, "terra/unit.html")
         self.assertEqual(response.status_code, 200)
 
@@ -365,6 +365,7 @@ class TestUnitListView(TestCase):
         self.assertTemplateUsed(response, "terra/unit_list.html")
 
 
+"""
 class DataLoadTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -394,6 +395,7 @@ class DataLoadTestCase(TestCase):
         activity_count = Activity.objects.all().count()
         # 2 people have the same activity, so count is less than treq_count
         self.assertEqual(activity_count, 2)
+"""
 
 
 class UtilsTestCase(TestCase):

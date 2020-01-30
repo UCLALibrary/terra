@@ -108,7 +108,7 @@ class UnitExportView(UnitDetailView):
         fy = fiscal_year(fiscal_year=self.kwargs["year"])
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f'attachment; filename="{unit}_FY{fy}.csv"'
+        response["Content-Disposition"] = f'attachment; filename="{unit}_{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [
