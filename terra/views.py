@@ -21,6 +21,7 @@ from .utils import (
     fiscal_year_bookends,
     fiscal_year,
     current_fiscal_year_int,
+
 )
 
 
@@ -427,8 +428,8 @@ class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             end_date=fy.end.date(),
         )
         context["actualexpenses"] = ActualExpense.objects.all()
-        context["a"] = current_fiscal_year_object()
-        return
+        return context
+
 
 
 class ActualExpenseExportView(ActualExpenseListView):
