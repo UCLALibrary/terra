@@ -15,7 +15,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG")
+# Ensure value of DEBUG is interpreted as a boolean and not a string
+# If DJANGO_DEBUG is string False, then "False" == "True" -> DEBUG = False
+# If DJANGO_DEBUG is string True, then "True" == "True" -> DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG") == "True"
 
 # Define the list of allowed hosts to connect to this application
 # This is passed in via the environment variable DJANGO_ALLOWED_HOSTS
