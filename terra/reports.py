@@ -277,6 +277,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
             administrative=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            funding__fund=fund,
         )
         .values("traveler__pk")
         .annotate(
@@ -286,7 +287,9 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     )
 
     profdev_spent = (
-        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"), administrative=False, actualexpense__fund=fund
+        )
         .values("traveler__pk")
         .annotate(
             profdev_spent=Sum(
@@ -305,6 +308,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
             administrative=True,
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            funding__fund=fund,
         )
         .values("traveler__pk")
         .annotate(admin_requested=Sum("funding__amount"), filter=Q(funding__fund=fund))
@@ -312,7 +316,9 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     )
 
     admin_spent = (
-        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=True)
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"), administrative=True, actualexpense__fund=fund
+        )
         .values("traveler__pk")
         .annotate(
             admin_spent=Sum(
@@ -328,16 +334,27 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
     # final query
     rows = Employee.objects.filter(pk__in=employee_ids).annotate(
         profdev_requested=Coalesce(
-            Subquery(profdev_requested, output_field=DecimalField()), Value(0)
+            Subquery(
+                profdev_requested.values("profdev_requested"),
+                output_field=DecimalField(),
+            ),
+            Value(0),
         ),
         profdev_spent=Coalesce(
-            Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+            Subquery(
+                profdev_spent.values("profdev_spent"), output_field=DecimalField()
+            ),
+            Value(0),
         ),
         admin_requested=Coalesce(
-            Subquery(admin_requested, output_field=DecimalField()), Value(0)
+            Subquery(
+                admin_requested.values("admin_requested"), output_field=DecimalField()
+            ),
+            Value(0),
         ),
         admin_spent=Coalesce(
-            Subquery(admin_spent, output_field=DecimalField()), Value(0)
+            Subquery(admin_spent.values("admin_spent"), output_field=DecimalField()),
+            Value(0),
         ),
     )
     return rows

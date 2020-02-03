@@ -191,8 +191,11 @@ class FundAdmin(admin.ModelAdmin):
 
 @admin.register(Funding)
 class FundingAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "funded_by", "funded_on", "fund", "amount")
-    list_filter = (("funded_on", custom_titled_filter("funding date")),)
+    list_display = ("id", "treq", "fund", "funded_by", "funded_on", "amount")
+    list_filter = (
+        "fund",
+        ("funded_on", custom_titled_filter("funding date")),
+    )
     search_fields = [
         "treq__traveler__user__last_name",
         "treq__traveler__user__first_name",
@@ -215,8 +218,8 @@ class EstimatedExpenseAdmin(admin.ModelAdmin):
 
 @admin.register(ActualExpense)
 class ActualExpenseAdmin(admin.ModelAdmin):
-    list_display = ("id", "treq", "type", "total_dollars", "date_paid")
-    list_filter = ("type", ("total", custom_titled_filter("total cost")))
+    list_display = ("id", "treq", "fund", "type", "total_dollars", "date_paid")
+    list_filter = ("type", "fund")
     search_fields = [
         "treq__traveler__user__last_name",
         "treq__traveler__user__first_name",
