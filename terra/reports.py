@@ -12,6 +12,7 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay
 
+
 from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
 from .utils import fiscal_year_bookends, current_fiscal_year_int
 
