@@ -1,4 +1,6 @@
 from datetime import date
+from django.conf import settings
+
 import fiscalyear as FY
 import locale
 
@@ -43,3 +45,11 @@ def in_fiscal_year(date, fiscal_year=None):
         fiscal_year = current_fiscal_year()
     fiscal_date = FY.FiscalDate(date.year, date.month, date.day)
     return fiscal_date.fiscal_year == fiscal_year
+
+
+def fiscal_year_list():
+    current_fiscal_year = current_fiscal_year_int()
+    fiscal_years = []
+    for year in range(settings.INCEPTION_DATE, (current_fiscal_year + 1)):
+        fiscal_years.append(year)
+    return fiscal_years

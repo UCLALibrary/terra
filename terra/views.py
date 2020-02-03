@@ -14,7 +14,6 @@ from .reports import (
     get_type_and_employees,
     employee_total_report,
     get_subunits_and_employees,
-    fiscal_year_list,
 )
 from .utils import (
     current_fiscal_year_object,
@@ -22,6 +21,7 @@ from .utils import (
     fiscal_year_bookends,
     fiscal_year,
     current_fiscal_year_int,
+    fiscal_year_list,
 )
 
 

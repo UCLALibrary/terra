@@ -137,3 +137,5 @@ if os.getenv("DJANGO_RUN_ENV") != "dev":
 
 # login redirect
 LOGIN_REDIRECT_URL = "/"
+
+INCEPTION_DATE = 2019
