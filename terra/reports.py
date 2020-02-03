@@ -13,7 +13,7 @@ from django.db.models import (
 from django.db.models.functions import Coalesce, ExtractDay
 
 from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
-from .utils import fiscal_year_bookends
+from .utils import fiscal_year_bookends, current_fiscal_year_int
 
 
 def check_dates(start_date, end_date):
@@ -729,3 +729,12 @@ def employee_total_report(employee_ids, start_date, end_date):
         employee_totals[e] = employee
 
     return employee_totals
+
+
+def fiscal_year_list():
+    inception_date = 2019
+    current_fiscal_year = current_fiscal_year_int()
+    fiscal_years = []
+    for year in range(inception_date, (current_fiscal_year + 1)):
+        fiscal_years.append(year)
+    return fiscal_years

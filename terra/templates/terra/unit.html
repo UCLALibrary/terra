@@ -29,9 +29,9 @@
             Fiscal Year
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2021 %}">FY2021</a>
-                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2020 %}">FY2020</a>
-                <a class="dropdown-item" href="{% url 'unit_detail' pk=unit.id year=2019 %}">FY2019</a>
+                {% for year in fiscal_year_list %}
+                    <a class="dropdown-item" href= "/unit/{{unit.id}}/{{year}}">{{year}}</a>
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -14,6 +14,7 @@ from .reports import (
     get_type_and_employees,
     employee_total_report,
     get_subunits_and_employees,
+    fiscal_year_list,
 )
 from .utils import (
     current_fiscal_year_object,
@@ -95,7 +96,7 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             unit=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
-        context["test"] = fy.start.date()
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 
@@ -197,8 +198,6 @@ class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # For now get current fiscal year
-        # Override this by query params when we add historic data
         context["current_fy"] = current_fiscal_year_int()
         return context
 
