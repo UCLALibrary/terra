@@ -288,7 +288,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
 
     profdev_spent = (
         TravelRequest.objects.filter(
-            traveler=OuterRef("pk"), administrative=False, funding__fund=fund
+            traveler=OuterRef("pk"), administrative=False, actualexpense__fund=fund
         )
         .values("traveler__pk")
         .annotate(
@@ -317,7 +317,7 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
 
     admin_spent = (
         TravelRequest.objects.filter(
-            traveler=OuterRef("pk"), administrative=True, funding__fund=fund
+            traveler=OuterRef("pk"), administrative=True, actualexpense__fund=fund
         )
         .values("traveler__pk")
         .annotate(
