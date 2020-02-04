@@ -16,12 +16,23 @@
 {% block body %}
     <div class="row">
         <div class="col">
-            <h1>Fiscal Year {{fiscalyear}}</h1>
+             <h1>Fiscal Year {{fiscalyear}}</h1> 
             <h2>{{unit.name}}</h2>
             <h3>{{unit.manager}}</h3>
         </div>
         <div class="col text-right">
-            <a href="/unit/{{unit.pk}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="{% url 'unit_csv' pk=unit.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Fiscal Year
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for year in fiscal_year_list %}
+                    <a class="dropdown-item" href= "/unit/{{unit.id}}/{{year}}">{{year}}</a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 

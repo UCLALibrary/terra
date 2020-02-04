@@ -12,15 +12,9 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce, ExtractDay
 
-from .models import (
-    TravelRequest,
-    Employee,
-    Funding,
-    ActualExpense,
-    Unit,
-    EMPLOYEE_TYPES,
-)
-from .utils import fiscal_year_bookends
+
+from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
+from .utils import fiscal_year_bookends, current_fiscal_year_int
 
 
 def check_dates(start_date, end_date):
@@ -255,7 +249,9 @@ def calculate_totals(data):
 
 def unit_report(unit, start_date=None, end_date=None):
     data = get_subunits_and_employees(unit)
-    rows = get_individual_data([e.id for e in unit.all_employees()])
+    rows = get_individual_data(
+        [e.id for e in unit.all_employees()], start_date, end_date
+    )
     data = merge_data(rows, data)
     return calculate_totals(data)
 

@@ -83,11 +83,11 @@ urlpatterns = [
         name="treq_detail",
     ),
     path(
-        "unit/<int:pk>/",
+        "unit/<int:pk>/<int:year>/",
         UnitDetailView.as_view(template_name="terra/unit.html"),
         name="unit_detail",
     ),
-    path("unit/<int:pk>/export/", UnitExportView.as_view(), name="unit_csv"),
+    path("unit/<int:pk>/<int:year>/export/", UnitExportView.as_view(), name="unit_csv"),
     path(
         "unit/",
         UnitListView.as_view(template_name="terra/unit_list.html"),

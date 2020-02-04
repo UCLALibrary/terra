@@ -15,7 +15,14 @@ from .reports import (
     employee_total_report,
     get_subunits_and_employees,
 )
-from .utils import current_fiscal_year_object, current_fiscal_year
+from .utils import (
+    current_fiscal_year_object,
+    current_fiscal_year,
+    fiscal_year_bookends,
+    fiscal_year,
+    current_fiscal_year_int,
+    fiscal_year_list,
+)
 
 
 @login_required
@@ -43,6 +50,7 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(*args, **kwargs)
         context["fiscal_year"] = current_fiscal_year()
         fy = current_fiscal_year_object()
+
         id_list = []
         for employee in Employee.objects.all():
             id_list.append(employee.id)
@@ -82,13 +90,13 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # For now get current fiscal year
-        # Override this by query params when we add historic data
-        fy = current_fiscal_year_object()
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        context["fy"] = self.kwargs["year"]
         context["report"] = unit_report(
             unit=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 
@@ -96,10 +104,10 @@ class UnitExportView(UnitDetailView):
     def render_to_response(self, context, **response_kwargs):
         unit = context.get("unit")
         team = unit.all_employees()
-        fy = context.get("fiscalyear", "").replace(" ", "")
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f'attachment; filename="{unit}_FY{fy}.csv"'
+        response["Content-Disposition"] = f'attachment; filename="{unit}_{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [
@@ -187,6 +195,11 @@ class UnitListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if self.request.user.employee.has_full_report_access():
             return Unit.objects.filter(type="1")
         return Unit.objects.filter(manager=self.request.user.employee)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["current_fy"] = current_fiscal_year_int()
+        return context
 
 
 class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
