@@ -307,6 +307,28 @@ class Funding(models.Model):
         )
 
 
+class EstimatedExpense(models.Model):
+    treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
+    type = models.CharField(max_length=3, choices=EXPENSE_TYPES)
+    rate = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=5)
+
+    def __str__(self):
+        return str(repr(self))
+
+    def __repr__(self):
+        return "<EstimatedExpense {}: {} {} {}>".format(
+            self.id,
+            self.get_type_display(),
+            self.treq.activity.name,
+            self.treq.traveler,
+        )
+
+    def total_dollars(self):
+        return "$%.2f" % self.total
+
+
 class ActualExpense(models.Model):
     treq = models.ForeignKey("TravelRequest", on_delete=models.CASCADE)
     type = models.CharField(max_length=3, choices=EXPENSE_TYPES)

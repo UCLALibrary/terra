@@ -467,7 +467,42 @@
     "codename": "view_unit"
   }
 },
-
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add estimated expense",
+    "content_type": 14,
+    "codename": "add_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change estimated expense",
+    "content_type": 14,
+    "codename": "change_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete estimated expense",
+    "content_type": 14,
+    "codename": "delete_estimatedexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view estimated expense",
+    "content_type": 14,
+    "codename": "view_estimatedexpense"
+  }
+},
 {
   "model": "auth.permission",
   "pk": 57,
@@ -530,6 +565,10 @@
       30,
       31,
       32,
+      53,
+      54,
+      55,
+      56,
       33,
       34,
       35,
