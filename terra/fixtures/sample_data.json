@@ -467,48 +467,13 @@
     "codename": "view_unit"
   }
 },
-{
-  "model": "auth.permission",
-  "pk": 53,
-  "fields": {
-    "name": "Can add estimated expense",
-    "content_type": 14,
-    "codename": "add_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 54,
-  "fields": {
-    "name": "Can change estimated expense",
-    "content_type": 14,
-    "codename": "change_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 55,
-  "fields": {
-    "name": "Can delete estimated expense",
-    "content_type": 14,
-    "codename": "delete_estimatedexpense"
-  }
-},
-{
-  "model": "auth.permission",
-  "pk": 56,
-  "fields": {
-    "name": "Can view estimated expense",
-    "content_type": 14,
-    "codename": "view_estimatedexpense"
-  }
-},
+
 {
   "model": "auth.permission",
   "pk": 57,
   "fields": {
     "name": "Can add actual expense",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "add_actualexpense"
   }
 },
@@ -517,7 +482,7 @@
   "pk": 58,
   "fields": {
     "name": "Can change actual expense",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "change_actualexpense"
   }
 },
@@ -526,7 +491,7 @@
   "pk": 59,
   "fields": {
     "name": "Can delete actual expense",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "delete_actualexpense"
   }
 },
@@ -535,7 +500,7 @@
   "pk": 60,
   "fields": {
     "name": "Can view actual expense",
-    "content_type": 15,
+    "content_type": 14,
     "codename": "view_actualexpense"
   }
 },
@@ -565,10 +530,6 @@
       30,
       31,
       32,
-      53,
-      54,
-      55,
-      56,
       33,
       34,
       35,
