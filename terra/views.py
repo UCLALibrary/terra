@@ -309,7 +309,8 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         # For now get current fiscal year
         # Override this by query params when we add historic data
-        fy = current_fiscal_year_object()
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        context["fy"] = self.kwargs["year"]
         id_list = []
         for employee in Employee.objects.all():
             id_list.append(employee.id)
@@ -317,16 +318,17 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 
 class EmployeeTypeExportView(EmployeeTypeListView):
     def render_to_response(self, context, **response_kwargs):
-        fy = context.get("fiscalyear", "").replace(" ", "")
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
         response = HttpResponse(content_type="text/csv")
         response[
             "Content-Disposition"
-        ] = f'attachment; filename="Employee_Type_FY{fy}.csv"'
+        ] = f'attachment; filename="Employee_Type_{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [
