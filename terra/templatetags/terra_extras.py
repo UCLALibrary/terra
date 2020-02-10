@@ -55,9 +55,3 @@ def days_cap(value):
         # Within 20% of professional development cap
     else:
         return value
-
-
-@register.filter
-def current_fiscal_year(today=None):
-    today = date.today() if today is None else today
-    return FiscalDate(today.year, today.month, today.day).fiscal_year
