@@ -105,12 +105,12 @@ urlpatterns = [
         name="fund_list",
     ),
     path(
-        "employee_type_list/",
+        "employee_type_list/<int:year>/",
         EmployeeTypeListView.as_view(template_name="terra/employee_type_list.html"),
         name="employee_type_list",
     ),
     path(
-        "employee_type_list/export/",
+        "employee_type_list/<int:year>/export/",
         EmployeeTypeExportView.as_view(),
         name="employee_type_csv",
     ),

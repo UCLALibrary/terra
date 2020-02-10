@@ -375,7 +375,7 @@ class TestUnitListView(TestCase):
 #         call_command("load_units", "terra/fixtures/test_units.csv")
 #         call_command("load_employees", "terra/fixtures/test_employees.csv")
 #         call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
- 
+
 #     def test_load_units(self):
 #         unit_count = Unit.objects.all().count()
 #         self.assertEqual(unit_count, 3)
@@ -925,25 +925,25 @@ class EmployeeTypeReportsTestCase(TestCase):
             )
 
     def test_type_report_denies_anonymous(self):
-        response = self.client.get("/employee_type_list/", follow=True)
+        response = self.client.get("/employee_type_list/2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/employee_type_list/", status_code=302
+            response, "/accounts/login/?next=/employee_type_list/2020/", status_code=302
         )
 
     def test_type_report_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/employee_type_list/")
+        response = self.client.get("/employee_type_list/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
 
     def test_type_report_denies_non_UL(self):
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/employee_type_list/")
+        response = self.client.get("/employee_type_list/2020/")
         self.assertEqual(response.status_code, 403)
 
     def test_type_report_allows_UL(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee_type_list/")
+        response = self.client.get("/employee_type_list/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
 
