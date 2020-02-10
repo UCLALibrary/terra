@@ -221,6 +221,7 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 

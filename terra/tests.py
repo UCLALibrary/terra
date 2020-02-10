@@ -375,7 +375,7 @@ class TestUnitListView(TestCase):
 #         call_command("load_units", "terra/fixtures/test_units.csv")
 #         call_command("load_employees", "terra/fixtures/test_employees.csv")
 #         call_command("load_travel_data", "terra/fixtures/test_travel_data.csv")
- 
+
 #     def test_load_units(self):
 #         unit_count = Unit.objects.all().count()
 #         self.assertEqual(unit_count, 3)
@@ -633,25 +633,25 @@ class TestFundDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_fund_detail_denies_anonymous(self):
-        response = self.client.get("/fund/1/", follow=True)
+        response = self.client.get("/fund/1/2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/fund/1/", status_code=302
+            response, "/accounts/login/?next=/fund/1/2020/", status_code=302
         )
 
     def test_fund_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/fund/1/")
+        response = self.client.get("/fund/1/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
 
     def test_fund_denies_non_lbs(self):
         self.client.login(username="tawopetu", password="Staples50141")
-        response = self.client.get("/fund/1/")
+        response = self.client.get("/fund/1/2020/")
         self.assertEqual(response.status_code, 403)
 
     def test_fund_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/fund/1/")
+        response = self.client.get("/fund/1/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
 
