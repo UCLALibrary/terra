@@ -32,6 +32,13 @@ def home(request):
     )
 
 
+@login_required
+def employee_type_list(request):
+    return HttpResponseRedirect(
+        reverse("employee_type_list", kwargs={"year": current_fiscal_year_int()})
+    )
+
+
 class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     model = Employee

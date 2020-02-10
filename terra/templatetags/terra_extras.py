@@ -1,5 +1,10 @@
 from django import template
 from terra.utils import format_currency
+from datetime import date
+from django.conf import settings
+
+import fiscalyear as FY
+import locale
 
 register = template.Library()
 
@@ -50,3 +55,9 @@ def days_cap(value):
         # Within 20% of professional development cap
     else:
         return value
+
+
+@register.filter
+def current_fiscal_year(today=None):
+    today = date.today() if today is None else today
+    return FiscalDate(today.year, today.month, today.day).fiscal_year
