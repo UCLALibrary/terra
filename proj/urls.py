@@ -93,9 +93,9 @@ urlpatterns = [
         UnitListView.as_view(template_name="terra/unit_list.html"),
         name="unit_list",
     ),
-    path("fund/<int:pk>/export/", FundExportView.as_view(), name="fund_csv"),
+    path("fund/<int:pk>/<int:year>/export/", FundExportView.as_view(), name="fund_csv"),
     path(
-        "fund/<int:pk>/",
+        "fund/<int:pk>/<int:year>/",
         FundDetailView.as_view(template_name="terra/fund.html"),
         name="fund_detail",
     ),

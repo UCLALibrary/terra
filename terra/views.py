@@ -215,9 +215,8 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # For now get current fiscal year
-        # Override this by query params when we add historic data
-        fy = current_fiscal_year_object()
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        context["fy"] = self.kwargs["year"]
         context["employees"], context["totals"] = fund_report(
             fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
@@ -228,7 +227,7 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class FundExportView(FundDetailView):
     def render_to_response(self, context, **response_kwargs):
         fund = context.get("fund")
-        fy = context.get("fiscalyear", "").replace(" ", "")
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f'attachment; filename="{fund}_FY{fy}.csv"'
@@ -289,6 +288,11 @@ class FundListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         else:
             funds = Fund.objects.filter(manager=self.request.user.employee)
         return funds.order_by("unit__name", "account", "cost_center", "fund")
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["current_fy"] = current_fiscal_year_int()
+        return context
 
 
 class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
