@@ -18,7 +18,6 @@ from .models import (
     Vacation,
     Activity,
     Funding,
-    EstimatedExpense,
     ActualExpense,
 )
 from .templatetags.terra_extras import check_or_cross, currency, cap, days_cap
@@ -125,17 +124,6 @@ class ModelsTestCase(TestCase):
         self.assertEqual(repr(funding), "<Funding 1: Code4lib 2020 Prigge, Ashton>")
         self.assertEqual(str(funding), "<Funding 1: Code4lib 2020 Prigge, Ashton>")
 
-    def test_estimated_expense(self):
-        estexp = EstimatedExpense.objects.get(pk=1)
-        self.assertEqual(
-            repr(estexp),
-            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Prigge, Ashton>",
-        )
-        self.assertEqual(
-            str(estexp),
-            "<EstimatedExpense 1: Conference Registration Code4lib 2020 Prigge, Ashton>",
-        )
-
     def test_actual_expense(self):
         actexp = ActualExpense.objects.get(pk=2)
         self.assertEqual(
@@ -183,10 +171,6 @@ class ModelsTestCase(TestCase):
         self.assertEqual(treq.in_fiscal_year(2020), True)
         self.assertEqual(treq.in_fiscal_year(2019), False)
 
-    def test_treq_estimated_expenses(self):
-        treq = TravelRequest.objects.get(pk=1)
-        self.assertEqual(treq.estimated_expenses(), 2000)
-
     def test_treq_actual_expenses(self):
         treq = TravelRequest.objects.get(pk=5)
         self.assertEqual(treq.actual_expenses(), 1855)
@@ -196,14 +180,8 @@ class ModelsTestCase(TestCase):
         self.assertEqual(treq.approved_funds(), 3500)
 
     def test_expense_total_dollars(self):
-        estexp = EstimatedExpense.objects.get(pk=1)
-        self.assertEqual(estexp.total_dollars(), "$250.00")
         actexp = ActualExpense.objects.get(pk=2)
         self.assertEqual(actexp.total_dollars(), "$325.00")
-
-    def test_treq_allocations_total(self):
-        treq = TravelRequest.objects.get(pk=1)
-        self.assertEqual(treq.allocations_total(), "$2,000.00")
 
     def test_treq_expenditures_total(self):
         treq = TravelRequest.objects.get(pk=5)
@@ -984,7 +962,6 @@ class EmployeeSubtotalTestCase(TestCase):
             "admin_spent": Decimal("0.0000"),
             "days_away": 20,
             "days_vacation": 5,
-            "total_estimatedexpense": Decimal("6075.0000"),
             "profdev_requested": Decimal("4000.0000"),
             "profdev_spent": Decimal("1855.0000"),
             "total_requested": Decimal(4000),

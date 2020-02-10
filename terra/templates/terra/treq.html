@@ -81,31 +81,39 @@
     <br/>
     <div class="row">
         <div class="col">
-            <b>Estimated Expenses</b>
+            <b>Funding</b>
             <table class="table">
                 <thead class="thead-light">
                     <tr>
-                        <th>Expense Type</th>
+                        <th>FAU</th>
+                        <th>By</th>
+                        <th>On</th>
                         <th>Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for estimatedexpense in treq.estimatedexpense_set.all %}
+                    {% for funding in treq.funding_set.all %}
                     <tr>
-                        <td>{{estimatedexpense.get_type_display}}</td>
-                        <td>{{estimatedexpense.total|currency}}</td>
+                        <td>{{funding.fund}}</td>
+                        <td>{{funding.funded_by}}</td>
+                        <td>{{funding.funded_on}}</td>
+                        <td>{{funding.amount|currency}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>Total</th>
-                        <td>{{treq.estimated_expenses|currency}}</td>
+                        <th></th>
+                        <th></th>
+                        <td>{{treq.total_funding|currency}}</td>
                     </tr>
                 </tfoot>
             </table>
-            {% if treq.closed %}
-            <br>
+        </div>
+        <div class="col">
+  {% if treq.closed %}
+            
             <b>Actual Expenses</b>
             <table class="table">
                 <thead class="thead-light">
@@ -138,37 +146,8 @@
             </table>
             {% endif %}
         </div>
-        <div class="col">
-            <b>Funding</b>
-            <table class="table">
-                <thead class="thead-light">
-                    <tr>
-                        <th>FAU</th>
-                        <th>By</th>
-                        <th>On</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for funding in treq.funding_set.all %}
-                    <tr>
-                        <td>{{funding.fund}}</td>
-                        <td>{{funding.funded_by}}</td>
-                        <td>{{funding.funded_on}}</td>
-                        <td>{{funding.amount|currency}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>Total</th>
-                        <th></th>
-                        <th></th>
-                        <td>{{treq.total_funding|currency}}</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+            
+        
     </div>
   </div>
 

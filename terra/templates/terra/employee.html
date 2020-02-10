@@ -24,7 +24,6 @@
                 <th scope="col">Activity</th>
                 <th scope="col">Dates</th>
                 <th scope="col">Closed</th>
-                <th scope="col">Estimated Expenses</th>
                 <th scope="col">Amount Requested</th>
                 <th scope="col">Amount Spent</th>
                 <th scope="col">Days Out Working</th>   
@@ -32,7 +31,7 @@
         </thead>
         <tbody>
             <tr>
-                <th id="par" colspan="7" scope="colgroup">Professional Development</th>
+                <th id="par" colspan="6" scope="colgroup">Professional Development</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
@@ -41,7 +40,6 @@
                             <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                             <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                             <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{treq.estimated_expenses|currency}}</td>
                             <td>{{treq.approved_funds|currency}}</td>
                             <td>{{treq.actual_expenses|currency}}</td>
                             <td>{{treq.days_ooo}}</td>
@@ -49,9 +47,9 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            <tr><th colspan="7" scope="colgroup"><br></th></tr>
+            <tr><th colspan="6" scope="colgroup"><br></th></tr>
             <tr>
-                <th id="par" colspan="7" scope="colgroup">Administrative</th>
+                <th id="par" colspan="6" scope="colgroup">Administrative</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
                 {% if treq.in_fiscal_year %}
@@ -60,7 +58,6 @@
                             <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                             <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                             <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{treq.estimated_expenses|currency}}</td>
                             <td>{{treq.approved_funds|currency}}</td>
                             <td>{{treq.actual_expenses|currency}}</td>
                             <td>{{treq.days_ooo}}</td>
@@ -74,12 +71,11 @@
             {% if employee_id == employee.id %}
 
                 <tfoot>
-                    <tr><th colspan="7" scope="colgroup"><br></th></tr>
+                    <tr><th colspan="6" scope="colgroup"><br></th></tr>
                     <tr>
                         <th>Totals</th>
                         <th></th>
                         <th></th>
-                        <th>{{totals.total_estimatedexpense|currency}}</th>
                         <th>{{totals.total_requested|currency}}</th>
                         <th>{{totals.total_spent|currency}}</th>
                         <th>{{totals.days_away}}</th>

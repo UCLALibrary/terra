@@ -6,7 +6,6 @@ from terra.models import (
     ActualExpense,
     Funding,
     Employee,
-    EstimatedExpense,
     Fund,
     TravelRequest,
     Unit,
@@ -75,19 +74,19 @@ def load_data(self, travel_file):
             # Funding
             # start_date was changed from "naive" to "aware" above, to avoid warnings, but doesn't matter since Funding.funded_on is an automatic timestamp.....
             if amount_approved != "":
-                funding = _get_funding(start_date, unit_head, treq, fund, amount_approved)
+                funding = _get_funding(
+                    start_date, unit_head, treq, fund, amount_approved
+                )
 
             # Expenses: Create only if data present, not blank
-            if amount_approved != "":
-                est_expense = _get_estimated_expense(treq, amount_approved)
             if amount_paid != "":
                 act_expense = _get_actual_expense(treq, amount_paid, fund, date_paid)
-            
+
 
 def _get_user(employee_name, email):
     # Employees are based on Users, so create user first.
     # Use the email name as username for now, with unusable password.
-    username = email.split('@')[0]
+    username = email.split("@")[0]
     # Users might already exist, via small initial load
     user, created = User.objects.get_or_create(username=username, email=email)
     # Add first/last name to the user
@@ -101,8 +100,11 @@ def _get_employee(user, ucla_id, unit):
     try:
         employee = Employee.objects.get(user=user, uid=ucla_id)
     except ObjectDoesNotExist:
-        employee, created = Employee.objects.get_or_create(user=user, uid=ucla_id, unit=unit)
+        employee, created = Employee.objects.get_or_create(
+            user=user, uid=ucla_id, unit=unit
+        )
     return employee
+
 
 def _get_activity(purpose, start_date, end_date):
     activity, created = Activity.objects.get_or_create(
@@ -110,29 +112,48 @@ def _get_activity(purpose, start_date, end_date):
     )
     return activity
 
+
 def _get_fund(account, cost_center, fund_part, fund_manager):
-    fund, created = Fund.objects.get_or_create(account=account, cost_center=cost_center, fund=fund_part, manager=fund_manager)
+    fund, created = Fund.objects.get_or_create(
+        account=account, cost_center=cost_center, fund=fund_part, manager=fund_manager
+    )
     return fund
 
 
 def _get_treq(employee, activity, start_date, end_date, workdays):
-    treq, created = TravelRequest.objects.get_or_create(traveler=employee, activity=activity, departure_date=start_date, return_date=end_date, days_ooo=workdays)
+    treq, created = TravelRequest.objects.get_or_create(
+        traveler=employee,
+        activity=activity,
+        departure_date=start_date,
+        return_date=end_date,
+        days_ooo=workdays,
+    )
     return treq
 
+
 def _get_funding(funding_date, funded_by, treq, fund, amount_approved):
-    funding, created = Funding.objects.get_or_create(funded_on=funding_date, funded_by=funded_by, treq=treq, fund=fund, amount=amount_approved)
+    funding, created = Funding.objects.get_or_create(
+        funded_on=funding_date,
+        funded_by=funded_by,
+        treq=treq,
+        fund=fund,
+        amount=amount_approved,
+    )
     return funding
+
 
 def _get_actual_expense(treq, amount, fund, date_paid):
     # Create, without check for existing
-    expense = ActualExpense.objects.create(treq=treq, total=amount, fund=fund, type="OTH", rate=1, quantity=1, date_paid=date_paid)
+    expense = ActualExpense.objects.create(
+        treq=treq,
+        total=amount,
+        fund=fund,
+        type="OTH",
+        rate=1,
+        quantity=1,
+        date_paid=date_paid,
+    )
     return expense
-
-def _get_estimated_expense(treq, amount):
-    # Create, without check for existing
-    expense = EstimatedExpense.objects.create(treq=treq, total=amount, type="OTH", rate=1, quantity=1)
-    return expense
-
 
 
 def _convert_MDY(MDY_string):
@@ -145,11 +166,12 @@ def _convert_MDY(MDY_string):
     d = tz.localize(d)
     return d
 
+
 def _split_name(employee_name):
     """
     Utility method for splitting 'Last, First' into 'Last' and 'First'.
     """
-    last_name, first_name = [word.strip() for word in employee_name.split(',')]
+    last_name, first_name = [word.strip() for word in employee_name.split(",")]
     return (last_name, first_name)
 
 
@@ -164,7 +186,9 @@ def _create_placeholder_employee():
         last_name="McFakester",
     )
     fake_employee, created = Employee.objects.get_or_create(
-        user=fake_user, unit=Unit.objects.get(name__exact="Library Business Services"), uid="000000000"
+        user=fake_user,
+        unit=Unit.objects.get(name__exact="Library Business Services"),
+        uid="000000000",
     )
     return fake_employee
 

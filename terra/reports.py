@@ -652,17 +652,6 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
 
-    total_estimatedexpense = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
-        .values("traveler__pk")
-        .annotate(total_estimatedexpense=Sum("estimatedexpense__total"))
-        .values("total_estimatedexpense")
-    )
-
     total_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
@@ -700,9 +689,6 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
-            total_estimatedexpense=Coalesce(
-                Subquery(total_estimatedexpense, output_field=DecimalField()), Value(0)
-            ),
             total_requested=Coalesce(
                 Subquery(total_requested, output_field=DecimalField()), Value(0)
             ),
@@ -716,13 +702,7 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
                 Value(0),
             ),
         )
-        .values(
-            "id",
-            "total_estimatedexpense",
-            "total_requested",
-            "total_spent",
-            "days_away",
-        )
+        .values("id", "total_requested", "total_spent", "days_away")
     )
     return rows
 
@@ -733,17 +713,11 @@ def employee_total_report(employee_ids, start_date, end_date):
     for e in employee_ids:
         try:
             employee = rows.get(id=e)
-            employee["total_estimatedexpense"]
             employee["total_requested"]
             employee["total_spent"]
 
         except ObjectDoesNotExist:
-            employee = {
-                "total_estimatedexpense": 0,
-                "total_requested": 0,
-                "total_spent": 0,
-                "days_away": 0,
-            }
+            employee = {"total_requested": 0, "total_spent": 0, "days_away": 0}
         employee_totals[e] = employee
 
     return employee_totals
