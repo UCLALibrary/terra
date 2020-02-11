@@ -56,14 +56,17 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["fiscal_year"] = current_fiscal_year()
-        fy = current_fiscal_year_object()
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
 
         id_list = []
         for employee in Employee.objects.all():
             id_list.append(employee.id)
+        context["fy"] = self.kwargs["year"]
         context["report"] = employee_total_report(
             employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
+
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 

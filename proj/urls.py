@@ -73,7 +73,7 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path(
-        "employee/<int:pk>/",
+        "employee/<int:pk>/<int:year>/",
         EmployeeDetailView.as_view(template_name="terra/employee.html"),
         name="employee_detail",
     ),
