@@ -20,11 +20,21 @@
             <h2>Actual Expense Report</h2>
         </div>
         <div class="col text-right">
-            <a href="/actual_expense_report/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="{% url 'actual_expense_report_csv' year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Fiscal Year
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for year in fiscal_year_list %}
+                    <a class="dropdown-item" href= "/actual_expense_report/{{year}}">{{year}}</a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 <br/>
-
 {% for v in report.subunits.values %}
     <table class="table">
         <thead class="thead-light">
@@ -33,6 +43,7 @@
           <th class="text">Employee</th>
           <th class="text">Activity</th>
           <th class="text">Dates</th>
+          <th class="text">Date Paid</th>
           <th class="text">Closed</th>
           <th class="text">Reimbursed</th>
           <th class="text">Fund</th>
@@ -42,20 +53,20 @@
         {% for e in v.employees.values %}
           {% for actualexpense in actualexpenses %}
             {% if actualexpense.treq.traveler == e %}
-              {% if actualexpense.in_fiscal_year %}   
+                 
                   <tr>
-
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
                     <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/">{{actualexpense.treq.traveler}}</a></td>
                     <td><a href="/treq/{{actualexpense.treq.pk}}/">{{actualexpense.treq.activity}}</a></td>
                     <td class="text">{{actualexpense.treq.departure_date}} - {{actualexpense.treq.return_date}}</td>
+                    <td class="text">{{actualexpense.date_paid}}</td>
                     <td class="text">{{actualexpense.treq.closed|check_or_cross|safe}}</td>
                     <td class="textt">{{actualexpense.reimbursed|check_or_cross|safe}}</td>
                     <td class="text">{{actualexpense.fund}}</td>
                     <td class="text-right">{{actualexpense.total|currency}}</td>  
                   </tr>
             
-                {% endif %}
+                
               {% endif %}
             {% endfor %}
 
@@ -70,6 +81,7 @@
                       <td class="text"></td>
                       <td class="textt"></td>
                       <td class="text"></td>
+                      <td class="text"></td>
                       <td class="text-right">{{employee.data.total_spent|currency}}</td>
                   {% endif %}
                 {% endfor %}
@@ -83,6 +95,7 @@
             <tr>
                 <th>{{v.subunit}} Subtotal</th>
                 <th></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
