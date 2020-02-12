@@ -430,14 +430,19 @@ class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
         context = super().get_context_data(*args, **kwargs)
         context["report"] = get_subunits_and_employees(Unit.objects.get(pk=1))
-        fy = current_fiscal_year_object()
+        start_date, end_date = fiscal_year_bookends(self.kwargs["year"])
+        context["actualexpenses"] = ActualExpense.objects.filter(
+            date_paid__gte=start_date, date_paid__lte=end_date
+        )
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        context["fy"] = self.kwargs["year"]
         context["fiscalyear"] = fy
         context["unit_totals"] = unit_report(
             unit=(Unit.objects.get(pk=1)),
             start_date=fy.start.date(),
             end_date=fy.end.date(),
         )
-        context["actualexpenses"] = ActualExpense.objects.all()
+        context["fiscal_year_list"] = fiscal_year_list()
         return context
 
 
@@ -445,9 +450,10 @@ class ActualExpenseExportView(ActualExpenseListView):
     def render_to_response(self, context, **response_kwargs):
 
         response = HttpResponse(content_type="text/csv")
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
         response[
             "Content-Disposition"
-        ] = f'attachment; filename="Actual_Expense_report.csv"'
+        ] = f'attachment; filename="Actual_Expense_report_{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [
@@ -456,6 +462,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                 "Activity",
                 "Departure Date",
                 "Return Date",
+                "Date Paid",
                 "Closed",
                 "Reimbursed",
                 "Fund",
@@ -468,27 +475,28 @@ class ActualExpenseExportView(ActualExpenseListView):
             for e in v["employees"].values():
                 for actualexpense in context["actualexpenses"]:
                     if actualexpense.treq.traveler == e:
-                        if actualexpense.in_fiscal_year:
 
-                            writer.writerow(
-                                [
-                                    actualexpense.treq.traveler.unit,
-                                    actualexpense.treq.traveler,
-                                    actualexpense.treq.activity,
-                                    actualexpense.treq.departure_date,
-                                    actualexpense.treq.return_date,
-                                    actualexpense.treq.closed,
-                                    actualexpense.reimbursed,
-                                    actualexpense.fund,
-                                    actualexpense.total,
-                                ]
-                            )
+                        writer.writerow(
+                            [
+                                actualexpense.treq.traveler.unit,
+                                actualexpense.treq.traveler,
+                                actualexpense.treq.activity,
+                                actualexpense.treq.departure_date,
+                                actualexpense.treq.return_date,
+                                actualexpense.date_paid,
+                                actualexpense.treq.closed,
+                                actualexpense.reimbursed,
+                                actualexpense.fund,
+                                actualexpense.total,
+                            ]
+                        )
                 for subunit in context["unit_totals"]["subunits"].values():
                     for employee in subunit["employees"].values():
                         if employee == e and employee.data["total_spent"] != 0:
                             writer.writerow(
                                 [
                                     f"{employee} Total",
+                                    "",
                                     "",
                                     "",
                                     "",
@@ -512,6 +520,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                             "",
                             "",
                             "",
+                            "",
                             subunit["subunit_totals"]["total_spent"],
                         ]
                     )
@@ -519,6 +528,7 @@ class ActualExpenseExportView(ActualExpenseListView):
         writer.writerow(
             [
                 "Library Total",
+                "",
                 "",
                 "",
                 "",

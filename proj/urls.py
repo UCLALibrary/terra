@@ -115,12 +115,12 @@ urlpatterns = [
         name="employee_type_csv",
     ),
     path(
-        "actual_expense_report/",
+        "actual_expense_report/<int:year>/",
         ActualExpenseListView.as_view(template_name="terra/actual_expense_report.html"),
         name="actual_expense_report",
     ),
     path(
-        "actual_expense_report/export/",
+        "actual_expense_report/<int:year>/export/",
         ActualExpenseExportView.as_view(),
         name="actual_expense_report_csv",
     ),
