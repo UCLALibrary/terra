@@ -16,7 +16,7 @@
     <h1>{{employee}}</h1>
     <h3>{{employee.get_type_display}}, {{employee.unit}}</h3>
     <br>
-    <h2>FY {{fiscal_year}} Travel Requests</h2>
+    <h2>FY {{fy}} Travel Requests</h2>
     <br>
     <table class="table">
         <thead class="thead-light">
@@ -24,8 +24,8 @@
                 <th scope="col">Activity</th>
                 <th scope="col">Dates</th>
                 <th scope="col">Closed</th>
-                <th scope="col">Amount Requested</th>
-                <th scope="col">Amount Spent</th>
+                <th scope="col">Amount Requested in FY{{fy}}</th>
+                <th scope="col">Amount Spent in FY{{fy}}</th>
                 <th scope="col">Days Out Working</th>   
             </tr>
         </thead>
@@ -34,36 +34,47 @@
                 <th id="par" colspan="6" scope="colgroup">Professional Development</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
-                
+            
+                {% for i in actualexpenses_fy %}
+                {% if i.id == treq.id %}
                     {% if treq.administrative == False %}
+                    {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
+
                         <tr>
                             <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                             <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                             <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{treq.approved_funds|currency}}</td>
-                            <td>{{treq.actual_expenses|currency}}</td>
+                            <td>{{i.funding_fy|currency}}</td>
+                            <td>{{i.actualexpenses_fy|currency}}</td>
                             <td>{{treq.days_ooo}}</td>
                         </tr>
                     {% endif %}
-                
+                    {% endif %}
+
+                    {% endif %}
+               {% endfor %}
+            
             {% endfor %}
             <tr><th colspan="6" scope="colgroup"><br></th></tr>
             <tr>
                 <th id="par" colspan="6" scope="colgroup">Administrative</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
-                {% if treq.in_fiscal_year %}
+            {% for i in actualexpenses_fy %}
+                {% if i.id == treq.id %}
+                
                     {% if treq.administrative == True %}
                         <tr>
                             <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                             <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                             <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{treq.approved_funds|currency}}</td>
-                            <td>{{treq.actual_expenses|currency}}</td>
+                            <td>{{i.funding_fy|currency}}</td>
+                            <td>{{i.actualexpenses_fy|currency}}</td>
                             <td>{{treq.days_ooo}}</td>
                         </tr>
                     {% endif %}
                 {% endif %}
+                {% endfor %}
             {% endfor %}
         </tbody>
         
