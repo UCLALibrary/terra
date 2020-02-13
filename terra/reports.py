@@ -752,18 +752,6 @@ def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
         )
         .values("funding_fy")
     )
-    days_away_fy = (
-        Funding.objects.filter(treq=OuterRef("pk"))
-        .values("treq_id")
-        .annotate(
-            funding_fy=Sum(
-                "amount",
-                filter=Q(treq__return_date__lte=end_date)
-                & Q(treq__departure_date__gte=start_date),
-            )
-        )
-        .values("funding_fy")
-    )
 
     rows = (
         TravelRequest.objects.filter(pk__in=treq_ids).annotate(

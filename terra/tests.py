@@ -21,7 +21,7 @@ from .models import (
     ActualExpense,
 )
 from .templatetags.terra_extras import check_or_cross, currency, cap, days_cap
-from .utils import current_fiscal_year, in_fiscal_year
+from .utils import current_fiscal_year, in_fiscal_year, fiscal_year
 from terra import reports
 
 
@@ -232,36 +232,36 @@ class TestEmpoyeeDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_employee_detail_denies_anonymous(self):
-        response = self.client.get("/employee/3/", follow=True)
+        response = self.client.get("/employee/3/2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/employee/3/", status_code=302
+            response, "/accounts/login/?next=/employee/3/2020/", status_code=302
         )
 
     def test_employee_detail_requires_manager(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee/1/")
+        response = self.client.get("/employee/1/2020/")
         self.assertEqual(response.status_code, 200)
         self.client.login(username="tawopetu", password="Staples50141")
-        response = self.client.get("/employee/3/")
+        response = self.client.get("/employee/3/2020/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/employee/5/")
+        response = self.client.get("/employee/5/2020/")
         self.assertEqual(response.status_code, 200)
 
     def test_employee_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/employee/2/")
+        response = self.client.get("/employee/2/2020/")
         self.assertTemplateUsed(response, "terra/employee.html")
         self.assertEqual(response.status_code, 200)
 
     def test_employee_detail_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee/2/")
+        response = self.client.get("/employee/2/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
     def test_employee_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/employee/2/")
+        response = self.client.get("/employee/2/2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
@@ -963,10 +963,10 @@ class EmployeeSubtotalTestCase(TestCase):
             "days_away": 20,
             "days_vacation": 5,
             "profdev_requested": Decimal("4000.0000"),
-            "profdev_spent": Decimal("1855.0000"),
+            "profdev_spent": Decimal("1420.0000"),
             "total_requested": Decimal(4000),
             "total_days_ooo": 20,
-            "total_spent": Decimal("1855.0000"),
+            "total_spent": Decimal("1420.0000"),
         }
         employee_ids = [2]
         start_date = date(2019, 7, 1)
@@ -1032,3 +1032,62 @@ class ActualExpenseTestCase(TestCase):
         self.assertEqual(actualexpense.fund.pk, 1)
         self.assertEqual(actualexpense.reimbursed, False)
         self.assertEqual(actualexpense.treq.pk, 5)
+
+
+class TravelRequestReportTestCase(TestCase):
+    fixtures = ["sample_data.json"]
+
+    def test_get_individual_data_treq(self):
+        expected = [
+            {
+                "id": 1,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("4000.00000"),
+            },
+            {
+                "id": 2,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("2000.00000"),
+            },
+            {
+                "id": 3,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("1050.00000"),
+            },
+            {
+                "id": 4,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("0.00000"),
+            },
+            {
+                "id": 5,
+                "actualexpenses_fy": Decimal("1420.00000"),
+                "funding_fy": Decimal("0.00000"),
+            },
+            {
+                "id": 6,
+                "actualexpenses_fy": Decimal("2925.00000"),
+                "funding_fy": Decimal("0.00000"),
+            },
+            {
+                "id": 7,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("1300.00000"),
+            },
+            {
+                "id": 8,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("0.00000"),
+            },
+            {
+                "id": 9,
+                "actualexpenses_fy": Decimal("0.00000"),
+                "funding_fy": Decimal("0.00000"),
+            },
+        ]
+        treq_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        fy = fiscal_year(2020)
+        actual = reports.get_individual_data_treq(
+            treq_ids=treq_list, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        print(actual)

@@ -341,6 +341,7 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         context["fiscal_year_list"] = fiscal_year_list()
+
         return context
 
 
