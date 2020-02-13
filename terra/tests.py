@@ -1064,30 +1064,12 @@ class TravelRequestReportTestCase(TestCase):
                 "actualexpenses_fy": Decimal("1420.00000"),
                 "funding_fy": Decimal("0.00000"),
             },
-            {
-                "id": 6,
-                "actualexpenses_fy": Decimal("2925.00000"),
-                "funding_fy": Decimal("0.00000"),
-            },
-            {
-                "id": 7,
-                "actualexpenses_fy": Decimal("0.00000"),
-                "funding_fy": Decimal("1300.00000"),
-            },
-            {
-                "id": 8,
-                "actualexpenses_fy": Decimal("0.00000"),
-                "funding_fy": Decimal("0.00000"),
-            },
-            {
-                "id": 9,
-                "actualexpenses_fy": Decimal("0.00000"),
-                "funding_fy": Decimal("0.00000"),
-            },
         ]
-        treq_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        treq_list = [1, 2, 3, 4, 5]
         fy = fiscal_year(2020)
         actual = reports.get_individual_data_treq(
             treq_ids=treq_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
-        print(actual)
+
+        for n in range(0, len(treq_list) - 1):
+            self.assertEqual(actual[n], expected[n])
