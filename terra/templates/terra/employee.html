@@ -50,52 +50,54 @@
                 <th id="par" colspan="6" scope="colgroup">Professional Development</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
-            
                 {% for i in actualexpenses_fy %}
-                {% if i.id == treq.id %}
-                    {% if treq.administrative == False %}
-                    {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
+                    {% if i.id == treq.id %}
+                        {% if treq.administrative == False %}
+                            {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
 
-                        <tr>
-                            <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
-                            <td>{{treq.departure_date}} - {{treq.return_date}}</td>
-                            <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{i.funding_fy|currency}}</td>
-                            <td>{{i.actualexpenses_fy|currency}}</td>
-                            {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
-                            <td>{{treq.days_ooo}}</td>
-                            {% else %}
-                            <td>0</td>
+                                <tr>
+                                    <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
+                                    <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                                    <td>{{treq.closed|check_or_cross|safe}}</td>
+                                    <td>{{i.funding_fy|currency}}</td>
+                                    <td>{{i.actualexpenses_fy|currency}}</td>
+
+                                    {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
+                                        <td>{{treq.days_ooo}}</td>
+                                    {% else %}
+                                        <td>0</td>
+                                    {% endif %}
+
+                                </tr>
                             {% endif %}
-
-                        </tr>
-                    {% endif %}
-                    {% endif %}
-
+                        {% endif %}
                     {% endif %}
                {% endfor %}
-            
             {% endfor %}
             <tr><th colspan="6" scope="colgroup"><br></th></tr>
             <tr>
                 <th id="par" colspan="6" scope="colgroup">Administrative</th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
-            {% for i in actualexpenses_fy %}
-                {% if i.id == treq.id %}
-                {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
-                    {% if treq.administrative == True %}
-                        <tr>
-                            <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
-                            <td>{{treq.departure_date}} - {{treq.return_date}}</td>
-                            <td>{{treq.closed|check_or_cross|safe}}</td>
-                            <td>{{i.funding_fy|currency}}</td>
-                            <td>{{i.actualexpenses_fy|currency}}</td>
-                            <td>{{treq.days_ooo}}</td>
-                        </tr>
+                {% for i in actualexpenses_fy %}
+                    {% if i.id == treq.id %}
+                        {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
+                            {% if treq.administrative == True %}
+                                <tr>
+                                    <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
+                                    <td>{{treq.departure_date}} - {{treq.return_date}}</td>
+                                    <td>{{treq.closed|check_or_cross|safe}}</td>
+                                    <td>{{i.funding_fy|currency}}</td>
+                                    <td>{{i.actualexpenses_fy|currency}}</td>
+                                    {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
+                                        <td>{{treq.days_ooo}}</td>
+                                    {% else %}
+                                        <td>0</td>
+                                    {% endif %}
+                                </tr>
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
-                    {% endif %}
-                {% endif %}
                 {% endfor %}
             {% endfor %}
         </tbody>

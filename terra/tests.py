@@ -261,7 +261,7 @@ class TestEmpoyeeDetailView(TestCase):
 
     def test_employee_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/employee/2/2020/")
+        response = self.client.get("/employee/2/2019/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
@@ -283,9 +283,9 @@ class TestUnitDetailView(TestCase):
         self.client.login(username="tgrappone", password="Staples50141")
         response = self.client.get("/unit/1/2020/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/unit/2/2020/")
+        response = self.client.get("/unit/2/2019/")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get("/unit/3/2020/")
+        response = self.client.get("/unit/3/2019/")
         self.assertEqual(response.status_code, 200)
 
     def test_unit_detail_allows_full_access(self):
