@@ -659,19 +659,21 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             return_date__lte=end_date,
         )
         .values("traveler__pk")
-        .annotate(profdev_alloc=Sum("funding__amount"))
-        .values("profdev_alloc")
+        .annotate(total_requested=Sum("funding__amount"))
+        .values("total_requested")
     )
 
     total_spent = (
-        TravelRequest.objects.filter(
-            traveler=OuterRef("pk"),
-            departure_date__gte=start_date,
-            return_date__lte=end_date,
-        )
+        TravelRequest.objects.filter(traveler=OuterRef("pk"))
         .values("traveler__pk")
-        .annotate(profdev_expend=Sum("actualexpense__total"))
-        .values("profdev_expend")
+        .annotate(
+            total_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
+        .values("total_spent")
     )
 
     days_away = (
@@ -721,3 +723,45 @@ def employee_total_report(employee_ids, start_date, end_date):
         employee_totals[e] = employee
 
     return employee_totals
+
+
+def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
+
+    # 4 subqueries plugged into the final query
+
+    actualexpenses_fy = (
+        ActualExpense.objects.filter(treq=OuterRef("pk"))
+        .values("treq_id")
+        .annotate(
+            actualexpenses_fy=Sum(
+                "total",
+                filter=Q(date_paid__lte=end_date) & Q(date_paid__gte=start_date),
+            )
+        )
+        .values("actualexpenses_fy")
+    )
+    funding_fy = (
+        Funding.objects.filter(treq=OuterRef("pk"))
+        .values("treq_id")
+        .annotate(
+            funding_fy=Sum(
+                "amount",
+                filter=Q(treq__return_date__lte=end_date)
+                & Q(treq__departure_date__gte=start_date),
+            )
+        )
+        .values("funding_fy")
+    )
+
+    rows = (
+        TravelRequest.objects.filter(pk__in=treq_ids).annotate(
+            actualexpenses_fy=Coalesce(
+                Subquery(actualexpenses_fy, output_field=DecimalField()), Value(0)
+            ),
+            funding_fy=Coalesce(
+                Subquery(funding_fy, output_field=DecimalField()), Value(0)
+            ),
+        )
+    ).values("id", "actualexpenses_fy", "funding_fy")
+
+    return rows

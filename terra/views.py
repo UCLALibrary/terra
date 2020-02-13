@@ -14,6 +14,7 @@ from .reports import (
     get_type_and_employees,
     employee_total_report,
     get_subunits_and_employees,
+    get_individual_data_treq,
 )
 from .utils import (
     current_fiscal_year_object,
@@ -28,7 +29,10 @@ from .utils import (
 @login_required
 def home(request):
     return HttpResponseRedirect(
-        reverse("employee_detail", kwargs={"pk": request.user.employee.pk})
+        reverse(
+            "employee_detail",
+            kwargs={"pk": request.user.employee.pk, "year": current_fiscal_year_int()},
+        )
     )
 
 
@@ -55,14 +59,25 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["fiscal_year"] = current_fiscal_year()
-        fy = current_fiscal_year_object()
+
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
 
         id_list = []
         for employee in Employee.objects.all():
             id_list.append(employee.id)
+        treq_ids = []
+        for treq in TravelRequest.objects.all():
+            treq_ids.append(treq.id)
+        context["fy"] = self.kwargs["year"]
         context["report"] = employee_total_report(
             employee_ids=id_list, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["fy_start"] = fy.start.date()
+        context["fy_end"] = fy.end.date()
+
+        context["fiscal_year_list"] = fiscal_year_list()
+        context["actualexpenses_fy"] = get_individual_data_treq(
+            treq_ids=treq_ids, start_date=fy.start.date(), end_date=fy.end.date()
         )
         return context
 
@@ -331,6 +346,7 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         context["fiscal_year_list"] = fiscal_year_list()
+
         return context
 
 

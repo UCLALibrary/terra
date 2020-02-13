@@ -61,7 +61,7 @@
         <tbody>
             {% for employee in employees %}
             <tr>
-                <td><a href="/employee/{{employee.pk}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
+                <td><a href="/employee/{{employee.pk}}/{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
                 <td>{{employee.get_type_display}}</td>
                 <td class="text-right">{{employee.profdev_requested|cap|safe}}</td>
                 <td class="text-right">{{employee.profdev_spent|cap|safe}}</td>
