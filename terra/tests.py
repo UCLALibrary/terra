@@ -981,6 +981,7 @@ class EmployeeSubtotalTestCase(TestCase):
 
 
 class ActualExpenseTestCase(TestCase):
+
     fixtures = ["sample_data.json"]
 
     def test_actualexpense_report_denies_anonymous(self):
@@ -1071,5 +1072,6 @@ class TravelRequestReportTestCase(TestCase):
             treq_ids=treq_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
 
+        # checking each item in each list
         for n in range(0, len(treq_list) - 1):
             self.assertEqual(actual[n], expected[n])
