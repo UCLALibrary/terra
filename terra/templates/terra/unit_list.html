@@ -32,7 +32,7 @@
 		  {% if subunit.subunits.all %}
 		  <div class="list-group">
 			{% for subsubunit in subunit.subunits.all %}
-			  <a href="{% url 'unit_detail' pk=subunit.id year=current_fy %}" class="list-group-item list-group-item-action">
+			  <a href="{% url 'unit_detail' pk=subsubunit.id year=current_fy %}" class="list-group-item list-group-item-action">
 			    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 			    <b>{{subsubunit}}</b> - {{subsubunit.manager}}
 			  </a>
