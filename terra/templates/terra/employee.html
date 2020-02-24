@@ -19,6 +19,15 @@
         <h3>{{employee.get_type_display}}, {{employee.unit}}</h3>
         <br>
         <h2>FY {{fy}} Report</h2>
+        <br>
+    {% if fy == fy_year %}
+        {% for employee_id, totals in report.items %}
+            {% if employee_id == employee.id %}
+                <h4>Prof Dev Balance Remaining: <b>{{totals.profdev_remaining|currency}}</b></h4>
+                <h4>Prof Dev Days Remaining: <b>{{totals.profdev_days_remaining}} days</b></h4>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     </div>
     <div class="col text-right">
         <div class="dropdown">
