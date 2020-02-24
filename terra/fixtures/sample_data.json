@@ -716,6 +716,16 @@
   }
 },
 {
+  "model": "terra.unit",
+  "pk": 5,
+  "fields": {
+    "name": "UX Team",
+    "type": "3",
+    "manager": 5,
+    "parent_unit": 3
+  }
+},
+{
   "model": "terra.employee",
   "pk": 1,
   "fields": {
@@ -781,7 +791,7 @@
   "fields": {
     "user": 5,
     "phone": "",
-    "unit": 3,
+    "unit":5,
     "active": true,
     "uid": "FAKE005",
     "supervisor": 3,
