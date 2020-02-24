@@ -961,6 +961,7 @@ class EmployeeSubtotalTestCase(TestCase):
             "admin_requested": Decimal("0.0000"),
             "admin_spent": Decimal("0.0000"),
             "days_away": 20,
+            "profdev_days_away": 20,
             "days_vacation": 5,
             "profdev_requested": Decimal("4000.0000"),
             "profdev_spent": Decimal("1420.0000"),
