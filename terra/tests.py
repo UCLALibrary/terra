@@ -137,13 +137,13 @@ class ModelsTestCase(TestCase):
 
     def test_unit_employee_count(self):
         sdls = Unit.objects.get(pk=3)
-        self.assertEqual(sdls.employee_count(), 3)
+        self.assertEqual(sdls.employee_count(), 2)
         for x in range(5):
             u = User.objects.create_user(username=str(x))
             u.save()
             e = Employee(user=u, uid="xxxxxxxx" + str(x), unit=sdls)
             e.save()
-        self.assertEqual(sdls.employee_count(), 8)
+        self.assertEqual(sdls.employee_count(), 7)
 
     def test_treq_international(self):
         treq = TravelRequest.objects.get(pk=1)
@@ -834,8 +834,8 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "profdev_days_away": 12,
                             "admin_days_away": 0,
                             "name": "Awopetu, Tinu",
-                            "unit": "Software Development & Library Systems",
-                            "unit_manager": "Gomez, Joshua",
+                            "unit": "UX Team",
+                            "unit_manager": "Awopetu, Tinu",
                             "total_requested": Decimal("0.00000"),
                             "total_spent": Decimal("2925.00000"),
                             "total_days_ooo": 12,
