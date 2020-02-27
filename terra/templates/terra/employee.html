@@ -32,6 +32,21 @@
             </div>
         </div>
     </div>
+</div>
+{% if fy == fy_year %}
+    <div class="row">
+        <div class="alert alert-primary" role="alert">
+        {% for employee_id, totals in report.items %}
+            {% if employee_id == employee.id %}
+            <h4 class="alert-heading">Remaining Balances</h4>
+            <hr>
+                <p><b>{{totals.profdev_remaining|currency}}</b></p>
+                <p><b>{{totals.profdev_days_remaining}} days</b></p>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+{% endif %}
     <br>
     <table class="table">
         <thead class="thead-light">

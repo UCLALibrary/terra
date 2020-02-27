@@ -1,5 +1,11 @@
 from django import template
-from terra.utils import format_currency
+from terra.utils import (
+    format_currency,
+    profdev_spending_cap,
+    profdev_warning,
+    profdev_days_cap,
+    profdev_days_warning,
+)
 from datetime import date
 from django.conf import settings
 
@@ -28,16 +34,16 @@ def cap(value):
     if value is None or value == "":
         value = 0
         return format_currency(value, grouping=True)
-    if value >= 3500:
+    # Over or at professional development cap
+    if value >= profdev_spending_cap:
         return '<span class="alert-danger">{}</span>'.format(
             format_currency(value, grouping=True)
         )
-        # Over or at professional development cap
-    elif value >= 2800 and value < 3500:
+    # Within 20% of professional development cap
+    elif value >= profdev_warning and value < profdev_spending_cap:
         return '<span class="alert-warning">{}</span>'.format(
             format_currency(value, grouping=True)
         )
-        # Within 20% of professional development cap
     else:
         return format_currency(value, grouping=True)
 
@@ -47,11 +53,11 @@ def days_cap(value):
     if value is None or value == "":
         value = 0
         return value
-    if value >= 15:
+    # Over or at professional development cap
+    if value >= profdev_days_cap:
         return '<span class="alert-danger">{}</span>'.format(value)
-        # Over or at professional development cap
-    elif value >= 12 and value < 15:
+    # Within 20% of professional development cap
+    elif value >= profdev_days_warning and value < profdev_days_cap:
         return '<span class="alert-warning">{}</span>'.format(value)
-        # Within 20% of professional development cap
     else:
         return value

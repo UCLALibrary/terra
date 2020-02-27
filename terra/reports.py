@@ -14,7 +14,12 @@ from django.db.models.functions import Coalesce, ExtractDay
 
 
 from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
-from .utils import fiscal_year_bookends, current_fiscal_year_int
+from .utils import (
+    fiscal_year_bookends,
+    current_fiscal_year_int,
+    profdev_spending_cap,
+    profdev_days_cap,
+)
 
 
 def check_dates(start_date, end_date):
@@ -652,6 +657,28 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
 
+    profdev_spent = (
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
+        .values("traveler__pk")
+        .annotate(
+            profdev_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
+        .values("profdev_spent")
+    )
+    profdev_days_away = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler_id")
+        .annotate(profdev_days_away=Sum("days_ooo"))
+    )
     total_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
@@ -691,6 +718,16 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
+            profdev_spent=Coalesce(
+                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+            ),
+            profdev_days_away=Coalesce(
+                Subquery(
+                    profdev_days_away.values("profdev_days_away")[:1],
+                    output_field=IntegerField(),
+                ),
+                Value(0),
+            ),
             total_requested=Coalesce(
                 Subquery(total_requested, output_field=DecimalField()), Value(0)
             ),
@@ -704,7 +741,14 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
                 Value(0),
             ),
         )
-        .values("id", "total_requested", "total_spent", "days_away")
+        .values(
+            "id",
+            "profdev_spent",
+            "profdev_days_away",
+            "total_requested",
+            "total_spent",
+            "days_away",
+        )
     )
     return rows
 
@@ -712,14 +756,29 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
 def employee_total_report(employee_ids, start_date, end_date):
     employee_totals = {}
     rows = get_individual_data_employee(employee_ids, start_date, end_date)
+
     for e in employee_ids:
         try:
             employee = rows.get(id=e)
             employee["total_requested"]
             employee["total_spent"]
+            employee["profdev_remaining"] = (
+                profdev_spending_cap - employee["profdev_spent"]
+            )
+            employee["profdev_days_remaining"] = (
+                profdev_days_cap - employee["profdev_days_away"]
+            )
+            if employee["profdev_days_remaining"] <= 0:
+                employee["profdev_days_remaining"] = 0
 
         except ObjectDoesNotExist:
-            employee = {"total_requested": 0, "total_spent": 0, "days_away": 0}
+            employee = {
+                "total_requested": 0,
+                "total_spent": 0,
+                "days_away": 0,
+                "profdev_remaining": 0,
+                "profdev_days_remaining": 0,
+            }
         employee_totals[e] = employee
 
     return employee_totals

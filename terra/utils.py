@@ -7,6 +7,11 @@ import locale
 
 FY.START_MONTH = 7
 
+profdev_spending_cap = 3500
+profdev_warning = 2800
+profdev_days_cap = 15
+profdev_days_warning = 12
+
 
 def format_currency(value, grouping=True):
     return locale.currency(value, grouping=grouping)
