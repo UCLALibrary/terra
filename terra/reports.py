@@ -14,7 +14,12 @@ from django.db.models.functions import Coalesce, ExtractDay
 
 
 from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
-from .utils import fiscal_year_bookends, current_fiscal_year_int
+from .utils import (
+    fiscal_year_bookends,
+    current_fiscal_year_int,
+    profdev_spending_cap,
+    profdev_days_cap,
+)
 
 
 def check_dates(start_date, end_date):
@@ -751,8 +756,6 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
 def employee_total_report(employee_ids, start_date, end_date):
     employee_totals = {}
     rows = get_individual_data_employee(employee_ids, start_date, end_date)
-    profdev_spending_cap = 3500
-    profdev_days_cap = 15
 
     for e in employee_ids:
         try:
