@@ -19,11 +19,7 @@
         <h3>{{employee.get_type_display}}, {{employee.unit}}</h3>
         <br>
         <h2>FY {{fy}} Report</h2>
-    
-    <br>
-
-</div>
-
+    </div>
     <div class="col text-right">
         <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -37,19 +33,20 @@
         </div>
     </div>
 </div>
-    <div class="alert alert-info" role="alert">
-    {% if fy == fy_year %}
+{% if fy == fy_year %}
+    <div class="row">
+        <div class="alert alert-primary" role="alert">
         {% for employee_id, totals in report.items %}
             {% if employee_id == employee.id %}
             <h4 class="alert-heading">Remaining Balances</h4>
             <hr>
-                {{totals.profdev_remaining|currency}}
-                <br>
-                {{totals.profdev_days_remaining}} days
+                <p><b>{{totals.profdev_remaining|currency}}</b></p>
+                <p><b>{{totals.profdev_days_remaining}} days</b></p>
             {% endif %}
         {% endfor %}
-    {% endif %}
+        </div>
     </div>
+{% endif %}
     <br>
     <table class="table">
         <thead class="thead-light">
