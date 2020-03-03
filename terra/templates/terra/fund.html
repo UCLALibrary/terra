@@ -12,7 +12,10 @@
 </style>
 {% endblock %}
 
+
 {% block body %}
+
+
 
     <div class="row">
         <div class="col">
@@ -37,7 +40,9 @@
         </div>
     </div>
 
-    <table class="table">
+
+
+<table class="table">
         <thead class="thead-light">
             <tr>
                 <th colspan="2" scope="colgroup"></th>
@@ -58,22 +63,64 @@
                 <th scope="col" class="text-right">Total Spent</th>
             </tr>
         </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td><a href="/employee/{{employee.pk}}/{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
+    </table>
+
+    {% for employee in employees %}
+    <div id="accordion">
+    <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+         
+        <table class="table">
+            
+        <tbody>    
+
+                <td>{{employee.user.last_name}}, {{employee.user.first_name}}</td>
                 <td>{{employee.get_type_display}}</td>
-                <td class="text-right">{{employee.profdev_requested|cap|safe}}</td>
-                <td class="text-right">{{employee.profdev_spent|cap|safe}}</td>
+                <td>{{employee.profdev_requested|cap|safe}}</td>
+                <td>{{employee.profdev_spent|cap|safe}}</td>
 
-                <td class="text-right">{{employee.admin_requested|currency}}</td>
-                <td class="text-right">{{employee.admin_spent|currency}}</td>
+                <td>{{employee.admin_requested|currency}}</td>
+                <td>{{employee.admin_spent|currency}}</td>
 
-                <td class="text-right">{{employee.total_requested|currency}}</td>
-                <td class="text-right">{{employee.total_spent|currency}}</td>
-            </tr>
-            {% endfor %}
+                <td>{{employee.total_requested|currency}}</td>
+                <td>{{employee.total_spent|currency}}</td>
         </tbody>
+    </table>
+        
+      </h5>
+    </div>
+</button>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        <h5>Travel Requests using {{fund}}</h5>
+        <table class="table">
+            <thead>
+                <th colspan="1" scope="colgroup">Activity</th>
+                <th colspan="1" scope="colgroup">Administrative</th>
+                <th colspan="1" scope="colgroup">Amount Requested</th>
+                <th colspan="1" scope="colgroup">Amount Spent</th>
+            </thead> 
+            {% for treq in treq_funds %}
+                {% if treq.traveler.id == employee.id %}
+                    <tbody>
+
+                        <td>{{treq.activity}}</td>
+                        <td>{{treq.administrative}}</td>
+                        <td>{{treq.requested}}</td>
+                        <td>{{treq.spent}}</td>
+                    </tbody>
+                {% endif %}
+            {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+    <table class="table">    
         <tfoot>
             <tr>
                 <th>Totals</th>

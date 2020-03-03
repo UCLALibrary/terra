@@ -13,7 +13,14 @@ from django.db.models import (
 from django.db.models.functions import Coalesce, ExtractDay
 
 
-from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
+from .models import (
+    TravelRequest,
+    Employee,
+    Funding,
+    ActualExpense,
+    Fund,
+    EMPLOYEE_TYPES,
+)
 from .utils import (
     fiscal_year_bookends,
     current_fiscal_year_int,
@@ -259,6 +266,59 @@ def unit_report(unit, start_date=None, end_date=None):
     )
     data = merge_data(rows, data)
     return calculate_totals(data)
+
+
+def get_treq_list(fund, start_date=None, end_date=None):
+    start_date, end_date = check_dates(start_date, end_date)
+    rows = Funding.objects.filter(
+        fund=fund, treq__departure_date__gte=start_date, treq__return_date__lte=end_date
+    ).values(travel=F("treq"))
+
+    rows2 = ActualExpense.objects.filter(
+        fund=fund, date_paid__gte=start_date, date_paid__lte=end_date
+    ).values(travel=F("treq"))
+    treq_ids = set([e["travel"] for e in rows.union(rows2)])
+    return treq_ids
+
+
+def get_individual_data_for_treq(treq_ids, fund, start_date=None, end_date=None):
+    start_date, end_date = check_dates(start_date, end_date)
+
+    requested = (
+        Funding.objects.filter(
+            treq=OuterRef("pk"),
+            fund=fund,
+            treq__departure_date__gte=start_date,
+            treq__return_date__lte=end_date,
+        )
+        .values("treq__pk")
+        .annotate(requested=Sum("amount", filter=Q(fund=fund)))
+        .values("requested")
+    )
+
+    spent = (
+        ActualExpense.objects.filter(
+            treq=OuterRef("pk"),
+            date_paid__lte=end_date,
+            date_paid__gte=start_date,
+            fund=fund,
+        )
+        .values("treq__pk")
+        .annotate(spent=Sum("total", filter=Q(fund=fund)))
+        .values("spent")
+    )
+
+    rows = TravelRequest.objects.filter(pk__in=treq_ids).annotate(
+        requested=Coalesce(
+            Subquery(requested.values("requested"), output_field=DecimalField()),
+            Value(0),
+        ),
+        spent=Coalesce(
+            Subquery(spent.values("spent"), output_field=DecimalField()), Value(0)
+        ),
+    )
+
+    return rows
 
 
 def get_fund_employee_list(fund, start_date=None, end_date=None):

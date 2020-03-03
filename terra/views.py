@@ -6,7 +6,7 @@ from django.views.generic import View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund, Employee, ActualExpense
+from .models import TravelRequest, Unit, Fund, Employee, Fund, Funding, ActualExpense
 from .reports import (
     unit_report,
     fund_report,
@@ -15,6 +15,8 @@ from .reports import (
     employee_total_report,
     get_subunits_and_employees,
     get_individual_data_treq,
+    get_treq_list,
+    get_individual_data_for_treq,
 )
 from .utils import (
     current_fiscal_year_object,
@@ -239,11 +241,23 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(*args, **kwargs)
         fy = fiscal_year(fiscal_year=self.kwargs["year"])
         context["fy"] = self.kwargs["year"]
+
         context["employees"], context["totals"] = fund_report(
             fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         context["fiscal_year_list"] = fiscal_year_list()
+        treq_ids = get_treq_list(
+            fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["treq_ids"] = treq_ids
+        context["treq_funds"] = get_individual_data_for_treq(
+            treq_ids=treq_ids,
+            fund=self.object,
+            start_date=fy.start.date(),
+            end_date=fy.end.date(),
+        )
+
         return context
 
 
