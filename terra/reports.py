@@ -270,14 +270,14 @@ def unit_report(unit, start_date=None, end_date=None):
 
 def get_treq_list(fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
-    rows = Funding.objects.filter(
+    funding_rows = Funding.objects.filter(
         fund=fund, treq__departure_date__gte=start_date, treq__return_date__lte=end_date
     ).values(travel=F("treq"))
 
-    rows2 = ActualExpense.objects.filter(
+    actual_expense_rows = ActualExpense.objects.filter(
         fund=fund, date_paid__gte=start_date, date_paid__lte=end_date
     ).values(travel=F("treq"))
-    treq_ids = set([e["travel"] for e in rows.union(rows2)])
+    treq_ids = set([e["travel"] for e in funding_rows.union(actual_expense_rows)])
     return treq_ids
 
 
