@@ -594,9 +594,9 @@ class FundReportsTestCase(TestCase):
             "admin_requested": Decimal("1050"),
             "admin_spent": Decimal("0"),
             "profdev_requested": Decimal("5500.00000"),
-            "profdev_spent": Decimal("4345"),
+            "profdev_spent": Decimal("4165"),
             "total_requested": Decimal("6550.00000"),
-            "total_spent": Decimal("4345"),
+            "total_spent": Decimal("4165"),
         }
         fund = Fund.objects.get(pk=1)
         employees, totals = reports.fund_report(fund)

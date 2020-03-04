@@ -284,37 +284,81 @@ def get_treq_list(fund, start_date=None, end_date=None):
 def get_individual_data_for_treq(treq_ids, fund, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
 
-    requested = (
+    profdev_requested = (
         Funding.objects.filter(
             treq=OuterRef("pk"),
             fund=fund,
             treq__departure_date__gte=start_date,
             treq__return_date__lte=end_date,
+            treq__administrative=False,
         )
         .values("treq__pk")
-        .annotate(requested=Sum("amount", filter=Q(fund=fund)))
-        .values("requested")
+        .annotate(profdev_requested=Sum("amount", filter=Q(fund=fund)))
+        .values("profdev_requested")
     )
 
-    spent = (
+    admin_requested = (
+        Funding.objects.filter(
+            treq=OuterRef("pk"),
+            fund=fund,
+            treq__departure_date__gte=start_date,
+            treq__return_date__lte=end_date,
+            treq__administrative=True,
+        )
+        .values("treq__pk")
+        .annotate(admin_requested=Sum("amount", filter=Q(fund=fund)))
+        .values("admin_requested")
+    )
+
+    profdev_spent = (
         ActualExpense.objects.filter(
             treq=OuterRef("pk"),
             date_paid__lte=end_date,
             date_paid__gte=start_date,
             fund=fund,
+            treq__administrative=False,
         )
         .values("treq__pk")
-        .annotate(spent=Sum("total", filter=Q(fund=fund)))
-        .values("spent")
+        .annotate(profdev_spent=Sum("total", filter=Q(fund=fund)))
+        .values("profdev_spent")
+    )
+
+    admin_spent = (
+        ActualExpense.objects.filter(
+            treq=OuterRef("pk"),
+            date_paid__lte=end_date,
+            date_paid__gte=start_date,
+            fund=fund,
+            treq__administrative=True,
+        )
+        .values("treq__pk")
+        .annotate(admin_spent=Sum("total", filter=Q(fund=fund)))
+        .values("admin_spent")
     )
 
     rows = TravelRequest.objects.filter(pk__in=treq_ids).annotate(
-        requested=Coalesce(
-            Subquery(requested.values("requested"), output_field=DecimalField()),
+        profdev_requested=Coalesce(
+            Subquery(
+                profdev_requested.values("profdev_requested"),
+                output_field=DecimalField(),
+            ),
             Value(0),
         ),
-        spent=Coalesce(
-            Subquery(spent.values("spent"), output_field=DecimalField()), Value(0)
+        admin_requested=Coalesce(
+            Subquery(
+                admin_requested.values("admin_requested"), output_field=DecimalField()
+            ),
+            Value(0),
+        ),
+        profdev_spent=Coalesce(
+            Subquery(
+                profdev_spent.values("profdev_spent"), output_field=DecimalField()
+            ),
+            Value(0),
+        ),
+        admin_spent=Coalesce(
+            Subquery(admin_spent.values("admin_spent"), output_field=DecimalField()),
+            Value(0),
         ),
     )
 

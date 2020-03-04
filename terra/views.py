@@ -94,8 +94,19 @@ class TreqDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         user = self.request.user
         treq = self.get_object()
+
         eligible_users = [treq.traveler, treq.traveler.supervisor]
         eligible_users.extend(treq.traveler.unit.super_managers())
+
+        for funding in treq.funding_set.all():
+            manager = funding.fund.manager
+            if manager is not None:
+                eligible_users.append(manager)
+        for actualexpense in treq.actualexpense_set.all():
+            manager = actualexpense.fund.manager
+            if manager is not None:
+                eligible_users.append(manager)
+
         return user.employee in eligible_users or user.employee.has_full_report_access()
 
 
@@ -273,6 +284,7 @@ class FundExportView(FundDetailView):
             [
                 "Employee",
                 "Type",
+                "Activity",
                 "Prof Dev Requested",
                 "Prof Dev Spent",
                 "Admin Requested",
@@ -282,10 +294,24 @@ class FundExportView(FundDetailView):
             ]
         )
         for e in context["employees"]:
+            for t in context["treq_funds"]:
+                if e.id == t.traveler.id:
+                    writer.writerow(
+                        [
+                            f"{e.user.last_name}, {e.user.first_name}",
+                            "",
+                            t.activity,
+                            t.profdev_requested,
+                            t.profdev_spent,
+                            t.admin_requested,
+                            t.admin_spent,
+                        ]
+                    )
             writer.writerow(
                 [
-                    f"{e.user.last_name}, {e.user.first_name}",
+                    f"{e.user.last_name}, {e.user.first_name} Total",
                     e.get_type_display(),
+                    "",
                     e.profdev_requested,
                     e.profdev_spent,
                     e.admin_requested,
@@ -297,6 +323,7 @@ class FundExportView(FundDetailView):
         writer.writerow(
             [
                 "Totals",
+                "",
                 "",
                 totals["profdev_requested"],
                 totals["profdev_spent"],
