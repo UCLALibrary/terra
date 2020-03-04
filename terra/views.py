@@ -6,7 +6,7 @@ from django.views.generic import View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund, Employee, ActualExpense
+from .models import TravelRequest, Unit, Fund, Employee, Fund, Funding, ActualExpense
 from .reports import (
     unit_report,
     fund_report,
@@ -15,6 +15,8 @@ from .reports import (
     employee_total_report,
     get_subunits_and_employees,
     get_individual_data_treq,
+    get_treq_list,
+    get_individual_data_for_treq,
 )
 from .utils import (
     current_fiscal_year_object,
@@ -92,8 +94,14 @@ class TreqDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         user = self.request.user
         treq = self.get_object()
+
         eligible_users = [treq.traveler, treq.traveler.supervisor]
         eligible_users.extend(treq.traveler.unit.super_managers())
+        for funding in treq.funding_set.all():
+            eligible_users.append(funding.fund.manager)
+        for actualexpense in treq.actualexpense_set.all():
+            eligible_users.append(actualexpense.fund.manager)
+
         return user.employee in eligible_users or user.employee.has_full_report_access()
 
 
@@ -239,11 +247,23 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context = super().get_context_data(*args, **kwargs)
         fy = fiscal_year(fiscal_year=self.kwargs["year"])
         context["fy"] = self.kwargs["year"]
+
         context["employees"], context["totals"] = fund_report(
             fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
         )
         context["fiscalyear"] = "{} - {}".format(fy.start.year, fy.end.year)
         context["fiscal_year_list"] = fiscal_year_list()
+        treq_ids = get_treq_list(
+            fund=self.object, start_date=fy.start.date(), end_date=fy.end.date()
+        )
+        context["treq_ids"] = treq_ids
+        context["treq_funds"] = get_individual_data_for_treq(
+            treq_ids=treq_ids,
+            fund=self.object,
+            start_date=fy.start.date(),
+            end_date=fy.end.date(),
+        )
+
         return context
 
 
@@ -259,6 +279,7 @@ class FundExportView(FundDetailView):
             [
                 "Employee",
                 "Type",
+                "Activity",
                 "Prof Dev Requested",
                 "Prof Dev Spent",
                 "Admin Requested",
@@ -270,8 +291,9 @@ class FundExportView(FundDetailView):
         for e in context["employees"]:
             writer.writerow(
                 [
-                    f"{e.user.last_name}, {e.user.first_name}",
+                    f"{e.user.last_name}, {e.user.first_name} Total",
                     e.get_type_display(),
+                    "",
                     e.profdev_requested,
                     e.profdev_spent,
                     e.admin_requested,
@@ -280,9 +302,24 @@ class FundExportView(FundDetailView):
                     e.total_spent,
                 ]
             )
+            for t in context["treq_funds"]:
+                if e.id == t.traveler.id:
+                    writer.writerow(
+                        [
+                            f"{e.user.last_name}, {e.user.first_name}",
+                            "",
+                            t.activity,
+                            t.profdev_requested,
+                            t.profdev_spent,
+                            t.admin_requested,
+                            t.admin_spent,
+                        ]
+                    )
+
         writer.writerow(
             [
                 "Totals",
+                "",
                 "",
                 totals["profdev_requested"],
                 totals["profdev_spent"],

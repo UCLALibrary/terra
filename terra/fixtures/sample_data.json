@@ -836,6 +836,16 @@
   }
 },
 {
+  "model": "terra.fund",
+  "pk": 3,
+  "fields": {
+    "account": "605000",
+    "cost_center": "LD",
+    "fund": "17084",
+    "manager": 5
+  }
+},
+{
   "model": "terra.travelrequest",
   "pk": 1,
   "fields": {
@@ -1213,7 +1223,7 @@
     "rate": null,
     "quantity": null,
     "total": "435.00000",
-    "fund": 1,
+    "fund": 3,
     "date_paid": "2019-06-30"
   }
 },
@@ -1226,7 +1236,7 @@
     "rate": null,
     "quantity": null,
     "total": "180.00000",
-    "fund": 1,
+    "fund": 3,
     "date_paid": "2020-01-01"
   }
 },

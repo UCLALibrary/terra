@@ -47,7 +47,7 @@
             </tr>
             <tr>
                 <th scope="col">Employee</th>
-                <th scope="col">Type</th>
+                <th scope="col">Activity</th>
                 <th scope="col" class="text-right">Amount Requested</th>
                 <th scope="col" class="text-right">Amount Spent</th>
                 
@@ -59,21 +59,37 @@
             </tr>
         </thead>
         <tbody>
-            {% for employee in employees %}
+        {% for employee in employees %}
             <tr>
-                <td><a href="/employee/{{employee.pk}}/{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
-                <td>{{employee.get_type_display}}</td>
-                <td class="text-right">{{employee.profdev_requested|cap|safe}}</td>
-                <td class="text-right">{{employee.profdev_spent|cap|safe}}</td>
+                <th>{{employee.user.last_name}}, {{employee.user.first_name}} ({{employee.get_type_display}}) Total</th>
+                <th></th>
+                <th class="text-right">{{employee.profdev_requested|cap|safe}}</th>
+                <th class="text-right">{{employee.profdev_spent|cap|safe}}</th>
 
-                <td class="text-right">{{employee.admin_requested|currency}}</td>
-                <td class="text-right">{{employee.admin_spent|currency}}</td>
+                <th class="text-right">{{employee.admin_requested|currency}}</th>
+                <th class="text-right">{{employee.admin_spent|currency}}</th>
 
-                <td class="text-right">{{employee.total_requested|currency}}</td>
-                <td class="text-right">{{employee.total_spent|currency}}</td>
+                <th class="text-right">{{employee.total_requested|currency}}</th>
+                <th class="text-right">{{employee.total_spent|currency}}</th>
             </tr>
+            {% for treq in treq_funds %}
+                {% if treq.traveler.id == employee.id %}
+                    <tr>
+                        <td><a href="/employee/{{employee.pk}}/{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
+                        <td><a href='/treq/{{treq.pk}}/'>{{treq.activity}}</a></td>
+                        
+                        <td class="text-right">{{treq.profdev_requested|currency}}</td>
+                        <td class="text-right">{{treq.profdev_spent|currency}}</td>
+                        
+                        <td class="text-right">{{treq.admin_requested|currency}}</td>
+                        <td class="text-right">{{treq.admin_spent|currency}}</td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                    </tr>
+                {% endif %}
             {% endfor %}
-        </tbody>
+        {% endfor %}
+            </tbody>
         <tfoot>
             <tr>
                 <th>Totals</th>
@@ -92,4 +108,3 @@
 
 
 {% endblock %}
-

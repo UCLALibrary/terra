@@ -13,7 +13,14 @@ from django.db.models import (
 from django.db.models.functions import Coalesce, ExtractDay
 
 
-from .models import TravelRequest, Employee, Funding, ActualExpense, EMPLOYEE_TYPES
+from .models import (
+    TravelRequest,
+    Employee,
+    Funding,
+    ActualExpense,
+    Fund,
+    EMPLOYEE_TYPES,
+)
 from .utils import (
     fiscal_year_bookends,
     current_fiscal_year_int,
@@ -259,6 +266,103 @@ def unit_report(unit, start_date=None, end_date=None):
     )
     data = merge_data(rows, data)
     return calculate_totals(data)
+
+
+def get_treq_list(fund, start_date=None, end_date=None):
+    start_date, end_date = check_dates(start_date, end_date)
+    funding_rows = Funding.objects.filter(
+        fund=fund, treq__departure_date__gte=start_date, treq__return_date__lte=end_date
+    ).values(travel=F("treq"))
+
+    actual_expense_rows = ActualExpense.objects.filter(
+        fund=fund, date_paid__gte=start_date, date_paid__lte=end_date
+    ).values(travel=F("treq"))
+    treq_ids = set([e["travel"] for e in funding_rows.union(actual_expense_rows)])
+    return treq_ids
+
+
+def get_individual_data_for_treq(treq_ids, fund, start_date=None, end_date=None):
+    start_date, end_date = check_dates(start_date, end_date)
+
+    profdev_requested = (
+        Funding.objects.filter(
+            treq=OuterRef("pk"),
+            fund=fund,
+            treq__departure_date__gte=start_date,
+            treq__return_date__lte=end_date,
+            treq__administrative=False,
+        )
+        .values("treq__pk")
+        .annotate(profdev_requested=Sum("amount", filter=Q(fund=fund)))
+        .values("profdev_requested")
+    )
+
+    admin_requested = (
+        Funding.objects.filter(
+            treq=OuterRef("pk"),
+            fund=fund,
+            treq__departure_date__gte=start_date,
+            treq__return_date__lte=end_date,
+            treq__administrative=True,
+        )
+        .values("treq__pk")
+        .annotate(admin_requested=Sum("amount", filter=Q(fund=fund)))
+        .values("admin_requested")
+    )
+
+    profdev_spent = (
+        ActualExpense.objects.filter(
+            treq=OuterRef("pk"),
+            date_paid__lte=end_date,
+            date_paid__gte=start_date,
+            fund=fund,
+            treq__administrative=False,
+        )
+        .values("treq__pk")
+        .annotate(profdev_spent=Sum("total", filter=Q(fund=fund)))
+        .values("profdev_spent")
+    )
+
+    admin_spent = (
+        ActualExpense.objects.filter(
+            treq=OuterRef("pk"),
+            date_paid__lte=end_date,
+            date_paid__gte=start_date,
+            fund=fund,
+            treq__administrative=True,
+        )
+        .values("treq__pk")
+        .annotate(admin_spent=Sum("total", filter=Q(fund=fund)))
+        .values("admin_spent")
+    )
+
+    rows = TravelRequest.objects.filter(pk__in=treq_ids).annotate(
+        profdev_requested=Coalesce(
+            Subquery(
+                profdev_requested.values("profdev_requested"),
+                output_field=DecimalField(),
+            ),
+            Value(0),
+        ),
+        admin_requested=Coalesce(
+            Subquery(
+                admin_requested.values("admin_requested"), output_field=DecimalField()
+            ),
+            Value(0),
+        ),
+        profdev_spent=Coalesce(
+            Subquery(
+                profdev_spent.values("profdev_spent"), output_field=DecimalField()
+            ),
+            Value(0),
+        ),
+        admin_spent=Coalesce(
+            Subquery(admin_spent.values("admin_spent"), output_field=DecimalField()),
+            Value(0),
+        ),
+    )
+
+    return rows
 
 
 def get_fund_employee_list(fund, start_date=None, end_date=None):
