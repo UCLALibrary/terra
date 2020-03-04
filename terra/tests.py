@@ -312,8 +312,13 @@ class TestTreqDetailView(TestCase):
 
     def test_treq_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/2020/")
-        self.assertTemplateUsed(response, "terra/unit.html")
+        response = self.client.get("/treq/2/")
+        self.assertTemplateUsed(response, "terra/treq.html")
+        self.assertEqual(response.status_code, 200)
+
+    def test_treq_detail_allows_fund_manager(self):
+        self.client.login(username="tawopetu", password="Staples50141")
+        response = self.client.get("/treq/5/")
         self.assertEqual(response.status_code, 200)
 
     def test_treq_detail_loads(self):
@@ -588,6 +593,25 @@ class FundReportsTestCase(TestCase):
         for eid in eids:
             with self.subTest(eid=eid):
                 self.assertTrue(eid in expected)
+
+    def test_get_treq_list(self):
+        fund = Fund.objects.get(pk=2)
+        treqs = reports.get_treq_list(fund, self.start_date, self.end_date)
+        expected = [1, 7]
+        for treq in treqs:
+            self.assertTrue(treq in expected)
+
+    def test_get_individual_data_for_treq(self):
+        fund = Fund.objects.get(pk=3)
+        treq_ids = reports.get_treq_list(fund, self.start_date, self.end_date)
+        actual = reports.get_individual_data_for_treq(
+            treq_ids, fund, self.start_date, self.end_date
+        )
+        for treq in actual:
+            self.assertEqual(treq.profdev_requested, Decimal(0))
+            self.assertEqual(treq.profdev_spent, Decimal(180))
+            self.assertEqual(treq.admin_requested, Decimal(0))
+            self.assertEqual(treq.admin_spent, Decimal(0))
 
     def test_fund_report(self):
         expected = {
