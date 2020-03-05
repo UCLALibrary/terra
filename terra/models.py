@@ -136,6 +136,10 @@ class Employee(models.Model):
             traveler=self, return_date__lte=end, return_date__gte=start
         )
 
+    def profdev_cap_applies(self):
+        if self.type == "HEAD" or self.type == "LIBR" or self.type == "SENR":
+            return True
+
     @property
     def sorted_unit_set(self):
         return self.employee_set.order_by("unit")
