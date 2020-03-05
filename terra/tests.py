@@ -1009,6 +1009,28 @@ class EmployeeSubtotalTestCase(TestCase):
                 with self.subTest(key=key, value=value):
                     self.assertEqual(x[key], expected[key])
 
+    def test_employee_total_report(self):
+        employee_ids = [2]
+        start_date = date(2019, 7, 1)
+        end_date = date(2020, 6, 30)
+        expected = {
+            2: {
+                "id": 2,
+                "profdev_spent": Decimal("1420.00000"),
+                "profdev_days_away": 20,
+                "total_requested": Decimal("4000.00000"),
+                "total_spent": Decimal("1420.00000"),
+                "days_away": 20,
+                "profdev_remaining": Decimal("2080.00000"),
+                "profdev_days_remaining": -5,
+            }
+        }
+        actual = reports.employee_total_report(employee_ids, start_date, end_date)
+        for employee in actual:
+            for key, value in actual[employee].items():
+                with self.subTest(key=key, value=value):
+                    self.assertEqual(actual[employee][key], actual[employee][key])
+
 
 class ActualExpenseTestCase(TestCase):
 

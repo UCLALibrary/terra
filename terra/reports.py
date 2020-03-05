@@ -872,8 +872,6 @@ def employee_total_report(employee_ids, start_date, end_date):
             employee["profdev_days_remaining"] = (
                 profdev_days_cap - employee["profdev_days_away"]
             )
-            if employee["profdev_days_remaining"] <= 0:
-                employee["profdev_days_remaining"] = 0
 
         except ObjectDoesNotExist:
             employee = {
