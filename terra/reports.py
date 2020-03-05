@@ -761,6 +761,18 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
     # 4 subqueries plugged into the final query
 
+    profdev_requested = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=False,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(profdev_requested=Sum("funding__amount"))
+        .values("profdev_requested")
+    )
+
     profdev_spent = (
         TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=False)
         .values("traveler__pk")
@@ -773,6 +785,32 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
         )
         .values("profdev_spent")
     )
+
+    admin_requested = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            administrative=True,
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(admin_requested=Sum("funding__amount"))
+        .values("admin_requested")
+    )
+
+    admin_spent = (
+        TravelRequest.objects.filter(traveler=OuterRef("pk"), administrative=True)
+        .values("traveler__pk")
+        .annotate(
+            admin_spent=Sum(
+                "actualexpense__total",
+                filter=Q(actualexpense__date_paid__lte=end_date)
+                & Q(actualexpense__date_paid__gte=start_date),
+            )
+        )
+        .values("admin_spent")
+    )
+
     profdev_days_away = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
@@ -807,14 +845,15 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
         .values("total_spent")
     )
 
-    days_away = (
+    admin_days_away = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            administrative=True,
         )
         .values("traveler_id")
-        .annotate(days_away=Sum("days_ooo"))
+        .annotate(admin_days_away=Sum("days_ooo"))
     )
 
     # final query
@@ -822,8 +861,17 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     rows = (
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
+            profdev_requested=Coalesce(
+                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
+            ),
             profdev_spent=Coalesce(
                 Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+            ),
+            admin_requested=Coalesce(
+                Subquery(admin_requested, output_field=DecimalField()), Value(0)
+            ),
+            admin_spent=Coalesce(
+                Subquery(admin_spent, output_field=DecimalField()), Value(0)
             ),
             profdev_days_away=Coalesce(
                 Subquery(
@@ -838,20 +886,24 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             total_spent=Coalesce(
                 Subquery(total_spent, output_field=DecimalField()), Value(0)
             ),
-            days_away=Coalesce(
+            admin_days_away=Coalesce(
                 Subquery(
-                    days_away.values("days_away")[:1], output_field=IntegerField()
+                    admin_days_away.values("admin_days_away")[:1],
+                    output_field=IntegerField(),
                 ),
                 Value(0),
             ),
         )
         .values(
             "id",
+            "profdev_requested",
             "profdev_spent",
+            "admin_requested",
+            "admin_spent",
             "profdev_days_away",
             "total_requested",
             "total_spent",
-            "days_away",
+            "admin_days_away",
         )
     )
     return rows
@@ -866,6 +918,9 @@ def employee_total_report(employee_ids, start_date, end_date):
             employee = rows.get(id=e)
             employee["total_requested"]
             employee["total_spent"]
+            employee["total_days_away"] = (
+                employee["profdev_days_away"] + employee["admin_days_away"]
+            )
             employee["profdev_remaining"] = (
                 profdev_spending_cap - employee["profdev_spent"]
             )
@@ -875,9 +930,14 @@ def employee_total_report(employee_ids, start_date, end_date):
 
         except ObjectDoesNotExist:
             employee = {
+                "profdev_requested": 0,
+                "profdev_spent": 0,
+                "admin_requested": 0,
+                "admin_spent": 0,
                 "total_requested": 0,
                 "total_spent": 0,
-                "days_away": 0,
+                "admin_days_away": 0,
+                "total_days_away": 0,
                 "profdev_remaining": 0,
                 "profdev_days_remaining": 0,
             }
