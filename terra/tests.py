@@ -85,6 +85,18 @@ class ModelsTestCase(TestCase):
         treqs = emp.treqs_in_fiscal_year(2020)
         self.assertEqual(len(treqs), 1)
 
+    def test_employee_is_ul(self):
+        emp = Employee.objects.get(pk=4)
+        self.assertTrue(emp.is_UL())
+        emp = Employee.objects.get(pk=2)
+        self.assertFalse(emp.is_UL())
+
+    def test_employee_profdev_cap_applies(self):
+        emp = Employee.objects.get(pk=2)
+        self.assertTrue(emp.profdev_cap_applies())
+        emp = Employee.objects.get(pk=4)
+        self.assertFalse(emp.profdev_cap_applies())
+
     def test_fund(self):
         fund = Fund.objects.get(pk=1)
         self.assertEqual(str(fund), "605000-LD-19900")
