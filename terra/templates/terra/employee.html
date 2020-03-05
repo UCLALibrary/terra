@@ -109,13 +109,13 @@
             <tr>
                 <th id="par" colspan="6" scope="colgroup">Administrative</th>
             </tr>
-            <tr>
+            
             {% for treq in employee.travelrequest_set.all %}
                 {% for i in actualexpenses_fy %}
                     {% if i.id == treq.id %}
                         {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
                             {% if treq.administrative == True %}
-                                
+                                <tr>
                                     <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                                     <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                                     <td>{{treq.closed|check_or_cross|safe}}</td>
@@ -126,7 +126,7 @@
                                     {% else %}
                                         <td>0</td>
                                     {% endif %}
-                                
+                               </tr> 
                             {% endif %}
                         {% endif %}
                     {% endif %}
