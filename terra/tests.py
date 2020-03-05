@@ -247,6 +247,11 @@ class TestEmpoyeeDetailView(TestCase):
         response = self.client.get("/employee/5/2020/")
         self.assertEqual(response.status_code, 200)
 
+    def test_aul_cannot_access_non_employee(self):
+        self.client.login(username="tgrappone", password="Staples50141")
+        response = self.client.get("/employee/6/2020/")
+        self.assertEqual(response.status_code, 403)
+
     def test_employee_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
         response = self.client.get("/employee/2/2020/")
