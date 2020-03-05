@@ -94,12 +94,12 @@
             {% for employee_id, totals in report.items %}
                 {% if employee_id == employee.id %}
                 <tr>
-                    <td scope="col">Subtotals</td>
-                    <td scope="col"></td>
-                    <td scope="col"></td>
-                    <td scope="col">{{totals.profdev_requested|currency}}</td>
-                    <td scope="col">{{totals.profdev_spent|currency}}</td>
-                    <td scope="col">{{totals.profdev_days_away}}</td>
+                    <th scope="col">Professional Development Subtotals</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col">{{totals.profdev_requested|currency}}</th>
+                    <th scope="col">{{totals.profdev_spent|currency}}</th>
+                    <th scope="col">{{totals.profdev_days_away}}</th>
 
                 </tr>
                 {% endif %}
@@ -135,12 +135,12 @@
             {% for employee_id, totals in report.items %}
                 {% if employee_id == employee.id %}
                 <tr>
-                    <td scope="col">Subtotals</td>
-                    <td scope="col"></td>
-                    <td scope="col"></td>
-                    <td scope="col">{{totals.admin_requested|currency}}</td>
-                    <td scope="col">{{totals.admin_spent|currency}}</td>
-                    <td scope="col">{{totals.admin_days_away}}</td>
+                    <th scope="col">Administrative Subtotals</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col">{{totals.admin_requested|currency}}</th>
+                    <th scope="col">{{totals.admin_spent|currency}}</th>
+                    <th scope="col">{{totals.admin_days_away}}</th>
 
                 </tr>
                 {% endif %}
