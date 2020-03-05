@@ -999,16 +999,14 @@ class EmployeeSubtotalTestCase(TestCase):
     def test_subtotal(self):
         expected = {
             "id": 2,
-            "admin_requested": Decimal("0.0000"),
-            "admin_spent": Decimal("0.0000"),
-            "days_away": 20,
+            "profdev_requested": Decimal("4000.00000"),
+            "profdev_spent": Decimal("1420.00000"),
+            "admin_requested": Decimal("0.00000"),
+            "admin_spent": Decimal("0.00000"),
             "profdev_days_away": 20,
-            "days_vacation": 5,
-            "profdev_requested": Decimal("4000.0000"),
-            "profdev_spent": Decimal("1420.0000"),
-            "total_requested": Decimal(4000),
-            "total_days_ooo": 20,
-            "total_spent": Decimal("1420.0000"),
+            "total_requested": Decimal("4000.00000"),
+            "total_spent": Decimal("1420.00000"),
+            "admin_days_away": 0,
         }
         employee_ids = [2]
         start_date = date(2019, 7, 1)
@@ -1016,6 +1014,7 @@ class EmployeeSubtotalTestCase(TestCase):
         actual = reports.get_individual_data_employee(
             employee_ids, start_date, end_date
         )
+
         for x in actual:
             for key, value in x.items():
                 with self.subTest(key=key, value=value):
@@ -1028,11 +1027,15 @@ class EmployeeSubtotalTestCase(TestCase):
         expected = {
             2: {
                 "id": 2,
+                "profdev_requested": Decimal("4000.00000"),
                 "profdev_spent": Decimal("1420.00000"),
+                "admin_requested": Decimal("0.00000"),
+                "admin_spent": Decimal("0.00000"),
                 "profdev_days_away": 20,
                 "total_requested": Decimal("4000.00000"),
                 "total_spent": Decimal("1420.00000"),
-                "days_away": 20,
+                "admin_days_away": 0,
+                "total_days_away": 20,
                 "profdev_remaining": Decimal("2080.00000"),
                 "profdev_days_remaining": -5,
             }
