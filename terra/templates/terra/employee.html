@@ -70,7 +70,6 @@
                     {% if i.id == treq.id %}
                         {% if treq.administrative == False %}
                             {% if i.actualexpenses_fy != 0 or treq.departure_date >= fy_start and treq.return_date <= fy_end %}
-
                                 <tr>
                                     <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                                     <td>{{treq.departure_date}} - {{treq.return_date}}</td>
@@ -83,14 +82,12 @@
                                     {% else %}
                                         <td>0</td>
                                     {% endif %}
-
                                 </tr>
                             {% endif %}
                         {% endif %}
                     {% endif %}
                {% endfor %}
             {% endfor %}
-
             {% for employee_id, totals in report.items %}
                 {% if employee_id == employee.id %}
                 <tr>
@@ -100,16 +97,13 @@
                     <th scope="col">{{totals.profdev_requested|currency}}</th>
                     <th scope="col">{{totals.profdev_spent|currency}}</th>
                     <th scope="col">{{totals.profdev_days_away}}</th>
-
                 </tr>
                 {% endif %}
             {% endfor %}
-
             <tr><th colspan="6" scope="colgroup"><br></th></tr>
             <tr>
                 <th id="par" colspan="6" scope="colgroup"><h4>Administrative</h4></th>
             </tr>
-            
             {% for treq in employee.travelrequest_set.all %}
                 {% for i in actualexpenses_fy %}
                     {% if i.id == treq.id %}
@@ -141,15 +135,12 @@
                     <th scope="col">{{totals.admin_requested|currency}}</th>
                     <th scope="col">{{totals.admin_spent|currency}}</th>
                     <th scope="col">{{totals.admin_days_away}}</th>
-
                 </tr>
                 {% endif %}
             {% endfor %}
         </tbody>
-        
         {% for employee_id, totals in report.items %}
             {% if employee_id == employee.id %}
-
                 <tfoot>
                     <tr><th colspan="6" scope="colgroup"><br></th></tr>
                     <tr>
