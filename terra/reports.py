@@ -511,8 +511,6 @@ def get_type_and_employees():
 
 def get_individual_data_type(employee_ids, start_date=None, end_date=None):
 
-    # 4 subqueries plugged into the final query
-
     profdev_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
@@ -759,7 +757,6 @@ def merge_data_type(employee_ids, start_date, end_date):
 
 def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
     start_date, end_date = check_dates(start_date, end_date)
-    # 4 subqueries plugged into the final query
 
     profdev_requested = (
         TravelRequest.objects.filter(
@@ -947,8 +944,6 @@ def employee_total_report(employee_ids, start_date, end_date):
 
 
 def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
-
-    # 4 subqueries plugged into the final query
 
     actualexpenses_fy = (
         ActualExpense.objects.filter(treq=OuterRef("pk"))
