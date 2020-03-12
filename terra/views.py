@@ -594,3 +594,24 @@ class ActualExpenseExportView(ActualExpenseListView):
         )
 
         return response
+
+
+class UnitOrgExportView(UnitDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        unit = context.get("unit")
+        team = unit.all_employees()
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        totals = context.get("totals")
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{unit}_{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(["Employee", "Email", "Supervisor", "Department"])
+        for subunit in context["report"]["subunits"].values():
+            writer.writerow([])
+            writer.writerow([subunit["subunit"]])
+            for employee in subunit["employees"].values():
+                writer.writerow(
+                    [employee, employee.user.email, employee.supervisor, employee.unit]
+                )
+
+        return response

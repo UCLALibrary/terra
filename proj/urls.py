@@ -17,6 +17,7 @@ from terra.views import (
     EmployeeTypeExportView,
     ActualExpenseListView,
     ActualExpenseExportView,
+    UnitOrgExportView,
     home,
 )
 
@@ -88,6 +89,11 @@ urlpatterns = [
         name="unit_detail",
     ),
     path("unit/<int:pk>/<int:year>/export/", UnitExportView.as_view(), name="unit_csv"),
+    path(
+        "unit/<int:pk>/<int:year>/org_export/",
+        UnitOrgExportView.as_view(),
+        name="org_csv",
+    ),
     path(
         "unit/",
         UnitListView.as_view(template_name="terra/unit_list.html"),
