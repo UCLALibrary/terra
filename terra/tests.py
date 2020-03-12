@@ -1144,3 +1144,24 @@ class TravelRequestReportTestCase(TestCase):
         # checking each item in each list
         for n in range(0, len(treq_list) - 1):
             self.assertEqual(actual[n], expected[n])
+
+
+class OrgChartTestCase(TestCase):
+
+    fixtures = ["sample_data.json"]
+
+    def test_orgchart_denies_anonymous(self):
+        response = self.client.get("/unit/1/2020/org_export/", follow=True)
+        self.assertRedirects(
+            response, "/accounts/login/?next=/unit/1/2020/org_export/", status_code=302
+        )
+
+    def org_chart_allows_full_access(self):
+        self.client.login(username="doriswang", password="Staples50141")
+        response = self.client.get("/unit/1/2020/org_export/")
+        self.assertEqual(response.status_code, 200)
+
+    def org_chart_denies_non_full_access(self):
+        self.client.login(username="tgrappone", password="Staples50141")
+        response = self.client.get("/unit/1/2020/org_export/")
+        self.assertEqual(response.status_code, 403)
