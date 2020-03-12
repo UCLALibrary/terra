@@ -606,7 +606,9 @@ class UnitOrgExportView(UnitDetailView):
         fy = fiscal_year(fiscal_year=self.kwargs["year"])
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f'attachment; filename="{unit}_{fy}.csv"'
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="{unit}_Org_Chart_{fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(["Employee", "Email", "Supervisor", "Department"])
         for subunit in context["report"]["subunits"].values():
