@@ -597,6 +597,9 @@ class ActualExpenseExportView(ActualExpenseListView):
 
 
 class UnitOrgExportView(UnitDetailView):
+    def test_func(self):
+        return self.request.user.employee.has_full_report_access()
+
     def render_to_response(self, context, **response_kwargs):
         unit = context.get("unit")
         team = unit.all_employees()
