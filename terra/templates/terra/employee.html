@@ -94,9 +94,9 @@
                     <th scope="col">Professional Development Subtotals</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
-                    <th scope="col">{{totals.profdev_requested|currency}}</th>
-                    <th scope="col">{{totals.profdev_spent|currency}}</th>
-                    <th scope="col">{{totals.profdev_days_away}}</th>
+                    <th scope="col">{{totals.profdev_requested|cap|safe}}</th>
+                    <th scope="col">{{totals.profdev_spent|cap|safe}}</th>
+                    <th scope="col">{{totals.profdev_days_away|days_cap|safe}}</th>
                 </tr>
                 {% endif %}
             {% endfor %}
