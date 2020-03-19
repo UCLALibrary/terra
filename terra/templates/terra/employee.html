@@ -56,6 +56,7 @@
                 <th scope="col">Activity</th>
                 <th scope="col">Dates</th>
                 <th scope="col">Closed</th>
+                <th scope="col">Canceled</th>
                 <th scope="col">Amount Requested in FY{{fy}}</th>
                 <th scope="col">Amount Spent in FY{{fy}}</th>
                 <th scope="col">Days Out Working Total in FY{{fy}}</th>   
@@ -74,6 +75,7 @@
                                     <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                                     <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                                     <td>{{treq.closed|check_or_cross|safe}}</td>
+                                    <td>{{treq.canceled|check_or_cross|safe}}</td>
                                     <td>{{i.funding_fy|currency}}</td>
                                     <td>{{i.actualexpenses_fy|currency}}</td>
 
@@ -94,15 +96,16 @@
                     <th scope="col">Professional Development Subtotals</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                     <th scope="col">{{totals.profdev_requested|cap|safe}}</th>
                     <th scope="col">{{totals.profdev_spent|cap|safe}}</th>
                     <th scope="col">{{totals.profdev_days_away|days_cap|safe}}</th>
                 </tr>
                 {% endif %}
             {% endfor %}
-            <tr><th colspan="6" scope="colgroup"><br></th></tr>
+            <tr><th colspan="7" scope="colgroup"><br></th></tr>
             <tr>
-                <th id="par" colspan="6" scope="colgroup"><h4>Administrative</h4></th>
+                <th id="par" colspan="7" scope="colgroup"><h4>Administrative</h4></th>
             </tr>
             {% for treq in employee.travelrequest_set.all %}
                 {% for i in actualexpenses_fy %}
@@ -113,6 +116,7 @@
                                     <td><a href="/treq/{{treq.pk}}">{{treq.activity.name}} </a></td>
                                     <td>{{treq.departure_date}} - {{treq.return_date}}</td>
                                     <td>{{treq.closed|check_or_cross|safe}}</td>
+                                    <td>{{treq.canceled|check_or_cross|safe}}</td>
                                     <td>{{i.funding_fy|currency}}</td>
                                     <td>{{i.actualexpenses_fy|currency}}</td>
                                     {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
@@ -132,6 +136,7 @@
                     <th scope="col">Administrative Subtotals</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                     <th scope="col">{{totals.admin_requested|currency}}</th>
                     <th scope="col">{{totals.admin_spent|currency}}</th>
                     <th scope="col">{{totals.admin_days_away}}</th>
@@ -142,9 +147,10 @@
         {% for employee_id, totals in report.items %}
             {% if employee_id == employee.id %}
                 <tfoot>
-                    <tr><th colspan="6" scope="colgroup"><br></th></tr>
+                    <tr><th colspan="7" scope="colgroup"><br></th></tr>
                     <tr>
                         <th>Totals</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th>{{totals.total_requested|currency}}</th>

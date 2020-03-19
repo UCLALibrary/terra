@@ -19,13 +19,15 @@
 <h2>
     Travel Request: {{treq.activity}}
     <small>
-    {% if treq.closed %}
+    {% if treq.canceled %}
+        <span class="badge badge-pill badge-danger">(Canceled)</span>
+    {% elif treq.closed %}
         <span class="badge badge-pill badge-secondary">(Closed)</span>
     {% else %}
         {% if treq.approved and treq.funded %}
             <span class="badge badge-pill badge-success">(Approved & Funded)</span>
         {% else %}
-            <span class="badge badge-pill badge-danger">(Pending)</span>
+            <span class="badge badge-pill badge-danger">(Pending)</span>  
         {% endif %}
     {% endif %}
     </small>
