@@ -859,7 +859,8 @@
     "justification": "Ashton will learn more about the library technology world and current tools and practices by attending this conference.",
     "approved_by": 3,
     "approved_on": "2019-09-24",
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": true
   }
 },
 {
@@ -876,7 +877,8 @@
     "justification": "",
     "approved_by": null,
     "approved_on": null,
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -893,7 +895,8 @@
     "justification": "",
     "approved_by": 1,
     "approved_on": "2019-09-26",
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -910,7 +913,8 @@
     "justification": "",
     "approved_by": null,
     "approved_on": null,
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -927,7 +931,8 @@
     "justification": "",
     "approved_by": null,
     "approved_on": null,
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -944,7 +949,8 @@
     "justification": "",
     "approved_by": null,
     "approved_on": null,
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -961,7 +967,8 @@
     "justification": "",
     "approved_by": 4,
     "approved_on": "2019-09-26",
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -978,7 +985,8 @@
     "justification": "",
     "approved_by": null,
     "approved_on": null,
-    "international_approved_on": null
+    "international_approved_on": null,
+    "canceled": false
   }
 },
 {
@@ -995,7 +1003,8 @@
     "justification": "",
     "approved_by": 3,
     "approved_on": "2019-03-01",
-    "international_approved_on": "2019-04-01"
+    "international_approved_on": "2019-04-01",
+    "canceled": false
   }
 },
 {

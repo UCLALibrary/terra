@@ -113,6 +113,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         "departure_date",
         days_ooo,
         "administrative",
+        "canceled",
         "approved",
         "funded",
         "closed",
@@ -125,6 +126,7 @@ class TravelRequestAdmin(admin.ModelAdmin):
         ("days_ooo", custom_titled_filter("days out-of-office")),
         "closed",
         "funds",
+        "canceled",
     )
     search_fields = [
         "traveler__user__last_name",
@@ -179,10 +181,7 @@ class FundAdmin(admin.ModelAdmin):
 @admin.register(Funding)
 class FundingAdmin(admin.ModelAdmin):
     list_display = ("id", "treq", "fund", "funded_by", "funded_on", "amount")
-    list_filter = (
-        "fund",
-        ("funded_on", custom_titled_filter("funding date")),
-    )
+    list_filter = ("fund", ("funded_on", custom_titled_filter("funding date")))
     search_fields = [
         "treq__traveler__user__last_name",
         "treq__traveler__user__first_name",

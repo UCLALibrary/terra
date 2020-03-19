@@ -188,6 +188,7 @@ class TravelRequest(models.Model):
     approved_on = models.DateField(null=True, blank=True)
     international_approved_on = models.DateField(null=True, blank=True)
     note = models.TextField(blank=True)
+    canceled = models.BooleanField(default=False)
 
     def __str__(self):
         return str(repr(self))
