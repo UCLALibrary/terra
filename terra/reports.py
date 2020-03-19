@@ -122,6 +122,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             departure_date__gte=start_date,
             return_date__lte=end_date,
             administrative=False,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(profdev_days_away=Sum("days_ooo"))
@@ -132,6 +133,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
             departure_date__gte=start_date,
             return_date__lte=end_date,
             administrative=True,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(admin_days_away=Sum("days_ooo"))
@@ -573,6 +575,7 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
             departure_date__gte=start_date,
             return_date__lte=end_date,
             administrative=False,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(profdev_days_away=Sum("days_ooo"))
@@ -583,6 +586,7 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
             departure_date__gte=start_date,
             return_date__lte=end_date,
             administrative=True,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(admin_days_away=Sum("days_ooo"))
@@ -814,6 +818,7 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             administrative=False,
             departure_date__gte=start_date,
             return_date__lte=end_date,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(profdev_days_away=Sum("days_ooo"))
@@ -848,6 +853,7 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
             departure_date__gte=start_date,
             return_date__lte=end_date,
             administrative=True,
+            canceled=False,
         )
         .values("traveler_id")
         .annotate(admin_days_away=Sum("days_ooo"))
