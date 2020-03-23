@@ -21,15 +21,17 @@
         <h2>FY {{fy}} Report</h2>
     </div>
     <div class="col text-right">
-        <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Fiscal Year
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {% for year in fiscal_year_list %}
-                    <a class="dropdown-item" href= "/employee/{{employee.id}}/{{year}}">{{year}}</a>
-                {% endfor %}
-            </div>
+        <a href="{% url 'employee_detail_csv' pk=employee.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+    </div>
+    
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Fiscal Year
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for year in fiscal_year_list %}
+                <a class="dropdown-item" href= "/employee/{{employee.id}}/{{year}}">{{year}}</a>
+            {% endfor %}
         </div>
     </div>
 </div>
