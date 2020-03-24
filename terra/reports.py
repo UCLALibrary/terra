@@ -974,6 +974,17 @@ def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
         )
         .values("funding_fy")
     )
+    days_ooo_fy = (
+        TravelRequest.objects.filter(id=OuterRef("pk"), canceled=False)
+        .values("id")
+        .annotate(
+            days_ooo_fy=Sum(
+                "days_ooo",
+                filter=Q(return_date__lte=end_date) & Q(departure_date__gte=start_date),
+            )
+        )
+        .values("days_ooo_fy")
+    )
 
     rows = (
         TravelRequest.objects.filter(pk__in=treq_ids).annotate(
@@ -983,7 +994,10 @@ def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
             funding_fy=Coalesce(
                 Subquery(funding_fy, output_field=DecimalField()), Value(0)
             ),
+            days_ooo_fy=Coalesce(
+                Subquery(days_ooo_fy, output_field=IntegerField()), Value(0)
+            ),
         )
-    ).values("id", "actualexpenses_fy", "funding_fy")
+    ).values("id", "actualexpenses_fy", "funding_fy", "days_ooo_fy")
 
     return rows

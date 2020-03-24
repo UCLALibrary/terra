@@ -80,12 +80,7 @@
                                     <td>{{treq.canceled|check_or_cross|safe}}</td>
                                     <td>{{i.funding_fy|currency}}</td>
                                     <td>{{i.actualexpenses_fy|currency}}</td>
-
-                                    {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
-                                        <td>{{treq.days_ooo}}</td>
-                                    {% else %}
-                                        <td>0</td>
-                                    {% endif %}
+                                    <td>{{i.days_ooo_fy}}</td>
                                 </tr>
                             {% endif %}
                         {% endif %}
@@ -121,11 +116,7 @@
                                     <td>{{treq.canceled|check_or_cross|safe}}</td>
                                     <td>{{i.funding_fy|currency}}</td>
                                     <td>{{i.actualexpenses_fy|currency}}</td>
-                                    {% if treq.departure_date >= fy_start and treq.return_date <= fy_end %}
-                                        <td>{{treq.days_ooo}}</td>
-                                    {% else %}
-                                        <td>0</td>
-                                    {% endif %}
+                                    <td>{{i.days_ooo_fy}}</td>
                                </tr> 
                             {% endif %}
                         {% endif %}

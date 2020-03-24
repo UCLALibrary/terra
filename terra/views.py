@@ -126,7 +126,7 @@ class EmployeeDetailExportView(EmployeeDetailView):
                                     treq.canceled,
                                     i["funding_fy"],
                                     i["actualexpenses_fy"],
-                                    treq.days_ooo,
+                                    i["days_ooo_fy"],
                                 ]
                             )
 
@@ -164,7 +164,7 @@ class EmployeeDetailExportView(EmployeeDetailView):
                                     treq.canceled,
                                     i["funding_fy"],
                                     i["actualexpenses_fy"],
-                                    treq.days_ooo,
+                                    i["days_ooo_fy"],
                                 ]
                             )
         writer.writerow([""])
