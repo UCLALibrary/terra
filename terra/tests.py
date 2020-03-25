@@ -1113,26 +1113,31 @@ class TravelRequestReportTestCase(TestCase):
                 "id": 1,
                 "actualexpenses_fy": Decimal("0.00000"),
                 "funding_fy": Decimal("4000.00000"),
+                "days_ooo_fy": 0,
             },
             {
                 "id": 2,
                 "actualexpenses_fy": Decimal("0.00000"),
                 "funding_fy": Decimal("2000.00000"),
+                "days_ooo_fy": 5,
             },
             {
                 "id": 3,
                 "actualexpenses_fy": Decimal("0.00000"),
                 "funding_fy": Decimal("1050.00000"),
+                "days_ooo_fy": 0,
             },
             {
                 "id": 4,
                 "actualexpenses_fy": Decimal("0.00000"),
                 "funding_fy": Decimal("0.00000"),
+                "days_ooo_fy": 5,
             },
             {
                 "id": 5,
                 "actualexpenses_fy": Decimal("1420.00000"),
                 "funding_fy": Decimal("0.00000"),
+                "days_ooo_fy": 10,
             },
         ]
         treq_list = [1, 2, 3, 4, 5]
@@ -1140,7 +1145,6 @@ class TravelRequestReportTestCase(TestCase):
         actual = reports.get_individual_data_treq(
             treq_ids=treq_list, start_date=fy.start.date(), end_date=fy.end.date()
         )
-
         # checking each item in each list
         for n in range(0, len(treq_list) - 1):
             self.assertEqual(actual[n], expected[n])

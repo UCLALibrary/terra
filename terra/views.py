@@ -84,6 +84,121 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
+class EmployeeDetailExportView(EmployeeDetailView):
+    def render_to_response(self, context, **response_kwargs):
+        employee = context.get("employee")
+        fiscal_year_list = context.get("fiscal_year_list")
+        report = context.get("report")
+        actualexpenses_fy = context.get("actualexpenses_fy")
+        fy_start = context.get("fy_start")
+        fy_end = context.get("fy_end")
+        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{employee}_{fy}.csv"'
+        writer = csv.writer(response)
+        writer.writerow(
+            [
+                "Activity",
+                "Departure Date",
+                "Return Date",
+                "Closed",
+                "Canceled",
+                "Amount Requested",
+                "Amount Spent",
+                "Days Out",
+            ]
+        )
+        writer.writerow(["Professional Development"])
+        for treq in employee.travelrequest_set.all():
+            for i in actualexpenses_fy:
+                if i["id"] == treq.id:
+                    if treq.administrative == False:
+                        if i["actualexpenses_fy"] != 0 or (
+                            treq.departure_date >= fy_start
+                            and treq.return_date <= fy_end
+                        ):
+                            writer.writerow(
+                                [
+                                    treq.activity.name,
+                                    treq.departure_date,
+                                    treq.return_date,
+                                    treq.closed,
+                                    treq.canceled,
+                                    i["funding_fy"],
+                                    i["actualexpenses_fy"],
+                                    i["days_ooo_fy"],
+                                ]
+                            )
+
+        writer.writerow([""])
+        for employee_id, totals in report.items():
+            if employee_id == employee.id:
+                writer.writerow(
+                    [
+                        "Professional Development Subtotal",
+                        "",
+                        "",
+                        "",
+                        "",
+                        totals["profdev_requested"],
+                        totals["profdev_spent"],
+                        totals["profdev_days_away"],
+                    ]
+                )
+        writer.writerow([""])
+        writer.writerow(["Administrative"])
+        for treq in employee.travelrequest_set.all():
+            for i in actualexpenses_fy:
+                if i["id"] == treq.id:
+                    if treq.administrative == True:
+                        if i["actualexpenses_fy"] != 0 or (
+                            treq.departure_date >= fy_start
+                            and treq.return_date <= fy_end
+                        ):
+                            writer.writerow(
+                                [
+                                    treq.activity.name,
+                                    treq.departure_date,
+                                    treq.return_date,
+                                    treq.closed,
+                                    treq.canceled,
+                                    i["funding_fy"],
+                                    i["actualexpenses_fy"],
+                                    i["days_ooo_fy"],
+                                ]
+                            )
+        writer.writerow([""])
+        for employee_id, totals in report.items():
+            if employee_id == employee.id:
+                writer.writerow(
+                    [
+                        "Administrative Subtotal",
+                        "",
+                        "",
+                        "",
+                        "",
+                        totals["admin_requested"],
+                        totals["admin_spent"],
+                        totals["admin_days_away"],
+                    ]
+                )
+                writer.writerow([""])
+                writer.writerow(
+                    [
+                        "Total",
+                        "",
+                        "",
+                        "",
+                        "",
+                        totals["total_requested"],
+                        totals["total_spent"],
+                        totals["total_days_away"],
+                    ]
+                )
+
+        return response
+
+
 class TreqDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     model = TravelRequest
