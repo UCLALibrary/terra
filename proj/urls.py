@@ -75,12 +75,12 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path(
-        "employee/<int:pk>/<int:year>/",
+        "employee/<int:pk>/<int:start_year>-<int:end_year>/",
         EmployeeDetailView.as_view(template_name="terra/employee.html"),
         name="employee_detail",
     ),
     path(
-        "employee/<int:pk>/<int:year>/export/",
+        "employee/<int:pk>/<int:start_year>-<int:end_year>/export/",
         EmployeeDetailExportView.as_view(),
         name="employee_detail_csv",
     ),
@@ -90,11 +90,15 @@ urlpatterns = [
         name="treq_detail",
     ),
     path(
-        "unit/<int:pk>/<int:year>/",
+        "unit/<int:pk>/<int:start_year>-<int:end_year>/",
         UnitDetailView.as_view(template_name="terra/unit.html"),
         name="unit_detail",
     ),
-    path("unit/<int:pk>/<int:year>/export/", UnitExportView.as_view(), name="unit_csv"),
+    path(
+        "unit/<int:pk>/<int:start_year>-<int:end_year>/export/",
+        UnitExportView.as_view(),
+        name="unit_csv",
+    ),
     path(
         "unit/<int:pk>/<int:year>/org_export/",
         UnitOrgExportView.as_view(),
@@ -105,9 +109,13 @@ urlpatterns = [
         UnitListView.as_view(template_name="terra/unit_list.html"),
         name="unit_list",
     ),
-    path("fund/<int:pk>/<int:year>/export/", FundExportView.as_view(), name="fund_csv"),
     path(
-        "fund/<int:pk>/<int:year>/",
+        "fund/<int:pk>/<int:start_year>-<int:end_year>/export/",
+        FundExportView.as_view(),
+        name="fund_csv",
+    ),
+    path(
+        "fund/<int:pk>/<int:start_year>-<int:end_year>/",
         FundDetailView.as_view(template_name="terra/fund.html"),
         name="fund_detail",
     ),
@@ -117,12 +125,12 @@ urlpatterns = [
         name="fund_list",
     ),
     path(
-        "employee_type_list/<int:year>/",
+        "employee_type_list/<int:start_year>-<int:end_year>/",
         EmployeeTypeListView.as_view(template_name="terra/employee_type_list.html"),
         name="employee_type_list",
     ),
     path(
-        "employee_type_list/<int:year>/export/",
+        "employee_type_list/<int:start_year>-<int:end_year>/export/",
         EmployeeTypeExportView.as_view(),
         name="employee_type_csv",
     ),

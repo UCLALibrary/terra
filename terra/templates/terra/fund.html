@@ -22,7 +22,7 @@
             <h3>{{fund}}</h3>
         </div>
         <div class="col text-right">
-            <a href="{% url 'fund_csv' pk=fund.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="/fund/{{fund.id}}/{{start_fy}}-{{end_fy}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
         </div>
 
         <div class="dropdown">
@@ -31,8 +31,9 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 {% for year in fiscal_year_list %}
-                    <a class="dropdown-item" href= "/fund/{{fund.id}}/{{year}}">{{year}}</a>
+                    <a class="dropdown-item" href= "/fund/{{fund.id}}/{{year}}-{{year}}">{{year}}</a>
                 {% endfor %}
+                <a class="dropdown-item" href= "/fund/{{fund.id}}/{{inception_year}}-{{fy_year}}">All Years</a>
             </div>
         </div>
     </div>

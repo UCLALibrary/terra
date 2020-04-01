@@ -42,7 +42,7 @@
       <div class="collapse navbar-collapse" id="header">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/employee/{{request.user.employee.pk}}/{{fy_year}}/">Employee Report</a>
+            <a class="nav-link" href="/employee/{{request.user.employee.pk}}/{{fy_year}}-{{fy_year}}/">Employee Report</a>
           </li>
           {% if request.user.employee.is_unit_manager or request.user.employee.has_full_report_access %}
           <li class="nav-item">
@@ -56,7 +56,7 @@
           {% endif %}
           {% if request.user.employee.has_full_report_access or request.user.employee.is_UL  %}
           <li class="nav-item">
-            <a class="nav-link" href="/employee_type_list/{{fy_year}}/">Employee Type Report</a>
+            <a class="nav-link" href="/employee_type_list/{{fy_year}}-{{fy_year}}/">Employee Type Report</a>
           </li>
           {% endif %}
           {% if request.user.employee.has_full_report_access %}

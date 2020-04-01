@@ -22,7 +22,7 @@
         </div>
 
         <div class="col text-right">
-            <a href="{% url 'employee_type_csv' year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="/employee_type_list/{{start_fy}}-{{end_fy}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
         </div>
 
         <div class="dropdown">
@@ -31,8 +31,9 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 {% for year in fiscal_year_list %}
-                    <a class="dropdown-item" href= "/employee_type_list/{{year}}">{{year}}</a>
+                    <a class="dropdown-item" href= "/employee_type_list/{{year}}-{{year}}">{{year}}</a>
                 {% endfor %}
+                <a class="dropdown-item" href= "/employee_type_list/{{inception_year}}-{{fy_year}}">All Years</a>
             </div>
         </div>
     </div>
