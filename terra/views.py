@@ -747,12 +747,13 @@ class UnitOrgExportView(UnitDetailView):
     def render_to_response(self, context, **response_kwargs):
         unit = context.get("unit")
         team = unit.all_employees()
-        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        start_fy = fiscal_year(fiscal_year=self.kwargs["start_year"])
+        end_fy = fiscal_year(fiscal_year=self.kwargs["end_year"])
         totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
         response[
             "Content-Disposition"
-        ] = f'attachment; filename="{unit}_Org_Chart_{fy}.csv"'
+        ] = f'attachment; filename="{unit}_Org_Chart_{start_fy}_{end_fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(["Employee", "Email", "Supervisor", "Department"])
         for subunit in context["report"]["subunits"].values():

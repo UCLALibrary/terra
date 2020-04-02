@@ -100,7 +100,7 @@ urlpatterns = [
         name="unit_csv",
     ),
     path(
-        "unit/<int:pk>/<int:year>/org_export/",
+        "unit/<int:pk>/<int:start_year>-<int:end_year>/org_export/",
         UnitOrgExportView.as_view(),
         name="org_csv",
     ),
