@@ -34,7 +34,11 @@ def home(request):
     return HttpResponseRedirect(
         reverse(
             "employee_detail",
-            kwargs={"pk": request.user.employee.pk, "year": current_fiscal_year_int()},
+            kwargs={
+                "pk": request.user.employee.pk,
+                "start_year": current_fiscal_year_int(),
+                "end_year": current_fiscal_year_int(),
+            },
         )
     )
 
@@ -42,7 +46,13 @@ def home(request):
 @login_required
 def employee_type_list(request):
     return HttpResponseRedirect(
-        reverse("employee_type_list", kwargs={"year": current_fiscal_year_int()})
+        reverse(
+            "employee_type_list",
+            kwargs={
+                "start_year": current_fiscal_year_int(),
+                "end_year": current_fiscal_year_int(),
+            },
+        )
     )
 
 
