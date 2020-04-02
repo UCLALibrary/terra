@@ -86,6 +86,7 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             start_date=start_fy.start.date(),
             end_date=end_fy.end.date(),
         )
+        context["fiscalyear"] = "{} - {}".format(start_fy, end_fy)
         return context
 
 
@@ -252,7 +253,7 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             start_date=start_fy.start.date(),
             end_date=end_fy.end.date(),
         )
-        context["fiscalyear"] = "{} - {}".format(start_fy.start.year, end_fy.end.year)
+        context["fiscalyear"] = "{} - {}".format(start_fy, end_fy)
         context["fiscal_year_list"] = fiscal_year_list()
         return context
 
@@ -384,7 +385,7 @@ class FundDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             start_date=start_fy.start.date(),
             end_date=end_fy.end.date(),
         )
-        context["fiscalyear"] = "{} - {}".format(start_fy.start.year, end_fy.end.year)
+        context["fiscalyear"] = "{} - {}".format(start_fy, end_fy)
         context["fiscal_year_list"] = fiscal_year_list()
         treq_ids = get_treq_list(
             fund=self.object,
@@ -521,7 +522,7 @@ class EmployeeTypeListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             start_date=start_fy.start.date(),
             end_date=end_fy.end.date(),
         )
-        context["fiscalyear"] = "{} - {}".format(start_fy.start.year, end_fy.end.year)
+        context["fiscalyear"] = "{} - {}".format(start_fy, end_fy)
         context["fiscal_year_list"] = fiscal_year_list()
 
         return context
@@ -623,19 +624,20 @@ class ActualExpenseListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_context_data(self, *args, **kwargs):
 
         context = super().get_context_data(*args, **kwargs)
+        start_fy = fiscal_year(fiscal_year=self.kwargs["start_year"])
+        end_fy = fiscal_year(fiscal_year=self.kwargs["end_year"])
+        context["start_fy"] = self.kwargs["start_year"]
+        context["end_fy"] = self.kwargs["end_year"]
         context["report"] = get_subunits_and_employees(Unit.objects.get(pk=1))
-        start_date, end_date = fiscal_year_bookends(self.kwargs["year"])
         context["actualexpenses"] = ActualExpense.objects.filter(
-            date_paid__gte=start_date, date_paid__lte=end_date
+            date_paid__gte=start_fy.start.date(), date_paid__lte=end_fy.end.date()
         )
-        fy = fiscal_year(fiscal_year=self.kwargs["year"])
-        context["fy"] = self.kwargs["year"]
-        context["fiscalyear"] = fy
         context["unit_totals"] = unit_report(
             unit=(Unit.objects.get(pk=1)),
-            start_date=fy.start.date(),
-            end_date=fy.end.date(),
+            start_date=start_fy.start.date(),
+            end_date=end_fy.end.date(),
         )
+        context["fiscalyear"] = "{} - {}".format(start_fy, end_fy)
         context["fiscal_year_list"] = fiscal_year_list()
         return context
 
@@ -644,10 +646,11 @@ class ActualExpenseExportView(ActualExpenseListView):
     def render_to_response(self, context, **response_kwargs):
 
         response = HttpResponse(content_type="text/csv")
-        fy = fiscal_year(fiscal_year=self.kwargs["year"])
+        start_fy = fiscal_year(fiscal_year=self.kwargs["start_year"])
+        end_fy = fiscal_year(fiscal_year=self.kwargs["end_year"])
         response[
             "Content-Disposition"
-        ] = f'attachment; filename="Actual_Expense_report_{fy}.csv"'
+        ] = f'attachment; filename="Actual_Expense_report_{start_fy}_{end_fy}.csv"'
         writer = csv.writer(response)
         writer.writerow(
             [

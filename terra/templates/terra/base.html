@@ -61,7 +61,7 @@
           {% endif %}
           {% if request.user.employee.has_full_report_access %}
           <li class="nav-item">
-            <a class="nav-link" href="/actual_expense_report/{{fy_year}}/">Actual Expense Report</a>
+            <a class="nav-link" href="/actual_expense_report/{{fy_year}}-{{fy_year}}/">Actual Expense Report</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/unit/1/{{fy_year}}/org_export">Org Chart Download</a>
