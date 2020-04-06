@@ -16,13 +16,13 @@
 
     <div class="row">
         <div class="col">
-            <h1>Fiscal Year {{fiscalyear}}</h1>
+            <h1>{{fiscalyear}} Report</h1>
             <h2>{{fund.manager.unit.name}}</h2>
             <h3>{{fund.manager}}</h3>
             <h3>{{fund}}</h3>
         </div>
         <div class="col text-right">
-            <a href="{% url 'fund_csv' pk=fund.id year=fy %}" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
+            <a href="/fund/{{fund.id}}/{{start_fy}}-{{end_fy}}/export/" class="btn btn-primary" role="button" aria-pressed="true">Download CSV</a>
         </div>
 
         <div class="dropdown">
@@ -31,8 +31,9 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 {% for year in fiscal_year_list %}
-                    <a class="dropdown-item" href= "/fund/{{fund.id}}/{{year}}">{{year}}</a>
+                    <a class="dropdown-item" href= "/fund/{{fund.id}}/{{year}}-{{year}}">{{year}}</a>
                 {% endfor %}
+                <a class="dropdown-item" href= "/fund/{{fund.id}}/{{inception_year}}-{{fy_year}}">All Years</a>
             </div>
         </div>
     </div>
@@ -75,7 +76,7 @@
             {% for treq in treq_funds %}
                 {% if treq.traveler.id == employee.id %}
                     <tr>
-                        <td><a href="/employee/{{employee.pk}}/{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
+                        <td><a href="/employee/{{employee.pk}}/{{fy_year}}-{{fy_year}}/">{{employee.user.last_name}}, {{employee.user.first_name}}</a></td>
                         <td><a href='/treq/{{treq.pk}}/'>{{treq.activity}}</a></td>
                         
                         <td class="text-right">{{treq.profdev_requested|currency}}</td>

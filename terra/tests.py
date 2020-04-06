@@ -244,41 +244,41 @@ class TestEmpoyeeDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_employee_detail_denies_anonymous(self):
-        response = self.client.get("/employee/3/2020/", follow=True)
+        response = self.client.get("/employee/3/2020-2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/employee/3/2020/", status_code=302
+            response, "/accounts/login/?next=/employee/3/2020-2020/", status_code=302
         )
 
     def test_employee_detail_requires_manager(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee/1/2020/")
+        response = self.client.get("/employee/1/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.client.login(username="tawopetu", password="Staples50141")
-        response = self.client.get("/employee/3/2020/")
+        response = self.client.get("/employee/3/2020-2020/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/employee/5/2020/")
+        response = self.client.get("/employee/5/2020-2020/")
         self.assertEqual(response.status_code, 200)
 
     def test_aul_cannot_access_non_employee(self):
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/employee/6/2020/")
+        response = self.client.get("/employee/6/2020-2020/")
         self.assertEqual(response.status_code, 403)
 
     def test_employee_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/employee/2/2020/")
+        response = self.client.get("/employee/2/2019-2020/")
         self.assertTemplateUsed(response, "terra/employee.html")
         self.assertEqual(response.status_code, 200)
 
     def test_employee_detail_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee/2/2020/")
+        response = self.client.get("/employee/2/2019-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
     def test_employee_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/employee/2/2019/")
+        response = self.client.get("/employee/2/2019-2019/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
@@ -288,32 +288,32 @@ class TestUnitDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_unit_detail_denies_anonymous(self):
-        response = self.client.get("/unit/1/2020/", follow=True)
+        response = self.client.get("/unit/1/2020-2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/2020/", status_code=302
+            response, "/accounts/login/?next=/unit/1/2020-2020/", status_code=302
         )
 
     def test_unit_detail_requires_manager(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/unit/1/2020/")
+        response = self.client.get("/unit/1/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/unit/1/2020/")
+        response = self.client.get("/unit/1/2020-2020/")
         self.assertEqual(response.status_code, 403)
-        response = self.client.get("/unit/2/2019/")
+        response = self.client.get("/unit/2/2019-2020/")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get("/unit/3/2019/")
+        response = self.client.get("/unit/3/2019-2019/")
         self.assertEqual(response.status_code, 200)
 
     def test_unit_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/2020/")
+        response = self.client.get("/unit/1/2020-2020/")
         self.assertTemplateUsed(response, "terra/unit.html")
         self.assertEqual(response.status_code, 200)
 
     def test_unit_detail_loads(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/unit/1/2020/")
+        response = self.client.get("/unit/1/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/unit.html")
 
@@ -652,25 +652,25 @@ class TestFundDetailView(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_fund_detail_denies_anonymous(self):
-        response = self.client.get("/fund/1/2020/", follow=True)
+        response = self.client.get("/fund/1/2020-2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/fund/1/2020/", status_code=302
+            response, "/accounts/login/?next=/fund/1/2020-2020/", status_code=302
         )
 
     def test_fund_detail_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/fund/1/2020/")
+        response = self.client.get("/fund/1/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
 
     def test_fund_denies_non_lbs(self):
         self.client.login(username="tawopetu", password="Staples50141")
-        response = self.client.get("/fund/1/2020/")
+        response = self.client.get("/fund/1/2020-2020/")
         self.assertEqual(response.status_code, 403)
 
     def test_fund_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
-        response = self.client.get("/fund/1/2020/")
+        response = self.client.get("/fund/1/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/fund.html")
 
@@ -944,25 +944,27 @@ class EmployeeTypeReportsTestCase(TestCase):
             )
 
     def test_type_report_denies_anonymous(self):
-        response = self.client.get("/employee_type_list/2020/", follow=True)
+        response = self.client.get("/employee_type_list/2020-2020/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/employee_type_list/2020/", status_code=302
+            response,
+            "/accounts/login/?next=/employee_type_list/2020-2020/",
+            status_code=302,
         )
 
     def test_type_report_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/employee_type_list/2020/")
+        response = self.client.get("/employee_type_list/2019-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
 
     def test_type_report_denies_non_UL(self):
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/employee_type_list/2020/")
+        response = self.client.get("/employee_type_list/2019-2020/")
         self.assertEqual(response.status_code, 403)
 
     def test_type_report_allows_UL(self):
         self.client.login(username="vsteel", password="Staples50141")
-        response = self.client.get("/employee_type_list/2020/")
+        response = self.client.get("/employee_type_list/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee_type_list.html")
 
@@ -1052,16 +1054,16 @@ class ActualExpenseTestCase(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_actualexpense_report_denies_anonymous(self):
-        response = self.client.get("/actual_expense_report/2020/", follow=True)
+        response = self.client.get("/actual_expense_report/2020-2020/", follow=True)
         self.assertRedirects(
             response,
-            "/accounts/login/?next=/actual_expense_report/2020/",
+            "/accounts/login/?next=/actual_expense_report/2020-2020/",
             status_code=302,
         )
 
     def test_actualexpense_report_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/actual_expense_report/2020/")
+        response = self.client.get("/actual_expense_report/2020-2020/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/actual_expense_report.html")
 
@@ -1155,17 +1157,19 @@ class OrgChartTestCase(TestCase):
     fixtures = ["sample_data.json"]
 
     def test_orgchart_denies_anonymous(self):
-        response = self.client.get("/unit/1/2020/org_export/", follow=True)
+        response = self.client.get("/unit/1/2020-2020/org_export/", follow=True)
         self.assertRedirects(
-            response, "/accounts/login/?next=/unit/1/2020/org_export/", status_code=302
+            response,
+            "/accounts/login/?next=/unit/1/2020-2020/org_export/",
+            status_code=302,
         )
 
     def org_chart_allows_full_access(self):
         self.client.login(username="doriswang", password="Staples50141")
-        response = self.client.get("/unit/1/2020/org_export/")
+        response = self.client.get("/unit/1/2020-2020/org_export/")
         self.assertEqual(response.status_code, 200)
 
     def org_chart_denies_non_full_access(self):
         self.client.login(username="tgrappone", password="Staples50141")
-        response = self.client.get("/unit/1/2020/org_export/")
+        response = self.client.get("/unit/1/2020-2020/org_export/")
         self.assertEqual(response.status_code, 403)

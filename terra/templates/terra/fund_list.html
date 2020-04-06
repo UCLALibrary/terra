@@ -26,7 +26,7 @@
   </thead>
   <tbody>
   	{% for fund in funds %}
-  	<tr class="table-row" data-href="{% url 'fund_detail' pk=fund.id year=current_fy %}">
+  	<tr class="table-row" data-href="{% url 'fund_detail' pk=fund.id start_year=current_fy end_year=current_fy %}">
   		<td>{{ fund }}</td>
   		<td>{% if fund.unit %}{{ fund.unit }}{% endif %}</td>
   		<td>{{ fund.manager }}</td>
