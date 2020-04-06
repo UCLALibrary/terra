@@ -5,7 +5,6 @@ from django.views.generic.list import ListView
 from django.views.generic import View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 
 from .models import TravelRequest, Unit, Fund, Employee, Fund, Funding, ActualExpense
 from .reports import (
