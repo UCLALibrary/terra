@@ -31,6 +31,11 @@ if [ "$TRAVIS" = "true" ]; then
   chmod -R 777 .
 fi
 
+# Run static code analysis, using pyflakes
+echo '***** Start pyflakes *****'
+${DOCKER_COMPOSE_TRAVIS} exec django pyflakes terra
+echo '***** End pyflakes *****'
+
 # Run the tests
 ${DOCKER_COMPOSE_TRAVIS} exec django /home/django/.local/bin/coverage run --source=terra manage.py test terra
 # Capture return value from tests, or it'll be lost when the next command runs

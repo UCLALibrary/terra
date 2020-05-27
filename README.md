@@ -126,9 +126,13 @@ When you change the Django models, you need to update the tables in the database
 
 		$ docker-compose exec django python manage.py check
 
-3. Run the terra test suite
+3. Functional tests: Run the terra test suite
 
 		$ docker-compose exec django python manage.py test terra
+
+4. Static code analysis: Run pyflakes
+
+		$ docker-compose exec django pyflakes terra
 
 5. Load different data (sample data is loaded automatically if working in Docker environment)
 
