@@ -687,7 +687,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                             [
                                 actualexpense.treq.traveler.unit,
                                 actualexpense.treq.traveler,
-                                actualexpense.treq.traveler.type,
+                                actualexpense.treq.traveler.get_type_display(),
                                 actualexpense.treq.activity,
                                 actualexpense.treq.departure_date,
                                 actualexpense.treq.return_date,
