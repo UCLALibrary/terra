@@ -665,6 +665,7 @@ class ActualExpenseExportView(ActualExpenseListView):
             [
                 "Department",
                 "Employee",
+                "Type",
                 "Activity",
                 "Departure Date",
                 "Return Date",
@@ -686,6 +687,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                             [
                                 actualexpense.treq.traveler.unit,
                                 actualexpense.treq.traveler,
+                                actualexpense.treq.traveler.get_type_display(),
                                 actualexpense.treq.activity,
                                 actualexpense.treq.departure_date,
                                 actualexpense.treq.return_date,
@@ -701,7 +703,8 @@ class ActualExpenseExportView(ActualExpenseListView):
                         if employee == e and employee.data["total_spent"] != 0:
                             writer.writerow(
                                 [
-                                    f"{employee} Total",
+                                    f"{employee} ({employee.get_type_display()}) Total",
+                                    "",
                                     "",
                                     "",
                                     "",
@@ -727,6 +730,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                             "",
                             "",
                             "",
+                            "",
                             subunit["subunit_totals"]["total_spent"],
                         ]
                     )
@@ -734,6 +738,7 @@ class ActualExpenseExportView(ActualExpenseListView):
         writer.writerow(
             [
                 "Library Total",
+                "",
                 "",
                 "",
                 "",
