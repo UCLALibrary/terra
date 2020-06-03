@@ -42,6 +42,7 @@
           <h3>{{v.subunit}}</h3>
           <th class="text">Department</th>
           <th class="text">Employee</th>
+          <th class="text">Type</th>
           <th class="text">Activity</th>
           <th class="text">Dates</th>
           <th class="text">Date Paid</th>
@@ -58,6 +59,7 @@
                   <tr>
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
                     <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/{{fy_year}}-{{fy_year}}/">{{actualexpense.treq.traveler}}</a></td>
+                    <td class="text">{{actualexpense.treq.traveler.get_type_display}}</td>
                     <td><a href="/treq/{{actualexpense.treq.pk}}/">{{actualexpense.treq.activity}}</a></td>
                     <td class="text">{{actualexpense.treq.departure_date}} - {{actualexpense.treq.return_date}}</td>
                     <td class="text">{{actualexpense.date_paid}}</td>
@@ -75,12 +77,13 @@
                 {% for  employee in subunit.employees.values %}
                   {% if employee == e and employee.data.total_spent != 0%}
                     <tr>
-                      <th class="text">{{employee}} Total</th>
+                      <th class="text">{{employee}} ({{employee.get_type_display}}) Total</th>
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="textt"></td>
+                      <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="text-right">{{employee.data.total_spent|currency}}</td>
@@ -96,6 +99,7 @@
             <tr>
                 <th>{{v.subunit}} Subtotal</th>
                 <th></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
@@ -122,6 +126,7 @@
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
+                <th class="text-right"></th>
                 <th class="text-right">Amount</th>
               </tr>
         </thead>
@@ -129,6 +134,7 @@
             <tr>
             <th>Total</th>
                 <th></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
