@@ -703,7 +703,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                         if employee == e and employee.data["total_spent"] != 0:
                             writer.writerow(
                                 [
-                                    f"{employee} Total",
+                                    f"{employee} ({employee.get_type_display()}) Total",
                                     "",
                                     "",
                                     "",
