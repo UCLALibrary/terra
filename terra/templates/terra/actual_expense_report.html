@@ -36,27 +36,34 @@
         </div>
     </div>
 <br/>
-{% for v in report.subunits.values %}
-    <table class="table">
-        <thead class="thead-light">
-          <h3>{{v.subunit}}</h3>
-          <th class="text">Department</th>
-          <th class="text">Employee</th>
-          <th class="text">Type</th>
-          <th class="text">Activity</th>
-          <th class="text">Dates</th>
-          <th class="text">Date Paid</th>
-          <th class="text">Closed</th>
-          <th class="text">Reimbursed</th>
-          <th class="text">Fund</th>
-          <th class="text-right">Amount</th>
-        </thead>
-        <tbody>
-        {% for e in v.employees.values %}
-          {% for actualexpense in actualexpenses %}
-            {% if actualexpense.treq.traveler == e %}
-                 
+
+<table class="table">
+    <thead class="thead-light">
+      <th class="text">AUL</th>
+      <th class="text">Department</th>
+      <th class="text">Employee</th>
+      <th class="text">Type</th>
+      <th class="text">Activity</th>
+      <th class="text">Dates</th>
+      <th class="text">Date Paid</th>
+      <th class="text">Closed</th>
+      <th class="text">Reimbursed</th>
+      <th class="text">Fund</th>
+      <th class="text-right">Amount</th>
+      <th class="text-right">Employee Total</th>
+    </thead>
+    <tbody>
+  {% for v in report.subunits.values %}
+      {% for e in v.employees.values %}
+        {% for actualexpense in actualexpenses %}
+          {% if actualexpense.treq.traveler == e %}
+        
                   <tr>
+                    {% if v.subunit.manager.type == 'EXEC' %}
+                      <td class="text">{{v.subunit.manager}}</td>
+                    {% else %}
+                      <td></td>
+                    {% endif %}
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
                     <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/{{fy_year}}-{{fy_year}}/">{{actualexpense.treq.traveler}}</a></td>
                     <td class="text">{{actualexpense.treq.traveler.get_type_display}}</td>
@@ -66,10 +73,9 @@
                     <td class="text">{{actualexpense.treq.closed|check_or_cross|safe}}</td>
                     <td class="textt">{{actualexpense.reimbursed|check_or_cross|safe}}</td>
                     <td class="text">{{actualexpense.fund}}</td>
-                    <td class="text-right">{{actualexpense.total|currency}}</td>  
-                  </tr>
-            
-                
+                    <td class="text-right">{{actualexpense.total|currency}}</td> 
+                    <td></td>
+                  </tr> 
               {% endif %}
             {% endfor %}
 
@@ -77,6 +83,8 @@
                 {% for  employee in subunit.employees.values %}
                   {% if employee == e and employee.data.total_spent != 0%}
                     <tr>
+                      <td class="text"></td>
+                      <td class="text"></td>
                       <th class="text">{{employee}} ({{employee.get_type_display}}) Total</th>
                       <td class="text"></td>
                       <td class="text"></td>
@@ -93,47 +101,15 @@
           {% endfor %}
             </tr>
         </tbody>
-        <tfoot>
-        {% for subunit in unit_totals.subunits.values %}
-          {% if subunit.subunit == v.subunit %}
-            <tr>
-                <th>{{v.subunit}} Subtotal</th>
-                <th></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right">{{subunit.subunit_totals.total_spent|currency}}</th>
-            </tr>
-        </tfoot>
-          {% endif %}
-        {% endfor %}
+        
       {% endfor %}
-      </table>
-    <hr/>
-
-    <table class="table">
-        <thead class="thead-light">
-          <h3>Library Total</h3>
-          <tr>
-              <th></th>
-                <th></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right"></th>
-                <th class="text-right">Amount</th>
-              </tr>
-        </thead>
         <tfoot>
             <tr>
-            <th>Total</th>
+            <th>Library Total</th>
                 <th></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
