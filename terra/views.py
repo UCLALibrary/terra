@@ -739,7 +739,6 @@ class ActualExpenseExportView(ActualExpenseListView):
                                 ]
                             )
                             writer.writerow([])
-        writer.writerow([])
         writer.writerow(
             [
                 "Library Total",
