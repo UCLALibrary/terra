@@ -753,21 +753,6 @@ class EmployeeTypeReportsTestCase(TestCase):
                     },
                 },
                 "Executive": {
-                    "employees": [],
-                    "totals": {
-                        "admin_requested": 0,
-                        "admin_spent": 0,
-                        "admin_days_away": 0,
-                        "profdev_days_away": 0,
-                        "days_vacation": 0,
-                        "profdev_requested": 0,
-                        "profdev_spent": 0,
-                        "total_requested": 0,
-                        "total_days_ooo": 0,
-                        "total_spent": 0,
-                    },
-                },
-                "Unit Head": {
                     "employees": [
                         {
                             "id": 1,
@@ -784,7 +769,23 @@ class EmployeeTypeReportsTestCase(TestCase):
                             "total_requested": Decimal("1300.00000"),
                             "total_spent": Decimal("0.00000"),
                             "total_days_ooo": 3,
-                        },
+                        }
+                    ],
+                    "totals": {
+                        "admin_requested": Decimal("1300.00000"),
+                        "admin_spent": Decimal("0.00000"),
+                        "admin_days_away": 3,
+                        "profdev_days_away": 0,
+                        "days_vacation": 0,
+                        "profdev_requested": Decimal("0.00000"),
+                        "profdev_spent": Decimal("0.00000"),
+                        "total_requested": Decimal("1300.00000"),
+                        "total_days_ooo": 3,
+                        "total_spent": Decimal("0.00000"),
+                    },
+                },
+                "Unit Head": {
+                    "employees": [
                         {
                             "id": 6,
                             "profdev_requested": Decimal("0.00000"),
@@ -819,15 +820,15 @@ class EmployeeTypeReportsTestCase(TestCase):
                         },
                     ],
                     "totals": {
-                        "admin_requested": Decimal("2350.00000"),
+                        "admin_requested": Decimal("1050.00000"),
                         "admin_spent": Decimal("0.00000"),
-                        "admin_days_away": 3,
+                        "admin_days_away": 0,
                         "profdev_days_away": 10,
                         "days_vacation": 9,
                         "profdev_requested": Decimal("2000.00000"),
                         "profdev_spent": Decimal("0.00000"),
-                        "total_requested": Decimal("4350.00000"),
-                        "total_days_ooo": 13,
+                        "total_requested": Decimal("3050.00000"),
+                        "total_days_ooo": 10,
                         "total_spent": Decimal("0.00000"),
                     },
                 },

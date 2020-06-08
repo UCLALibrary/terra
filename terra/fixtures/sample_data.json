@@ -735,7 +735,7 @@
     "active": true,
     "uid": "FAKE001",
     "supervisor": 4,
-    "type": "HEAD",
+    "type": "EXEC",
     "extra_allocation": "0.00000",
     "allocation_expire_date": null
   }

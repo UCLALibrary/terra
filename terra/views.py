@@ -663,6 +663,7 @@ class ActualExpenseExportView(ActualExpenseListView):
         writer = csv.writer(response)
         writer.writerow(
             [
+                "AUL",
                 "Department",
                 "Employee",
                 "Type",
@@ -674,35 +675,56 @@ class ActualExpenseExportView(ActualExpenseListView):
                 "Reimbursed",
                 "Fund",
                 "Amount",
+                "Employee Total",
             ]
         )
         for v in context["report"]["subunits"].values():
             writer.writerow([])
-            writer.writerow([v["subunit"]])
             for e in v["employees"].values():
                 for actualexpense in context["actualexpenses"]:
                     if actualexpense.treq.traveler == e:
+                        if v["subunit"].manager.type == "EXEC":
+                            writer.writerow(
+                                [
+                                    v["subunit"].manager,
+                                    actualexpense.treq.traveler.unit,
+                                    actualexpense.treq.traveler,
+                                    actualexpense.treq.traveler.get_type_display(),
+                                    actualexpense.treq.activity,
+                                    actualexpense.treq.departure_date,
+                                    actualexpense.treq.return_date,
+                                    actualexpense.date_paid,
+                                    actualexpense.treq.closed,
+                                    actualexpense.reimbursed,
+                                    actualexpense.fund,
+                                    actualexpense.total,
+                                ]
+                            )
+                        elif v["subunit"].manager.type != "EXEC":
+                            writer.writerow(
+                                [
+                                    "",
+                                    actualexpense.treq.traveler.unit,
+                                    actualexpense.treq.traveler,
+                                    actualexpense.treq.traveler.get_type_display(),
+                                    actualexpense.treq.activity,
+                                    actualexpense.treq.departure_date,
+                                    actualexpense.treq.return_date,
+                                    actualexpense.date_paid,
+                                    actualexpense.treq.closed,
+                                    actualexpense.reimbursed,
+                                    actualexpense.fund,
+                                    actualexpense.total,
+                                ]
+                            )
 
-                        writer.writerow(
-                            [
-                                actualexpense.treq.traveler.unit,
-                                actualexpense.treq.traveler,
-                                actualexpense.treq.traveler.get_type_display(),
-                                actualexpense.treq.activity,
-                                actualexpense.treq.departure_date,
-                                actualexpense.treq.return_date,
-                                actualexpense.date_paid,
-                                actualexpense.treq.closed,
-                                actualexpense.reimbursed,
-                                actualexpense.fund,
-                                actualexpense.total,
-                            ]
-                        )
                 for subunit in context["unit_totals"]["subunits"].values():
                     for employee in subunit["employees"].values():
                         if employee == e and employee.data["total_spent"] != 0:
                             writer.writerow(
                                 [
+                                    "",
+                                    "",
                                     f"{employee} ({employee.get_type_display()}) Total",
                                     "",
                                     "",
@@ -717,27 +739,12 @@ class ActualExpenseExportView(ActualExpenseListView):
                                 ]
                             )
                             writer.writerow([])
-            for subunit in context["unit_totals"]["subunits"].values():
-                if subunit["subunit"] == v["subunit"]:
-                    writer.writerow(
-                        [
-                            "Subtotal",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            subunit["subunit_totals"]["total_spent"],
-                        ]
-                    )
         writer.writerow([])
         writer.writerow(
             [
                 "Library Total",
+                "",
+                "",
                 "",
                 "",
                 "",
