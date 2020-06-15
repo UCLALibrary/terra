@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
 from django.core.management.commands import test
 
 import os
 import MySQLdb
+
 
 class Command(test.Command):
     help = "Overrides built-in test command to set MySQL permissions on test database."

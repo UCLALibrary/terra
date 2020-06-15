@@ -6,11 +6,6 @@ from terra.utils import (
     profdev_days_cap,
     profdev_days_warning,
 )
-from datetime import date
-from django.conf import settings
-
-import fiscalyear as FY
-import locale
 
 register = template.Library()
 
