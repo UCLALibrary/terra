@@ -64,7 +64,7 @@ def add_supervisors(self, employee_file):
     """
     Adds supervisors to employees.
     """
-    self.stdout.write(f"\nAdding supervisors...")
+    self.stdout.write("\nAdding supervisors...")
     with open(employee_file, encoding="utf-8-sig", newline="") as csvfile:
         reader = csv.DictReader(csvfile, dialect="excel")
         for row in reader:
