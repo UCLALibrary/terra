@@ -2,30 +2,22 @@ import csv
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.generic.list import ListView
-from django.views.generic import View, DetailView
+from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import TravelRequest, Unit, Fund, Employee, Fund, Funding, ActualExpense
+from .models import TravelRequest, Unit, Employee, Fund, ActualExpense
 from .reports import (
     unit_report,
     fund_report,
     merge_data_type,
-    get_type_and_employees,
     employee_total_report,
     get_subunits_and_employees,
     get_individual_data_treq,
     get_treq_list,
     get_individual_data_for_treq,
 )
-from .utils import (
-    current_fiscal_year_object,
-    current_fiscal_year,
-    fiscal_year_bookends,
-    fiscal_year,
-    current_fiscal_year_int,
-    fiscal_year_list,
-)
+from .utils import fiscal_year, current_fiscal_year_int, fiscal_year_list
 
 
 @login_required
@@ -102,7 +94,6 @@ class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class EmployeeDetailExportView(EmployeeDetailView):
     def render_to_response(self, context, **response_kwargs):
         employee = context.get("employee")
-        fiscal_year_list = context.get("fiscal_year_list")
         report = context.get("report")
         actualexpenses_fy = context.get("actualexpenses_fy")
         fy_start = context.get("fy_start")
@@ -270,10 +261,8 @@ class UnitDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class UnitExportView(UnitDetailView):
     def render_to_response(self, context, **response_kwargs):
         unit = context.get("unit")
-        team = unit.all_employees()
         start_fy = fiscal_year(fiscal_year=self.kwargs["start_year"])
         end_fy = fiscal_year(fiscal_year=self.kwargs["end_year"])
-        totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
         response[
             "Content-Disposition"
@@ -766,10 +755,8 @@ class UnitOrgExportView(UnitDetailView):
 
     def render_to_response(self, context, **response_kwargs):
         unit = context.get("unit")
-        team = unit.all_employees()
         start_fy = fiscal_year(fiscal_year=self.kwargs["start_year"])
         end_fy = fiscal_year(fiscal_year=self.kwargs["end_year"])
-        totals = context.get("totals")
         response = HttpResponse(content_type="text/csv")
         response[
             "Content-Disposition"

@@ -1,11 +1,8 @@
 from datetime import date
 from decimal import Decimal
-import json
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.core.management import call_command
-from django.core.serializers.json import DjangoJSONEncoder
 
 
 from fiscalyear import FiscalYear
@@ -276,7 +273,7 @@ class TestEmpoyeeDetailView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "terra/employee.html")
 
-    def test_employee_detail_loads(self):
+    def test_second_employee_detail_loads(self):
         self.client.login(username="aprigge", password="Staples50141")
         response = self.client.get("/employee/2/2019-2019/")
         self.assertEqual(response.status_code, 200)
@@ -1047,7 +1044,7 @@ class EmployeeSubtotalTestCase(TestCase):
         for employee in actual:
             for key, value in actual[employee].items():
                 with self.subTest(key=key, value=value):
-                    self.assertEqual(actual[employee][key], actual[employee][key])
+                    self.assertEqual(actual[employee][key], expected[employee][key])
 
 
 class ActualExpenseTestCase(TestCase):

@@ -7,26 +7,13 @@ from django.db.models import (
     OuterRef,
     Subquery,
     DecimalField,
-    ExpressionWrapper,
     IntegerField,
 )
-from django.db.models.functions import Coalesce, ExtractDay
+from django.db.models.functions import Coalesce
 
 
-from .models import (
-    TravelRequest,
-    Employee,
-    Funding,
-    ActualExpense,
-    Fund,
-    EMPLOYEE_TYPES,
-)
-from .utils import (
-    fiscal_year_bookends,
-    current_fiscal_year_int,
-    profdev_spending_cap,
-    profdev_days_cap,
-)
+from .models import TravelRequest, Employee, Funding, ActualExpense
+from .utils import fiscal_year_bookends, profdev_spending_cap, profdev_days_cap
 
 
 def check_dates(start_date, end_date):
