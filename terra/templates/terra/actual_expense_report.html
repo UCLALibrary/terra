@@ -41,6 +41,7 @@
     <thead class="thead-light">
       <th class="text">AUL</th>
       <th class="text">Department</th>
+      <th class="text">UID</th>
       <th class="text">Employee</th>
       <th class="text">Type</th>
       <th class="text">Activity</th>
@@ -65,6 +66,7 @@
                       <td></td>
                     {% endif %}
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
+                    <td class="text">{{actualexpense.treq.traveler.uid}}</td>
                     <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/{{fy_year}}-{{fy_year}}/">{{actualexpense.treq.traveler}}</a></td>
                     <td class="text">{{actualexpense.treq.traveler.get_type_display}}</td>
                     <td><a href="/treq/{{actualexpense.treq.pk}}/">{{actualexpense.treq.activity}}</a></td>
@@ -83,6 +85,7 @@
                 {% for  employee in subunit.employees.values %}
                   {% if employee == e and employee.data.total_spent != 0%}
                     <tr>
+                      <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
                       <th class="text">{{employee}} ({{employee.get_type_display}}) Total</th>
@@ -107,6 +110,7 @@
             <tr>
             <th>Library Total</th>
                 <th></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
