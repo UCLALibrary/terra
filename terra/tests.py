@@ -637,7 +637,7 @@ class FundReportsTestCase(TestCase):
             "total_spent": Decimal("4165"),
         }
         fund = Fund.objects.get(pk=1)
-        employees, totals = reports.fund_report(fund)
+        employees, totals = reports.fund_report(fund, self.start_date, self.end_date)
         self.assertEqual(len(employees), 3)
         for key, value in expected.items():
             with self.subTest(key=key, value=value):

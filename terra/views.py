@@ -654,6 +654,7 @@ class ActualExpenseExportView(ActualExpenseListView):
             [
                 "AUL",
                 "Department",
+                "UID",
                 "Employee",
                 "Type",
                 "Activity",
@@ -677,6 +678,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                                 [
                                     v["subunit"].manager,
                                     actualexpense.treq.traveler.unit,
+                                    actualexpense.treq.traveler.uid,
                                     actualexpense.treq.traveler,
                                     actualexpense.treq.traveler.get_type_display(),
                                     actualexpense.treq.activity,
@@ -694,6 +696,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                                 [
                                     "",
                                     actualexpense.treq.traveler.unit,
+                                    actualexpense.treq.traveler.uid,
                                     actualexpense.treq.traveler,
                                     actualexpense.treq.traveler.get_type_display(),
                                     actualexpense.treq.activity,
@@ -714,6 +717,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                                 [
                                     "",
                                     "",
+                                    "",
                                     f"{employee} ({employee.get_type_display()}) Total",
                                     "",
                                     "",
@@ -731,6 +735,7 @@ class ActualExpenseExportView(ActualExpenseListView):
         writer.writerow(
             [
                 "Library Total",
+                "",
                 "",
                 "",
                 "",
