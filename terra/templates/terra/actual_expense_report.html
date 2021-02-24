@@ -41,11 +41,13 @@
     <thead class="thead-light">
       <th class="text">AUL</th>
       <th class="text">Department</th>
+      <th class="text">Dept. Manager</th>
       <th class="text">UID</th>
       <th class="text">Employee</th>
       <th class="text">Type</th>
       <th class="text">Activity</th>
       <th class="text">Dates</th>
+      <th class="text">Days Out</th>
       <th class="text">Date Paid</th>
       <th class="text">Closed</th>
       <th class="text">Reimbursed</th>
@@ -66,11 +68,13 @@
                       <td></td>
                     {% endif %}
                     <td class="text">{{actualexpense.treq.traveler.unit}}</td>
+                    <td class="text">{{actualexpense.treq.traveler.unit.manager}}</td>
                     <td class="text">{{actualexpense.treq.traveler.uid}}</td>
                     <td><a href="/employee/{{actualexpense.treq.traveler.pk}}/{{fy_year}}-{{fy_year}}/">{{actualexpense.treq.traveler}}</a></td>
                     <td class="text">{{actualexpense.treq.traveler.get_type_display}}</td>
                     <td><a href="/treq/{{actualexpense.treq.pk}}/">{{actualexpense.treq.activity}}</a></td>
                     <td class="text">{{actualexpense.treq.departure_date}} - {{actualexpense.treq.return_date}}</td>
+                    <td class="text">{{actualexpense.treq.days_ooo}}</td>
                     <td class="text">{{actualexpense.date_paid}}</td>
                     <td class="text">{{actualexpense.treq.closed|check_or_cross|safe}}</td>
                     <td class="textt">{{actualexpense.reimbursed|check_or_cross|safe}}</td>
@@ -88,7 +92,9 @@
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
+                      <td class="text"></td>
                       <th class="text">{{employee}} ({{employee.get_type_display}}) Total</th>
+                      <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
                       <td class="text"></td>
@@ -110,6 +116,8 @@
             <tr>
             <th>Library Total</th>
                 <th></th>
+                <th class="text-right"></th>
+                <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
                 <th class="text-right"></th>
