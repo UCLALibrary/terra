@@ -681,7 +681,7 @@ class ActualExpenseExportView(ActualExpenseListView):
                                     v["subunit"].manager,
                                     actualexpense.treq.traveler.unit,
                                     actualexpense.treq.traveler.unit.manager,
-                                    str(actualexpense.treq.traveler.uid),
+                                    actualexpense.treq.traveler.uid,
                                     actualexpense.treq.traveler,
                                     actualexpense.treq.traveler.get_type_display(),
                                     actualexpense.treq.activity,
