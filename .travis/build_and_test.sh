@@ -1,5 +1,10 @@
 #!/bin/bash
 
+############################################################################
+### 2023-05-26 akohler: This script is no longer used, but is retained
+### until full transition to Github Actions, including testing and coveralls.
+############################################################################
+
 # Script to build and test the Django Terra app container
 
 DOCKER_COMPOSE_TRAVIS="docker-compose -f .travis/docker-compose_travis_test.yml"
