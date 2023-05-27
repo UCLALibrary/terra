@@ -1,7 +1,8 @@
 version: '3'
 services:
   django:
-    image: uclalibrary/terra:latest
+    # Always build, if using this compose file
+    build: .
     volumes:
       - .:/home/django/terra
     env_file:
