@@ -14,6 +14,6 @@ jobs:
         uses: cloudposse/github-action-docker-compose-test-run@main
         with: 
           file: "./docker-compose.yml"
+          entrypoint: "./docker/entrypoint.sh"
           service: django
-          # Use exec -T to avoid creating unusable pseudo-TTY
-          command: docker-compose exec -T django python manage.py test
+          command: django python manage.py test
