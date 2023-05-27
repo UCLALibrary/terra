@@ -14,5 +14,8 @@ jobs:
         uses: isbang/compose-action@v1.4.1
         with: 
           compose-file: "./docker-compose.yml"
+          # --build to use current code, not pull image
+          up-flags: "--build"
       - name: Run tests
-        run: docker-compose exec django python manage.py test
+        # Use exec -T to avoid creating unusable pseudo-TTY
+        run: docker-compose exec -T django python manage.py test
