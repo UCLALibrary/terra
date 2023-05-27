@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/UCLALibrary/terra.svg?branch=master)](https://travis-ci.com/UCLALibrary/terra) [![Coverage Status](https://coveralls.io/repos/github/UCLALibrary/terra/badge.svg?branch=master)](https://coveralls.io/github/UCLALibrary/terra?branch=master)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/UCLALibrary/terra/run_tests.yml)] [![Coverage Status](https://img.shields.io/coverallsCoverage/github/UCLALibrary/terra)]
 
 # TERRA
 Travel & Entertainment Requests & Reports Application
