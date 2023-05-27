@@ -11,11 +11,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
       - name: Build and run containers
-        uses: isbang/compose-action@v1.4.1
+        uses: cloudposse/github-action-docker-compose-test-run@main
         with: 
-          compose-file: "./docker-compose.yml"
-          # --build to use current code, not pull image
-          up-flags: "--build"
-      - name: Run tests
-        # Use exec -T to avoid creating unusable pseudo-TTY
-        run: docker-compose exec -T django python manage.py test
+          file: "./docker-compose.yml"
+          service: django
+          # Use exec -T to avoid creating unusable pseudo-TTY
+          command: docker-compose exec -T django python manage.py test
