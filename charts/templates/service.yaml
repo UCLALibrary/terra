@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "terra.fullname" . }}
+  namespace: terra{{ .Values.django.env.run_env }}
+  labels:
+    {{- include "terra.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.django.env.target_port | default "8000" }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "terra.selectorLabels" . | nindent 4 }}

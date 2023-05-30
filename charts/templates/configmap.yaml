@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "terra.fullname" . }}-configmap
+  namespace: terra{{ .Values.django.env.run_env }}
+  labels:
+    {{- include "terra.labels" . | nindent 4 }}
+data:
+  DJANGO_RUN_ENV: {{ .Values.django.env.run_env }}
+  DJANGO_DEBUG: {{ .Values.django.env.debug | quote }}
+  DJANGO_ALLOWED_HOSTS: {{ range .Values.django.env.allowed_hosts }}{{ . | quote }}{{ end }}
+  DJANGO_DB_ENGINE: django.db.backends.mysql
+  DJANGO_DB_NAME: {{ .Values.django.env.db_name }}
+  DJANGO_DB_USER: {{ .Values.django.env.db_user }}
+  DJANGO_DB_HOST: {{ .Values.django.env.db_host }}
+  DJANGO_DB_PORT: "3306"
+  DJANGO_TEST_DB_NAME: {{ .Values.django.env.test_db_name }}
+  DJANGO_EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+  DJANGO_EMAIL_HOST: {{ .Values.django.env.email_host }}
