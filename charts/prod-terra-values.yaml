@@ -1,6 +1,0 @@
-### This file is a stub only for testing Docker Hub build and push.
-### It will be replaced by a real values file and the rest of the chart soon.
-
-image:
-  repository: uclalibrary/terra
-  tag: v1.0.0
