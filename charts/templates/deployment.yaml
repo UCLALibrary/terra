@@ -23,7 +23,7 @@ spec:
             - configMapRef:
                 name: {{ include "terra.fullname" . }}-configmap
             - secretRef:
-                name: {{ template "terra.fullname" . }}-externalsecret
+                name: {{ template "terra.fullname" . }}-secrets
           ports:
             - name: http
               containerPort: 8000
