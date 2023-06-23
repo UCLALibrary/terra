@@ -46,9 +46,11 @@ django:
 
   externalSecrets:
     enabled: "true"
+    annotations:
+      argocd.argoproj.io/sync-wave: "-1"
     env:
-      db_password: "/systems/prodsoftwaredev/terra/db_password"
-      django_secret_key: "/systems/prodsoftwaredev/terra/django_secret_key"
+      db_password: "/systems/prodrke01/terra/db_password"
+      django_secret_key: "/systems/prodrke01/terra/django_secret_key"
 
 resources:
   limits:
