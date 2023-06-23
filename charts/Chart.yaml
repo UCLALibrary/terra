@@ -2,4 +2,4 @@ apiVersion: v2
 appVersion: "0.1"
 description: Chart for Travel & Entertainment Requests & Reports Application (TERRA)
 name: terra
-version: 0.2.1
+version: 0.3.0

@@ -48,10 +48,13 @@ django:
 
   externalSecrets:
     enabled: "false"
+    annotations: {}
+      # helm weights and hooks - https://helm.sh/docs/topics/charts_hooks/
+      # argocd waves and hooks - https://argo-cd.readthedocs.io/en/stable/user-guide/sync-waves/
     env: {}
     # Include below if enabled: "true"
     #  db_password: ""
-    #  django_secret_key: ""  
+    #  django_secret_key: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
