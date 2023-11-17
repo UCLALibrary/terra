@@ -113,7 +113,6 @@ TIME_ZONE = "America/Los_Angeles"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -131,7 +130,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 if not os.path.isdir(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, mode=0o755)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Email Configuration
 EMAIL_BACKEND = os.getenv("DJANGO_EMAIL_BACKEND")
