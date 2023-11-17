@@ -28,5 +28,10 @@ if [ "$DJANGO_RUN_ENV" = "dev" ]; then
   python ./manage.py runserver 0.0.0.0:8000
 else
   # Start the Gunicorn web server
+  # Gunicorn cmd line flags:
+  # -w number of gunicorn worker processes
+  # -b IPADDR:PORT binding
+  # --access-logfile where to send HTTP access logs (- is stdout)
+  export GUNICORN_CMD_ARGS="-w 3 -b 0.0.0.0:8000 --access-logfile -"
   gunicorn proj.wsgi:application
 fi
