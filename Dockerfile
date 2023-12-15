@@ -5,10 +5,10 @@ RUN apt-get update
 # Set correct timezone
 RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 
-# Install dependencies needed for mysqlclient
-RUN apt-get install build-essential python3-dev default-libmysqlclient-dev pkg-config locales -y -qq
+# Install dependencies needed to build psycopg2 python module and locales
+RUN apt-get install -y gcc python3-dev libpq-dev pkg-config locales
 
-# Set locale, apparently required by mysqlclient
+# Set locale, originally required by mysqlclient and used in Django terra-specific code
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && dpkg-reconfigure --frontend=noninteractive locales
 
 # Create django user and switch context to that user

@@ -1,9 +1,10 @@
-Django>=2.2,<2.3
-Django-crispy-forms
+Django==4.2.7
+psycopg2==2.9.7
+# For now, keep using old version, not 2.0+
+Django-crispy-forms==1.9.1
 black
 pre-commit
 fiscalyear
-mysqlclient
 whitenoise
 gunicorn
 pyflakes
