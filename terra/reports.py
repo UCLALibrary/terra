@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import (
     F,
@@ -132,16 +133,16 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_requested=Coalesce(
-                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
+                Subquery(profdev_requested, output_field=DecimalField()), Decimal(0)
             ),
             profdev_spent=Coalesce(
-                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+                Subquery(profdev_spent, output_field=DecimalField()), Decimal(0)
             ),
             admin_requested=Coalesce(
-                Subquery(admin_requested, output_field=DecimalField()), Value(0)
+                Subquery(admin_requested, output_field=DecimalField()), Decimal(0)
             ),
             admin_spent=Coalesce(
-                Subquery(admin_spent, output_field=DecimalField()), Value(0)
+                Subquery(admin_spent, output_field=DecimalField()), Decimal(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
@@ -331,23 +332,23 @@ def get_individual_data_for_treq(treq_ids, fund, start_date=None, end_date=None)
                 profdev_requested.values("profdev_requested"),
                 output_field=DecimalField(),
             ),
-            Value(0),
+            Decimal(0),
         ),
         admin_requested=Coalesce(
             Subquery(
                 admin_requested.values("admin_requested"), output_field=DecimalField()
             ),
-            Value(0),
+            Decimal(0),
         ),
         profdev_spent=Coalesce(
             Subquery(
                 profdev_spent.values("profdev_spent"), output_field=DecimalField()
             ),
-            Value(0),
+            Decimal(0),
         ),
         admin_spent=Coalesce(
             Subquery(admin_spent.values("admin_spent"), output_field=DecimalField()),
-            Value(0),
+            Decimal(0),
         ),
     )
 
@@ -432,23 +433,23 @@ def get_individual_data_for_fund(employee_ids, fund, start_date=None, end_date=N
                 profdev_requested.values("profdev_requested"),
                 output_field=DecimalField(),
             ),
-            Value(0),
+            Decimal(0),
         ),
         profdev_spent=Coalesce(
             Subquery(
                 profdev_spent.values("profdev_spent"), output_field=DecimalField()
             ),
-            Value(0),
+            Decimal(0),
         ),
         admin_requested=Coalesce(
             Subquery(
                 admin_requested.values("admin_requested"), output_field=DecimalField()
             ),
-            Value(0),
+            Decimal(0),
         ),
         admin_spent=Coalesce(
             Subquery(admin_spent.values("admin_spent"), output_field=DecimalField()),
-            Value(0),
+            Decimal(0),
         ),
     )
     return rows
@@ -499,7 +500,6 @@ def get_type_and_employees():
 
 
 def get_individual_data_type(employee_ids, start_date=None, end_date=None):
-
     profdev_requested = (
         TravelRequest.objects.filter(
             traveler=OuterRef("pk"),
@@ -583,16 +583,16 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_requested=Coalesce(
-                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
+                Subquery(profdev_requested, output_field=DecimalField()), Decimal(0)
             ),
             profdev_spent=Coalesce(
-                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+                Subquery(profdev_spent, output_field=DecimalField()), Decimal(0)
             ),
             admin_requested=Coalesce(
-                Subquery(admin_requested, output_field=DecimalField()), Value(0)
+                Subquery(admin_requested, output_field=DecimalField()), Decimal(0)
             ),
             admin_spent=Coalesce(
-                Subquery(admin_spent, output_field=DecimalField()), Value(0)
+                Subquery(admin_spent, output_field=DecimalField()), Decimal(0)
             ),
             days_vacation=Coalesce(
                 Subquery(
@@ -631,7 +631,6 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
 
 
 def merge_data_type(employee_ids, start_date, end_date):
-
     type_dict = get_type_and_employees()
     rows = get_individual_data_type(employee_ids, start_date, end_date)
     data = {
@@ -852,16 +851,16 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
         Employee.objects.filter(pk__in=employee_ids)
         .annotate(
             profdev_requested=Coalesce(
-                Subquery(profdev_requested, output_field=DecimalField()), Value(0)
+                Subquery(profdev_requested, output_field=DecimalField()), Decimal(0)
             ),
             profdev_spent=Coalesce(
-                Subquery(profdev_spent, output_field=DecimalField()), Value(0)
+                Subquery(profdev_spent, output_field=DecimalField()), Decimal(0)
             ),
             admin_requested=Coalesce(
-                Subquery(admin_requested, output_field=DecimalField()), Value(0)
+                Subquery(admin_requested, output_field=DecimalField()), Decimal(0)
             ),
             admin_spent=Coalesce(
-                Subquery(admin_spent, output_field=DecimalField()), Value(0)
+                Subquery(admin_spent, output_field=DecimalField()), Decimal(0)
             ),
             profdev_days_away=Coalesce(
                 Subquery(
@@ -871,10 +870,10 @@ def get_individual_data_employee(employee_ids, start_date=None, end_date=None):
                 Value(0),
             ),
             total_requested=Coalesce(
-                Subquery(total_requested, output_field=DecimalField()), Value(0)
+                Subquery(total_requested, output_field=DecimalField()), Decimal(0)
             ),
             total_spent=Coalesce(
-                Subquery(total_spent, output_field=DecimalField()), Value(0)
+                Subquery(total_spent, output_field=DecimalField()), Decimal(0)
             ),
             admin_days_away=Coalesce(
                 Subquery(
@@ -937,7 +936,6 @@ def employee_total_report(employee_ids, start_date, end_date):
 
 
 def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
-
     actualexpenses_fy = (
         ActualExpense.objects.filter(treq=OuterRef("pk"))
         .values("treq_id")
@@ -976,10 +974,10 @@ def get_individual_data_treq(treq_ids, start_date=None, end_date=None):
     rows = (
         TravelRequest.objects.filter(pk__in=treq_ids).annotate(
             actualexpenses_fy=Coalesce(
-                Subquery(actualexpenses_fy, output_field=DecimalField()), Value(0)
+                Subquery(actualexpenses_fy, output_field=DecimalField()), Decimal(0)
             ),
             funding_fy=Coalesce(
-                Subquery(funding_fy, output_field=DecimalField()), Value(0)
+                Subquery(funding_fy, output_field=DecimalField()), Decimal(0)
             ),
             days_ooo_fy=Coalesce(
                 Subquery(days_ooo_fy, output_field=IntegerField()), Value(0)
