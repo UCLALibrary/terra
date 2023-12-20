@@ -83,25 +83,31 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 
 # Functions to rename travelrequest list columns
+@admin.display(
+    description="Days Out"
+)
 def days_ooo(obj):
     return obj.days_ooo
 
 
-days_ooo.short_description = "Days Out"
 
 
+@admin.display(
+    description="Funding"
+)
 def approved_total(obj):
     return obj.approved_total()
 
 
-approved_total.short_description = "Funding"
 
 
+@admin.display(
+    description="Actual"
+)
 def expenditures_total(obj):
     return obj.expenditures_total()
 
 
-expenditures_total.short_description = "Actual"
 
 
 @admin.register(TravelRequest)

@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "terra",
     "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,7 +86,7 @@ DATABASES = {
         "ENGINE": os.getenv("DJANGO_DB_ENGINE"),
         "NAME": os.getenv("DJANGO_DB_NAME"),
         "USER": os.getenv("DJANGO_DB_USER"),
-        "PASSWORD": os.getenv("DJANGO_DB_PASSWD"),
+        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD"),
         "HOST": os.getenv("DJANGO_DB_HOST"),
         "PORT": os.getenv("DJANGO_DB_PORT"),
         "TEST": {"NAME": os.getenv("DJANGO_TEST_DB_NAME")},
@@ -108,15 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "America/Los_Angeles"
-
 USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -131,13 +127,25 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 if not os.path.isdir(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, mode=0o755)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Email Configuration
 EMAIL_BACKEND = os.getenv("DJANGO_EMAIL_BACKEND")
 DEFAULT_FROM_EMAIL = "terra@library.ucla.edu"
 if os.getenv("DJANGO_RUN_ENV") != "dev":
     EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST")
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+# Explicitly use AutoField to match the implicit Terra used in earlier Django.
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # login redirect
 LOGIN_REDIRECT_URL = "/"

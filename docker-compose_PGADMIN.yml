@@ -1,0 +1,39 @@
+version: "3.1"
+services:
+  django:
+    # Always build, if using this compose file
+    build: .
+    volumes:
+      - .:/home/django/terra
+    env_file:
+      - .docker-compose_django.env
+      - .docker-compose_db.env
+    ports:
+     - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: postgres:12
+    env_file:
+      - .docker-compose_db.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      # These are fake, for local docker-compose use
+      PGADMIN_DEFAULT_EMAIL: systems@library.ucla.edu
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - db
+    extra_hosts:
+      # For access to remote database via ssh tunnel on host
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+volumes:
+  pg_data:
+  pgadmin_data:
+

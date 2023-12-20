@@ -7,7 +7,7 @@ if [ "$DJANGO_RUN_ENV" = "dev" ]; then
 fi
 
 # Check when database is ready for connections
-until python -c 'import os ; import MySQLdb ; db=MySQLdb.connect(host=os.environ.get("DJANGO_DB_HOST"),user=os.environ.get("DJANGO_DB_USER"),passwd=os.environ.get("DJANGO_DB_PASSWD"),db=os.environ.get("DJANGO_DB_NAME"))' ; do
+until python -c 'import os, psycopg2 ; conn = psycopg2.connect(host=os.environ.get("DJANGO_DB_HOST"),port=os.environ.get("DJANGO_DB_PORT"),user=os.environ.get("DJANGO_DB_USER"),password=os.environ.get("DJANGO_DB_PASSWORD"),dbname=os.environ.get("DJANGO_DB_NAME"))' ; do
   echo "Database connection not ready - waiting"
   sleep 5
 done
@@ -15,8 +15,12 @@ done
 # Run database migrations
 python ./manage.py migrate
 
-# Load sample data when running in dev environment
 if [ "$DJANGO_RUN_ENV" = "dev" ]; then
+  # Create default superuser for dev environment, using django env vars.
+  # Logs will show error if this exists, which is OK.
+  python manage.py createsuperuser --no-input
+
+  # Load fixtures, only in dev environment.
   echo "Loading sample data set..."
   python ./manage.py loaddata sample_data
 fi
@@ -28,5 +32,10 @@ if [ "$DJANGO_RUN_ENV" = "dev" ]; then
   python ./manage.py runserver 0.0.0.0:8000
 else
   # Start the Gunicorn web server
+  # Gunicorn cmd line flags:
+  # -w number of gunicorn worker processes
+  # -b IPADDR:PORT binding
+  # --access-logfile where to send HTTP access logs (- is stdout)
+  export GUNICORN_CMD_ARGS="-w 3 -b 0.0.0.0:8000 --access-logfile -"
   gunicorn proj.wsgi:application
 fi

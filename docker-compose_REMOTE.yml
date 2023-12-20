@@ -1,0 +1,20 @@
+version: "3.1"
+services:
+  django:
+    build: .
+    volumes: 
+      - .:/home/django/terra
+    env_file:
+      - .docker-compose_django.env
+      # - .docker-compose_db.env
+      # Info for connection to production database via ssh tunnel
+      - .docker-compose_secrets.env
+    environment:
+      # Force the environment to be production, when connecting from Docker in this way.
+      - DJANGO_RUN_ENV=prod
+    ports: 
+      # Variables here must be set in environment, or in .env - not in any env_file
+      - "8000:8000"
+    extra_hosts:
+      # For access to remote database via ssh tunnel on host
+      - "host.docker.internal:host-gateway"
