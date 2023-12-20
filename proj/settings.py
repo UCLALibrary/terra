@@ -142,7 +142,8 @@ if os.getenv("DJANGO_RUN_ENV") != "dev":
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# Explicitly use AutoField to match the implicit Terra used in earlier Django.
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # login redirect
 LOGIN_REDIRECT_URL = "/"
