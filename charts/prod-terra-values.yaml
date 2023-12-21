@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: uclalibrary/terra
-  tag: v1.1.0
+  tag: v1.1.1
   pullPolicy: Always
 
 nameOverride: ""
@@ -40,7 +40,7 @@ django:
     allowed_hosts:
       - terra.library.ucla.edu
     csrf_trusted_origins:
-      - terra.library.ucla.edu
+      - https://terra.library.ucla.edu
     db_backend: "django.db.backends.postgresql_psycopg2"
     db_name: "terraprod"
     db_user: "terraprod"
