@@ -33,15 +33,19 @@ django:
   env:
     run_env: "prod"
     debug: "false"
+    log_level: ""
     allowed_hosts: []
     #  - localhost
     #  - 127.0.0.1
     #  - [::1]
+    csrf_trusted_origins: []
+    db_backend: ""
     db_name: ""
     db_user: ""
     db_host: ""
+    db_port: ""
     # Include if externalSecrets enabled: "false"
-    #db_passwd: ""
+    #db_password: ""
     test_db_name: ""
     email_host: ""
     target_port: ""
