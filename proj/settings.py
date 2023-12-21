@@ -15,16 +15,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Ensure value of DEBUG is interpreted as a boolean and not a string
-# If DJANGO_DEBUG is string False, then "False" == "True" -> DEBUG = False
-# If DJANGO_DEBUG is string True, then "True" == "True" -> DEBUG = True
-DEBUG = os.getenv("DJANGO_DEBUG") == "True"
+DEBUG = os.getenv("DJANGO_DEBUG")
+# Helm charts pass "false" instead of Python False, and
+# Python "false" is True...
+if DEBUG in ["false", "False"]:
+    DEBUG = False
 
 # Define the list of allowed hosts to connect to this application
 # This is passed in via the environment variable DJANGO_ALLOWED_HOSTS
 # which is a string - but ALLOWED_HOSTS requires a list
-
 ALLOWED_HOSTS = list(os.getenv("DJANGO_ALLOWED_HOSTS").split(","))
+
+# Django 4 may require this, at least in our deployment environment.
+CSRF_TRUSTED_ORIGINS = list(os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS").split(","))
 
 # Application definition
 
@@ -83,7 +86,7 @@ WSGI_APPLICATION = "proj.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DJANGO_DB_ENGINE"),
+        "ENGINE": os.getenv("DJANGO_DB_BACKEND"),
         "NAME": os.getenv("DJANGO_DB_NAME"),
         "USER": os.getenv("DJANGO_DB_USER"),
         "PASSWORD": os.getenv("DJANGO_DB_PASSWORD"),
