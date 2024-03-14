@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: uclalibrary/terra
-  tag: v1.1.1
+  tag: v1.1.2
   pullPolicy: Always
 
 nameOverride: ""
