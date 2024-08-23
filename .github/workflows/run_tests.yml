@@ -11,7 +11,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
       - name: Build and run containers
-        uses: isbang/compose-action@v1.4.1
+        uses: hoverkraft-tech/compose-action@v2.0.1
         with: 
           compose-file: "./docker-compose.yml"
           # --build to use current code, not pull image... may not work
