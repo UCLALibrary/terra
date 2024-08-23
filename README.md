@@ -60,22 +60,22 @@ Travel & Entertainment Requests & Reports Application
 
 3. Rebuild docker environment.  This will pull images from Docker Hub.
 
-		$ docker-compose build
+		$ docker compose build
 
 4. Start docker containers, running in the background.
 
-		$ docker-compose up -d
+		$ docker compose up -d
 
 ***Note:*** Steps 3-4 can be combined, as
 
-		$ docker-compose up --build -d
+		$ docker compose up --build -d
 
 ***Note:*** Starting the containers applies any pending migrations and loads the `sample_data` fixture.
 It may take 15-20 seconds from the time the containers start until the application is available.
 
 5. Create a django superuser if desired, or run any other manage.py command the same way.
 
-		$ docker-compose exec django python manage.py createsuperuser
+		$ docker compose exec django python manage.py createsuperuser
 
 6. Connect to the application as usual, though if running docker in a VM you may need to forward ports to your host OS.
 
@@ -84,7 +84,7 @@ It may take 15-20 seconds from the time the containers start until the applicati
 
 7. Stop containers - shut down django and mysql
 
-		$ docker-compose down
+		$ docker compose down
 
 ***Note:*** Database changes are not retained when the containers are stopped.
 
@@ -96,11 +96,11 @@ It may take 15-20 seconds from the time the containers start until the applicati
 
 1. Create a superuser
 
-		$ docker-compose exec django python manage.py createsuperuser
+		$ docker compose exec django python manage.py createsuperuser
 
 2. Work with the underlying database (does not currently work in Docker environment)
 
-		$ docker-compose exec django python manage.py dbshell
+		$ docker compose exec django python manage.py dbshell
 
 #### Migrations
 
@@ -108,11 +108,11 @@ When you change the Django models, you need to update the tables in the database
 
 1. Creating a migration file
 
-		$ docker-compose exec django python manage.py makemigrations
+		$ docker compose exec django python manage.py makemigrations
 
 2. Running that migration
 
-		$ docker-compose exec django python manage.py migrate
+		$ docker compose exec django python manage.py migrate
 
 ***Note:*** Always remember to check for new migrations when you pull down code from master.  Or restart the Docker containers to apply all migrations.
 
@@ -120,26 +120,26 @@ When you change the Django models, you need to update the tables in the database
 
 1. Use the Django REPL
 
-		$ docker-compose exec django python manage.py shell
+		$ docker compose exec django python manage.py shell
 
 2. Validate your code
 
-		$ docker-compose exec django python manage.py check
+		$ docker compose exec django python manage.py check
 
 3. Functional tests: Run the terra test suite
 
-		$ docker-compose exec django python manage.py test terra
+		$ docker compose exec django python manage.py test terra
 
 4. Static code analysis: Run pyflakes
 
-		$ docker-compose exec django pyflakes terra
+		$ docker compose exec django pyflakes terra
 
 5. Load different data (sample data is loaded automatically if working in Docker environment)
 
-		$ docker-compose exec django python manage.py flush
-		$ docker-compose exec django python manage.py loaddata data_file (must be in terra/fixtures directory)
+		$ docker compose exec django python manage.py flush
+		$ docker compose exec django python manage.py loaddata data_file (must be in terra/fixtures directory)
 
 6. View the logs
 
-		$ docker-compose logs django (or docker-compose logs db)
-		$ docker-compose logs -f django (to tail the logs continuously; press CTRL-C to exit)
+		$ docker compose logs django (or docker compose logs db)
+		$ docker compose logs -f django (to tail the logs continuously; press CTRL-C to exit)
