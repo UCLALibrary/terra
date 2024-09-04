@@ -5,45 +5,6 @@ Travel & Entertainment Requests & Reports Application
 
 ## Developer Setup
 
-### Local
-
-1. Install Python 3.7
-	- I recommend following this guide: https://docs.python-guide.org/
-2. Open your terminal and open your projects directory
-
-		$ cd /some/path/where/you/put/code
-
-3. Clone this repo
-	1. with SSH:
-
-			$ git clone git@github.com:UCLALibrary/terra.git
-
-	2. with HTTPS:
-
-			$ git clone https://github.com/UCLALibrary/terra.git
-
-4. Switch to the repo root
-
-		$ cd terra
-
-5. Create a Python virtual environment and activate it
-
-		$ python3 -m venv ENV
-		$ source ENV/bin/activate
-
-6. Update pip and install the Python packages
-
-		$ pip install --upgrade pip
-		$ pip install -r requirements.txt
-
-7. Install the pre-commit hook
-
-		$ pre-commit install
-
-8. Create the database tables
-
-		$ python manage.py migrate
-
 ### Docker
 
 1. Install docker and docker-compose.
