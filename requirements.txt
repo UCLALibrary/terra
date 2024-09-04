@@ -1,11 +1,7 @@
-Django==4.2.11
+Django==4.2.16
 psycopg2==2.9.7
 django-crispy-forms==2.1
 crispy-bootstrap5==2023.10
 fiscalyear==0.4.0
 whitenoise==6.5.0
-gunicorn==21.2.0
-# Used for legacy development, could be removed later per ak.
-black
-pre-commit
-pyflakes
+gunicorn==23.0.0
