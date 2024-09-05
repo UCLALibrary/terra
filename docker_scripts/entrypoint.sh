@@ -16,13 +16,13 @@ done
 python ./manage.py migrate
 
 if [ "$DJANGO_RUN_ENV" = "dev" ]; then
-  # Create default superuser for dev environment, using django env vars.
-  # Logs will show error if this exists, which is OK.
-  python manage.py createsuperuser --no-input
-
   # Load fixtures, only in dev environment.
   echo "Loading sample data set..."
   python ./manage.py loaddata sample_data
+
+  # Create default superuser for dev environment, using django env vars.
+  # Logs will show error if this exists, which is OK.
+  python manage.py createsuperuser --no-input
 fi
 
 # Build static files directory, starting fresh each time
