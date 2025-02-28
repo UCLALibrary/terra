@@ -20,6 +20,7 @@ from terra.views import (
     UnitOrgExportView,
     EmployeeDetailExportView,
     home,
+    release_notes
 )
 
 urlpatterns = [
@@ -145,4 +146,5 @@ urlpatterns = [
         name="actual_expense_report_csv",
     ),
     path("", home, name="home"),
+    path("release_notes/", release_notes, name="release_notes")
 ]

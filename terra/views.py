@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 from .models import TravelRequest, Unit, Employee, Fund, ActualExpense
 from .reports import (
@@ -45,6 +46,11 @@ def employee_type_list(request):
             },
         )
     )
+
+
+@login_required
+def release_notes(request):
+    return render(request, "terra/release_notes.html")
 
 
 class EmployeeDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
