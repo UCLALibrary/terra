@@ -1,11 +1,11 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 RUN apt-get update
 
 # Set correct timezone
 RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 
-# Install dependencies needed to build psycopg2 python module and locales
+# Install dependencies needed to build psycopg python module and locales
 RUN apt-get install -y gcc python3-dev libpq-dev pkg-config locales
 
 # Set locale, originally required by mysqlclient and used in Django terra-specific code

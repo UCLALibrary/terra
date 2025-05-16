@@ -1,5 +1,5 @@
-Django==4.2.19
-psycopg2==2.9.7
+Django==5.2.1
+psycopg==3.2.9
 django-crispy-forms==2.1
 crispy-bootstrap5==2023.10
 fiscalyear==0.4.0
