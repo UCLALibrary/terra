@@ -20,7 +20,7 @@ from terra.views import (
     UnitOrgExportView,
     EmployeeDetailExportView,
     home,
-    release_notes
+    release_notes,
 )
 
 urlpatterns = [
@@ -32,6 +32,7 @@ urlpatterns = [
     path(
         "accounts/logout/",
         auth_views.LogoutView.as_view(template_name="terra/registration/logout.html"),
+        name="logout",
     ),
     path(
         "accounts/password_change/",
@@ -146,5 +147,5 @@ urlpatterns = [
         name="actual_expense_report_csv",
     ),
     path("", home, name="home"),
-    path("release_notes/", release_notes, name="release_notes")
+    path("release_notes/", release_notes, name="release_notes"),
 ]
