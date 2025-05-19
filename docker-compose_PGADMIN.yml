@@ -9,11 +9,11 @@ services:
       - .docker-compose_django.env
       - .docker-compose_db.env
     ports:
-     - "8000:8000"
+      - "8000:8000"
     depends_on:
       - db
   db:
-    image: postgres:12
+    image: postgres:16
     env_file:
       - .docker-compose_db.env
     volumes:
@@ -36,4 +36,5 @@ services:
 volumes:
   pg_data:
   pgadmin_data:
+
 
