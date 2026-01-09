@@ -98,11 +98,16 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
         .values("admin_spent")
     )
 
-    days_vacation = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(days_vacation=Sum("vacation__duration"))
+    days_vacation = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(total_days_vacation=Sum("vacation__duration"))
+        .values("total_days_vacation")
+    )
 
     profdev_days_away = (
         TravelRequest.objects.filter(
@@ -145,10 +150,7 @@ def get_individual_data(employee_ids, start_date=None, end_date=None):
                 Subquery(admin_spent, output_field=DecimalField()), Decimal(0)
             ),
             days_vacation=Coalesce(
-                Subquery(
-                    days_vacation.values("days_vacation")[:1],
-                    output_field=IntegerField(),
-                ),
+                Subquery(days_vacation, output_field=IntegerField()),
                 Value(0),
             ),
             profdev_days_away=Coalesce(
@@ -550,11 +552,16 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
         .values("admin_spent")
     )
 
-    days_vacation = TravelRequest.objects.filter(
-        traveler=OuterRef("pk"),
-        departure_date__gte=start_date,
-        return_date__lte=end_date,
-    ).annotate(days_vacation=Sum("vacation__duration"))
+    days_vacation = (
+        TravelRequest.objects.filter(
+            traveler=OuterRef("pk"),
+            departure_date__gte=start_date,
+            return_date__lte=end_date,
+        )
+        .values("traveler__pk")
+        .annotate(total_days_vacation=Sum("vacation__duration"))
+        .values("total_days_vacation")
+    )
 
     profdev_days_away = (
         TravelRequest.objects.filter(
@@ -595,10 +602,7 @@ def get_individual_data_type(employee_ids, start_date=None, end_date=None):
                 Subquery(admin_spent, output_field=DecimalField()), Decimal(0)
             ),
             days_vacation=Coalesce(
-                Subquery(
-                    days_vacation.values("days_vacation")[:1],
-                    output_field=IntegerField(),
-                ),
+                Subquery(days_vacation, output_field=IntegerField()),
                 Value(0),
             ),
             profdev_days_away=Coalesce(
